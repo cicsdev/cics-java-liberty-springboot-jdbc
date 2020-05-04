@@ -1,6 +1,6 @@
 cics-java-liberty-springboot-jdbc-lookup-ds
 
-This sample project demonstrates a Spring Boot JDBC application integrated with IBM CICS that can be deployed to a CICS Liberty JVM server. The application makes use of the employee sample table supplied with Db2 for z/OS. The application allows you to add, update, delete or display employee information from the table EMP.
+This project demonstrates a Spring Boot JDBC application integrated with IBM CICS that can be deployed to a CICS Liberty JVM server. The application makes use of the employee sample table supplied with Db2 for z/OS. The application allows you to add, update, delete or display employee information from the table EMP.
 
 Prerequisites
 
@@ -46,6 +46,7 @@ On Windows:
 mvnw.cmd clean package
 
 This creates a WAR file inside the target directory.
+
 Deploying
 
     Ensure you have the following features in server.xml:
