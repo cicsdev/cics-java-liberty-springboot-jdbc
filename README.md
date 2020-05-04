@@ -20,9 +20,10 @@ You can also build the sample project through plug-in tooling of your chosen IDE
 Note: When building a WAR file for deployment to Liberty it is good practice to exclude Tomcat from the final runtime artifact. We demonstrate this in the pom.xml with the provided scope, and in build.gradle with the providedRuntime() dependency.
 
 Note: If you import the project to an IDE of your choice, you might experience local project compile errors. To resolve these errors you should refresh your IDEs configuration. For example, in Eclipse: for Gradle, right-click on "Project", select "Gradle -> Refresh Gradle Project", or for Maven, right-click on "Project", select "Maven -> Update Project...".
-Gradle
 
-Run the following in a local command prompt:
+## Gradle
+
+### Run the following in a local command prompt:
 
 On Linux or Mac:
 
@@ -33,9 +34,10 @@ On Windows:
 gradlew.bat clean bootWar
 
 This creates a WAR file inside the build/libs directory.
-Maven
 
-Run the following in a local command prompt:
+## Maven
+
+### Run the following in a local command prompt:
 
 On Linux or Mac:
 
