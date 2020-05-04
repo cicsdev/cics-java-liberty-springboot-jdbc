@@ -64,6 +64,7 @@ Add a datasource definition to your server.xml. this sample uses two (almost ide
 
 E.g. as follows:
 
+```
      <dataSource id="t4a" jndiName="jdbc/jdbcDataSource" type="javax.sql.DataSource">
         <jdbcDriver>
             <library name="DB2LIB">
@@ -84,25 +85,23 @@ E.g. as follows:
         </jdbcDriver>
         <properties.db2.jcc currentSchema="DSN81110" databaseName="DSNV11P2" driverType="4" 
 	     password="<your password>" portNumber="41100" serverName="<your server name>" user="<your userid>"/>
-    </dataSource>  
+    </dataSource> 
+```
 
-    Both type 4 datasource connections above are the same except for the jndiName. 
-    The jndiName defined in datasource t4a is referenced by the application.properties file in the resources directory of the application.
-    The jndiName defined in datasource t4b is referenced by an @Bean annotated dataSource() method in the application.
+Both type 4 datasource connections above are the same except for the jndiName. 
+The jndiName defined in datasource t4a is referenced by the application.properties file in the resources directory of the application.
+The jndiName defined in datasource t4b is referenced by an @Bean annotated dataSource() method in the application.
 
-	 
+Copy and paste the WAR from your target or build/libs directory into a CICS bundle project and create a new WARbundlepart for that WAR file.
 
+Deploy the CICS bundle project as normal. For example in Eclipse, select "Export Bundle Project to z/OS UNIX File System".
 
+Alternatively, manually upload the WAR file to zFS and add an <application> configuration to server.xml:
 
-    Copy and paste the WAR from your target or build/libs directory into a CICS bundle project and create a new WARbundlepart for that WAR file.
-
-    Deploy the CICS bundle project as normal. For example in Eclipse, select "Export Bundle Project to z/OS UNIX File System".
-
-    Alternatively, manually upload the WAR file to zFS and add an <application> configuration to server.xml:
-
-    For example:
-       <application id="empJDBCapp" location="/u/fitzget/war files/com.ibm.cicsdev.springboot.jdbc-0.1.0.war" type="spring"/>
-
+For example:
+```
+<application id="empJDBCapp" location="/u/fitzget/war files/com.ibm.cicsdev.springboot.jdbc-0.1.0.war" type="spring"/>
+```
 
 ## Trying out the sample
 
