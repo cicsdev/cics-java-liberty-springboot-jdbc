@@ -52,10 +52,10 @@ This creates a WAR file inside the target directory.
 ## Deploying
 
 Ensure you have the following features in server.xml:
-        servlet-3.1 or servlet-4.0
-        jsp-2.3
-        springBoot-2.0
-        jdbc-4.0
+* servlet-3.1 or servlet-4.0
+* jsp-2.3
+* springBoot-2.0
+* jdbc-4.0
 
 
 Note: servlet-4.0 will only work for CICS TS V5.5 or later
