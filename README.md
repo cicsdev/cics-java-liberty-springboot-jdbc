@@ -127,7 +127,7 @@ http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows
 http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows2
     All rows in table EMP will be returned - the datasource is obtained from an @Bean method
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/addEmployee/*{firstName}*/*{lastName}*
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/addEmployee/_{firstName}_/_{lastName}_
     A new employee record will be created using the forst name and last name supplied. All other fields in
     the table will be set by the application to the same values by this demo application.
     If sucessfull the employee number created will be returned.
