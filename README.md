@@ -147,15 +147,15 @@ http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/deleteE
   >The employee record with the empNo specified will be deleted if it exists
 
 
-{firstName} and {lastName} should be replaced by names of your choosing.
->>the definiton of FIRSTNME in table EMP is VARCHAR(12)
->>the defintion of LASTNAME in table EMP is VARCHAR(15)
+>>{firstName} and {lastName} should be replaced by names of your choosing.
+>>>>the definiton of FIRSTNME in table EMP is VARCHAR(12)
+>>>>the defintion of LASTNAME in table EMP is VARCHAR(15)
 
-{empno} whould be replaced by a 6 character employee number. 
->>the defintion of EMPNO in the EMP table is char(6)
+>>{empno} whould be replaced by a 6 character employee number. 
+>>>>the defintion of EMPNO in the EMP table is char(6)
 
-{newSalary} should be replaced by a numeric amount 
->>the defintion of SALARY in the EMP table is DECIMAL(9, 2)
+>>{newSalary} should be replaced by a numeric amount 
+>>>>the defintion of SALARY in the EMP table is DECIMAL(9, 2)
 
 License
 
