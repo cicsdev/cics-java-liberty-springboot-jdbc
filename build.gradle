@@ -1,0 +1,51 @@
+plugins
+{
+id 'org.springframework.boot' version '2.2.5.RELEASE'
+id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+id 'java'
+id 'eclipse'
+id 'idea'
+id 'war'
+}
+
+group = 'com.ibm.cicsdev.springboot'
+archivesBaseName='com-ibm-cicsdev-springboot-jdbc'
+version = '0.1.0'
+sourceCompatibility = '1.8'
+
+
+// If in Eclipse, add Javadoc to the local project classpath
+eclipse 
+{
+    classpath 
+    {
+        downloadJavadoc = true
+    }
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
+
+    // Don't include TomCat in the runtime build, but do put it in WEB-INF so it can be run standalone a well as embedded
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+  
+    // CICS BOM (as of 21st Nov 2019)
+    compileOnly enforcedPlatform("com.ibm.cics:com.ibm.cics.ts.bom:5.5-20191121085445-PH14856")
+      
+    // Don't include JCICS in the final build (no need for version because we have BOM)
+    compileOnly("com.ibm.cics:com.ibm.cics.server")          
+    
+    // Spring JDBC Support    
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+   
+    // For JMS API 
+//    compileOnly("javax.jms:javax.jms-api")      
+    
+}
