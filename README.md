@@ -127,18 +127,18 @@ http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows
 http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows2
     All rows in table EMP will be returned - the datasource is obtained from an @Bean method
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/addEmployee/_{firstName}_/_{lastName}_
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/addEmployee/{firstName}/{lastName}
     A new employee record will be created using the forst name and last name supplied. All other fields in
     the table will be set by the application to the same values by this demo application.
     If sucessfull the employee number created will be returned.
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/oneEmployee/*{empno}*
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/oneEmployee/{empno}
     A single employee record will be displayed if it exists.
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/updateEmployee/*{empNo}*/*{newSalary}*
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/updateEmployee/{empNo}/{newSalary}
     The employee record will be updated with the salary amount specified.
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/deleteEmployee/*{empNo}*
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/deleteEmployee/{empNo}
     The employee record with the empNo specified will be deleted if it exists
 
 
