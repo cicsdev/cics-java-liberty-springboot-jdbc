@@ -1,59 +1,74 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+	
+	<!-- Inherit defaults from Spring Boot -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.2.5.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-
-
-	<groupId>com.ibm.cicsdev.springboot</groupId>
-	<artifactId>cics-java-liberty-springboot-jdbc</artifactId>
+	
+	<groupId>com.ibm.cicsdev</groupId>
+	<artifactId>com.ibm.cicsdev.springboot.jdbc</artifactId>
 	<version>0.1.0</version>
-	<!-- The project produces a war file rather than a jar file -->
+	 <!-- The project produces a war file rather than a jar file -->
 	<packaging>war</packaging>
-	<name>cics-java-liberty-springboot-jdbc</name>
-	<description>Employee spring jdbc demo project</description>
+	<name>com.ibm.cicsdev.springboot.jdbc</name>
+	<description>Demo project for Spring Boot jdbc</description>
 
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jdbc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-			<!-- BEGIN EXCLUDE TOMCAT to ensure that the embedded servlet container 
-				does not interfere with the servlet container to which the war file is deployed -->
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-tomcat</artifactId>
-				</exclusion>
-			</exclusions>
-			<!-- END EXCLUDE TOMCAT -->
-		</dependency>
-		
-		<dependency>
-		<groupId>javax.servlet</groupId>
-		<artifactId>javax.servlet-api</artifactId>
-		<scope>provided</scope>
-	</dependency>
-	</dependencies>
-
-	<build>
+  
+  <build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-	</build>
+  </build>  
+ 
+ <!-- CICS BOM (as of 21st Nov 2019) -->
+  <dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>com.ibm.cics</groupId>
+          <artifactId>com.ibm.cics.ts.bom</artifactId>
+          <version>5.5-20191121085445-PH14856</version>
+          <type>pom</type>
+          <scope>import</scope>
+         </dependency>
+      </dependencies>
+   </dependencyManagement>
+
+<dependencies>
+ <!-- Don't include JCICS in the final build (no need for version because we have BOM)  -->
+   <dependency>
+     <groupId>com.ibm.cics</groupId>
+     <artifactId>com.ibm.cics.server</artifactId>
+   </dependency>
+   
+<!-- Spring web support -->   
+   <dependency>
+     <groupId>org.springframework.boot</groupId>
+     <artifactId>spring-boot-starter-web</artifactId>
+   </dependency> 
+
+<!-- Spring Integration JDBC Support  -->
+   <dependency>
+            <groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jdbc</artifactId>
+   </dependency>
+   
+<!-- Don't include TomCat in the runtime build --> 
+   <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+  </dependencies>
 </project>
