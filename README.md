@@ -51,17 +51,18 @@ This creates a WAR file inside the target directory.
 
 ## Deploying
 
-    Ensure you have the following features in server.xml:
+Ensure you have the following features in server.xml:
         servlet-3.1 or servlet-4.0
         jsp-2.3
         springBoot-2.0
         jdbc-4.0
 
 
-    Note: servlet-4.0 will only work for CICS TS V5.5 or later
+Note: servlet-4.0 will only work for CICS TS V5.5 or later
 
-    Add a datasource definition to your server.xml. this sample uses two (almost identical) data source definitions in order to demonstrate two different methods of identifying the datasource to be used by the application.
-    E.g. as follows:
+Add a datasource definition to your server.xml. this sample uses two (almost identical) data source definitions in order to demonstrate two different methods of identifying the datasource to be used by the application.
+
+E.g. as follows:
 
      <dataSource id="t4a" jndiName="jdbc/jdbcDataSource" type="javax.sql.DataSource">
         <jdbcDriver>
