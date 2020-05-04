@@ -2,7 +2,7 @@
 
 This project demonstrates a Spring Boot JDBC application integrated with IBM CICS that can be deployed to a CICS Liberty JVM server. The application makes use of the employee sample table supplied with Db2 for z/OS. The application allows you to add, update, delete or display employee information from the table EMP.
 
-Prerequisites
+## Prerequisites
 
     CICS TS V5.3 or later
     A configured Liberty JVM server
@@ -11,7 +11,7 @@ Prerequisites
     Either Gradle or Apache Maven on the workstation
     IBM Db2 V11 or later on z/OS
  
-Building
+## Building
 
 You can choose to build the project using Gradle or Maven. The project includes both Gradle and Maven wrappers, these wrappers will automatically download required components from your chosen build tool; if not already present on your workstation.
 
@@ -47,7 +47,7 @@ mvnw.cmd clean package
 
 This creates a WAR file inside the target directory.
 
-Deploying
+## Deploying
 
     Ensure you have the following features in server.xml:
         servlet-3.1 or servlet-4.0
@@ -101,7 +101,7 @@ Deploying
        <application id="empJDBCapp" location="/u/fitzget/war files/com.ibm.cicsdev.springboot.jdbc-0.1.0.war" type="spring"/>
 
 
-Trying out the sample
+## Trying out the sample
 
     Find the base URL for the application in the Liberty messages.log e.g. http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0.
 
@@ -112,7 +112,7 @@ Trying out the sample
 
     The allRows request calls a method in the application which uses the application.properties file to determine which datasource definition to use. If you make the same request to REST service allRows2 then the application uses the @Bean annotated dataSource method to determine the correct dataSource. The @Bean method will use the jndiName used in dataSource t4b whereas the application.properties file will used the jndiName specified in t4a.
     
-Summary of all available interfaces     
+## Summary of all available interfaces     
 
 http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows
     All rows in table EMP will be returned - the datasource is obtained from the application.properties file
