@@ -65,18 +65,20 @@ Add a datasource definition to your server.xml. this sample uses two (almost ide
 E.g. as follows:
 
 ```
-     <dataSource id="t4a" jndiName="jdbc/jdbcDataSource" type="javax.sql.DataSource">
-        <jdbcDriver>
-            <library name="DB2LIB">
+<dataSource id="t4a" jndiName="jdbc/jdbcDataSource" type="javax.sql.DataSource">
+    <jdbcDriver>
+           <library name="DB2LIB">
                 <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
                 <fileset dir="/usr/lpp/db2v11/jdbc/lib"/>
             </library>
-        </jdbcDriver>
-        <properties.db2.jcc currentSchema="DSN81110" databaseName="DSNV11P2" driverType="4"
+    </jdbcDriver>
+    <properties.db2.jcc currentSchema="DSN81110" databaseName="DSNV11P2" driverType="4"
 	     password="<your password>" portNumber="41100" serverName="<your server name>" user="<your userid>"/>
-        </dataSource>
-        
-        <dataSource id="t4b" jndiName="jdbc/jdbcDataSource-bean" type="javax.sql.DataSource">
+</dataSource>
+```        
+
+```
+<dataSource id="t4b" jndiName="jdbc/jdbcDataSource-bean" type="javax.sql.DataSource">
         <jdbcDriver>
             <library name="DB2LIB">
                 <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
@@ -85,7 +87,7 @@ E.g. as follows:
         </jdbcDriver>
         <properties.db2.jcc currentSchema="DSN81110" databaseName="DSNV11P2" driverType="4" 
 	     password="<your password>" portNumber="41100" serverName="<your server name>" user="<your userid>"/>
-    </dataSource> 
+</dataSource> 
 ```
 
 Both type 4 datasource connections above are the same except for the jndiName. 
@@ -105,14 +107,17 @@ For example:
 
 ## Trying out the sample
 
-    Find the base URL for the application in the Liberty messages.log e.g. http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0.
+Find the base URL for the application in the Liberty messages.log 
+    e.g. http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0.
 
-    Paste the base URL along with the REST service suffix 'allRows' into the browser e.g. http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows
-    The browser will prompt for basic authentication. Enter a valid userid and password - according to the configured registry for your target Liberty JVM server.
+Paste the base URL along with the REST service suffix 'allRows' into the browser 
+    e.g. http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows
 
-    All the rows in table EMP should be returned.
+The browser will prompt for basic authentication. Enter a valid userid and password - according to the configured registry for your target Liberty JVM server.
 
-    The allRows request calls a method in the application which uses the application.properties file to determine which datasource definition to use. If you make the same request to REST service allRows2 then the application uses the @Bean annotated dataSource method to determine the correct dataSource. The @Bean method will use the jndiName used in dataSource t4b whereas the application.properties file will used the jndiName specified in t4a.
+All the rows in table EMP should be returned.
+
+The allRows request calls a method in the application which uses the application.properties file to determine which datasource definition to use. If you make the same request to REST service allRows2 then the application uses the @Bean annotated dataSource method to determine the correct dataSource. The @Bean method will use the jndiName used in dataSource t4b whereas the application.properties file will used the jndiName specified in t4a.
     
 ## Summary of all available interfaces     
 
@@ -122,27 +127,27 @@ http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows
 http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows2
     All rows in table EMP will be returned - the datasource is obtained from an @Bean method
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/addEmployee/{firstName}/{lastName}
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/addEmployee/*{firstName}*/*{lastName}*
     A new employee record will be created using the forst name and last name supplied. All other fields in
     the table will be set by the application to the same values by this demo application.
     If sucessfull the employee number created will be returned.
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/oneEmployee/{empno}
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/oneEmployee/*{empno}*
     A single employee record will be displayed if it exists.
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/updateEmployee/{empNo}/{newSalary}
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/updateEmployee/*{empNo}*/*{newSalary}*
     The employee record will be updated with the salary amount specified.
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/deleteEmployee/{empNo}
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/deleteEmployee/*{empNo}*
     The employee record with the empNo specified will be deleted if it exists
 
 
-{firstName} and {lastName} should be replaced by by names of your choosing.
+*{firstName}* and *{lastName}* should be replaced by by names of your choosing.
 	the definiton of FIRSTNME in table EMP is VARCHAR(12)
 	the defintion of LASTNAME in table EMP is VARCHAR(15)
-{empno} whould be replaced by a 6 character employee number. 
+*{empno}* whould be replaced by a 6 character employee number. 
 	the defintion of EMPNO in the EMP table is char(6)
-{newSalary} should be replaced by a numeric amount 
+*{newSalary}* should be replaced by a numeric amount 
 	the defintion of SALARY in the EMP table is DECIMAL(9, 2)
 
 License
