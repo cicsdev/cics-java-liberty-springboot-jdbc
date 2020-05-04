@@ -35,17 +35,13 @@ dependencies {
 
     // Don't include TomCat in the runtime build, but do put it in WEB-INF so it can be run standalone a well as embedded
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
-  
+
     // CICS BOM (as of 21st Nov 2019)
     compileOnly enforcedPlatform("com.ibm.cics:com.ibm.cics.ts.bom:5.5-20191121085445-PH14856")
-      
+
     // Don't include JCICS in the final build (no need for version because we have BOM)
     compileOnly("com.ibm.cics:com.ibm.cics.server")          
-    
+
     // Spring JDBC Support    
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
-   
-    // For JMS API 
-//    compileOnly("javax.jms:javax.jms-api")      
-    
 }
