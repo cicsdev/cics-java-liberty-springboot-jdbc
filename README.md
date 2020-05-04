@@ -142,7 +142,7 @@ http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/deleteE
     The employee record with the empNo specified will be deleted if it exists
 
 
-{firstName} and {lastName} should be replaced by by names of your choosing.
+{firstName} and {lastName} should be replaced by names of your choosing.
 >>the definiton of FIRSTNME in table EMP is VARCHAR(12)
 >>the defintion of LASTNAME in table EMP is VARCHAR(15)
 
