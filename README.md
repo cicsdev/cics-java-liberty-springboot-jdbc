@@ -2,7 +2,7 @@
 
 This project demonstrates a Spring Boot JDBC application integrated with IBM CICS that can be deployed to a CICS Liberty JVM server. The application makes use of the employee sample table supplied with Db2 for z/OS. The application allows you to add, update, delete or display employee information from the table EMP.
 
-## Prerequisites
+## Prerequisites
 
     CICS TS V5.3 or later
     A configured Liberty JVM server
