@@ -122,24 +122,30 @@ The allRows request calls a method in the application which uses the application
 ## Summary of all available interfaces     
 
 http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows
-    All rows in table EMP will be returned - the datasource is obtained from the application.properties file
+    
+  All rows in table EMP will be returned - the datasource is obtained from the application.properties file
     
 http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows2
-    All rows in table EMP will be returned - the datasource is obtained from an @Bean method
+  
+  All rows in table EMP will be returned - the datasource is obtained from an @Bean method
     
 http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/addEmployee/{firstName}/{lastName}
-    A new employee record will be created using the forst name and last name supplied. All other fields in
-    the table will be set by the application to the same values by this demo application.
-    If sucessfull the employee number created will be returned.
+  
+  A new employee record will be created using the forst name and last name supplied. All other fields in
+  the table will be set by the application to the same values by this demo application.
+  If sucessfull the employee number created will be returned.
     
 http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/oneEmployee/{empno}
-    A single employee record will be displayed if it exists.
+  
+  A single employee record will be displayed if it exists.
     
 http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/updateEmployee/{empNo}/{newSalary}
-    The employee record will be updated with the salary amount specified.
+  
+  The employee record will be updated with the salary amount specified.
     
 http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/deleteEmployee/{empNo}
-    The employee record with the empNo specified will be deleted if it exists
+  
+  The employee record with the empNo specified will be deleted if it exists
 
 
 {firstName} and {lastName} should be replaced by names of your choosing.
