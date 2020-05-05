@@ -92,8 +92,9 @@ E.g. as follows:
 ```
 
 Both type 4 datasource connections above are the same except for the jndiName. 
-The jndiName defined in datasource t4a is referenced by the application.properties file in the resources directory of the application.
-The jndiName defined in datasource t4b is referenced by an @Bean annotated dataSource() method in the application.
+>The jndiName defined in datasource t4a is referenced by the application.properties file in the resources directory of the application.
+
+>The jndiName defined in datasource t4b is referenced by an @Bean annotated dataSource() method in the application.
 
 ### create CICS bundle
 Copy and paste the WAR from your target or build/libs directory into a CICS bundle project and create a new WARbundlepart for that WAR file.
