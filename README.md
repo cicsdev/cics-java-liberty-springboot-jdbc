@@ -21,9 +21,9 @@ Note: When building a WAR file for deployment to Liberty it is good practice to 
 
 Note: If you import the project to an IDE of your choice, you might experience local project compile errors. To resolve these errors you should refresh your IDEs configuration. For example, in Eclipse: for Gradle, right-click on "Project", select "Gradle -> Refresh Gradle Project", or for Maven, right-click on "Project", select "Maven -> Update Project...".
 
-## Gradle
+### Gradle
 
-### Run the following in a local command prompt:
+#### Run the following in a local command prompt:
 
 On Linux or Mac:
 
@@ -35,9 +35,9 @@ gradlew.bat clean bootWar
 
 This creates a WAR file inside the build/libs directory.
 
-## Maven
+### Maven
 
-### Run the following in a local command prompt:
+#### Run the following in a local command prompt:
 
 On Linux or Mac:
 
