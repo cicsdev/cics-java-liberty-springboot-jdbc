@@ -98,11 +98,19 @@ Copy and paste the WAR from your target or build/libs directory into a CICS bund
 
 Deploy the CICS bundle project as normal. For example in Eclipse, select "Export Bundle Project to z/OS UNIX File System".
 
-Alternatively, manually upload the WAR file to zFS and add an <application> configuration to server.xml:
+Alternatively, manually upload the WAR file to zFS and add an <application> configuration to server.xml.
 
 For example:
 ```
-<application id="empJDBCapp" location="/u/fitzget/war files/com.ibm.cicsdev.springboot.jdbc-0.1.0.war" type="spring"/>
+   <application id="com.ibm.cicsdev.springboot.jdbc-0.1.0"  
+     location="${server.config.dir}/springapps/com.ibm.cicsdev.springboot.jdbc-0.1.0.war"  
+     name="com.ibm.cicsdev.springboot.jdbc-0.1.0" type="war">
+     <application-bnd>
+        <security-role name="cicsAllAuthenticated">
+            <special-subject type="ALL_AUTHENTICATED_USERS"/>
+        </security-role>
+     </application-bnd>  
+   </application>
 ```
 
 ## Trying out the sample

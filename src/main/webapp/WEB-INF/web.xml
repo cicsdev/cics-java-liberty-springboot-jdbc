@@ -7,7 +7,7 @@
     <security-constraint>
         <display-name>com.ibm.cicsdev.springboot.jdbc</display-name>
         <web-resource-collection>
-            <web-resource-name>com.ibm.cicsdev.springboot.jdbc</web-resource-name>
+            <web-resource-name>com.ibm.cicsdev.springboot.jdbc-0.1.0</web-resource-name>
             <description>Protection rules for all servlets</description>
             <url-pattern>/*</url-pattern>
         </web-resource-collection>
