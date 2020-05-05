@@ -51,15 +51,16 @@ This creates a WAR file inside the target directory.
 
 ## Deploying
 
+### update features in server.xml
 Ensure you have the following features in server.xml:
 * servlet-3.1 or servlet-4.0
 * jsp-2.3
 * springBoot-2.0
 * jdbc-4.0
 
-
 Note: servlet-4.0 will only work for CICS TS V5.5 or later
 
+### add a datasource defintion to server.xml
 Add a datasource definition to your server.xml. this sample uses two (almost identical) data source definitions in order to demonstrate two different methods of identifying the datasource to be used by the application.
 
 E.g. as follows:
@@ -94,11 +95,13 @@ Both type 4 datasource connections above are the same except for the jndiName.
 The jndiName defined in datasource t4a is referenced by the application.properties file in the resources directory of the application.
 The jndiName defined in datasource t4b is referenced by an @Bean annotated dataSource() method in the application.
 
+### create CICS bundle
 Copy and paste the WAR from your target or build/libs directory into a CICS bundle project and create a new WARbundlepart for that WAR file.
 
 Deploy the CICS bundle project as normal. For example in Eclipse, select "Export Bundle Project to z/OS UNIX File System".
 
-Alternatively, manually upload the WAR file to zFS and add an <application> configuration to server.xml.
+### create application defintion in server.xml
+**Alternatively**, manually upload the WAR file to zFS and add an <application> configuration to server.xml.
 
 For example:
 ```
