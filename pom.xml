@@ -2,36 +2,25 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- Inherit defaults from Spring Boot -->
+  <!-- Inherit defaults from Spring Boot Parent -->
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>2.2.5.RELEASE</version>
-    <relativePath/> <!-- lookup parent from repository -->
+    <relativePath/>
   </parent>
 
+  <!-- Application properties -->
   <groupId>com.ibm.cicsdev</groupId>
   <artifactId>com.ibm.cicsdev.springboot.jdbc</artifactId>
   <version>0.1.0</version>
-   <!-- The project produces a war file rather than a jar file -->
-  <packaging>war</packaging>
   <name>com.ibm.cicsdev.springboot.jdbc</name>
   <description>Demo project for Spring Boot jdbc</description>
-
   <properties>
     <java.version>1.8</java.version>
   </properties>
-
-  <build>
-    <plugins>
-       <plugin>
-          <groupId>org.springframework.boot</groupId>
-          <artifactId>spring-boot-maven-plugin</artifactId>
-       </plugin>
-    </plugins>
-  </build>  
-
- <!-- CICS BOM (as of 21st Nov 2019) -->
+   
+  <!-- CICS BOM (as of 21st Nov 2019) -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -51,23 +40,35 @@
       <artifactId>com.ibm.cics.server</artifactId>
     </dependency>
 
-<!-- Spring web support -->   
+    <!-- Spring Boot web support -->   
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-    </dependency> 
+    </dependency>
 
-<!-- Spring Integration JDBC Support  -->
+    <!-- Spring Integration JDBC Support  -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jdbc</artifactId>
     </dependency>
 
-<!-- Don't include TomCat in the runtime build --> 
+    <!-- Don't include TomCat in the runtime build --> 
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-tomcat</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>
+  
+  <!-- Package as an executable war (default is jar) -->
+  <packaging>war</packaging>
+  <build>
+    <plugins>
+       <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+       </plugin>
+    </plugins>
+  </build>
+  
 </project>
