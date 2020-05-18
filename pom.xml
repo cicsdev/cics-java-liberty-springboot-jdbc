@@ -34,7 +34,7 @@
   </dependencyManagement>
 
   <dependencies>
-    <!-- Don't include JCICS in the final build (no need for version because we have BOM)  -->
+    <!-- Compile against, but don't include JCICS in the final build (version and scope are from BOM) -->
     <dependency>
       <groupId>com.ibm.cics</groupId>
       <artifactId>com.ibm.cics.server</artifactId>
@@ -52,7 +52,7 @@
       <artifactId>spring-boot-starter-data-jdbc</artifactId>
     </dependency>
 
-    <!-- Don't include TomCat in the runtime build --> 
+    <!-- Compile against, but don't include TomCat in the runtime build --> 
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-tomcat</artifactId>
