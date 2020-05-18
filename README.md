@@ -123,7 +123,7 @@ Find the base URL for the application in the Liberty messages.log
     e.g. http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0.
 
 Paste the base URL along with the REST service suffix 'allRows' into the browser 
-    e.g. http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows
+    e.g. http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/allRows
 
 The browser will prompt for basic authentication. Enter a valid userid and password - according to the configured registry for your target Liberty JVM server.
 
@@ -133,28 +133,28 @@ The allRows request calls a method in the application which uses the application
     
 ## Summary of all available interfaces     
 
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/allRows
     
   >All rows in table EMP will be returned - the datasource is obtained from the application.properties file
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/allRows2
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/allRows2
   
   >All rows in table EMP will be returned - the datasource is obtained from an @Bean method
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/addEmployee/{firstName}/{lastName}
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/addEmployee/{firstName}/{lastName}
   
   >A new employee record will be created using the forst name and last name supplied. All other fields in
   the table will be set by the application to the same values by this demo application.
   If sucessfull the employee number created will be returned.
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/oneEmployee/{empno}
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/oneEmployee/{empno}
   
   >A single employee record will be displayed if it exists.
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/updateEmployee/{empNo}/{newSalary}
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/updateEmployee/{empNo}/{newSalary}
   >The employee record will be updated with the salary amount specified.
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jms-0.1.0/deleteEmployee/{empNo}
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/deleteEmployee/{empNo}
   
   >The employee record with the empNo specified will be deleted if it exists
 
