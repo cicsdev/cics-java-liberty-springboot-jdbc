@@ -101,7 +101,7 @@ Copy and paste the WAR from your target or build/libs directory into a CICS bund
 
 Deploy the CICS bundle project as normal. For example in Eclipse, select "Export Bundle Project to z/OS UNIX File System".
 
-### create application defintion in server.xml
+### create application definition in server.xml
 **Alternatively**, manually upload the WAR file to zFS and add an <application> configuration to server.xml.
 
 For example:
@@ -143,9 +143,9 @@ http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/allRow
     
 http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/addEmployee/{firstName}/{lastName}
   
-  >A new employee record will be created using the forst name and last name supplied. All other fields in
+  >A new employee record will be created using the first name and last name supplied. All other fields in
   the table will be set by the application to the same values by this demo application.
-  If sucessfull the employee number created will be returned.
+  If successful the employee number created will be returned.
     
 http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/oneEmployee/{empno}
   
@@ -160,14 +160,14 @@ http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/delete
 
 ### Notes:
 {firstName} and {lastName} should be replaced by names of your choosing.
->>the definiton of FIRSTNME in table EMP is VARCHAR(12)
->>the defintion of LASTNAME in table EMP is VARCHAR(15)
+>>the definition of FIRSTNME in table EMP is VARCHAR(12)
+>>the definition of LASTNAME in table EMP is VARCHAR(15)
 
-{empno} whould be replaced by a 6 character employee number. 
->>the defintion of EMPNO in the EMP table is char(6)
+{empno} would be replaced by a 6 character employee number. 
+>>the definition of EMPNO in the EMP table is char(6)
 
 {newSalary} should be replaced by a numeric amount 
->>the defintion of SALARY in the EMP table is DECIMAL(9, 2)
+>>the definition of SALARY in the EMP table is DECIMAL(9, 2)
 
 License
 
