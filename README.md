@@ -19,7 +19,10 @@ You can also build the sample project through plug-in tooling of your chosen IDE
 
 Note: When building a WAR file for deployment to Liberty it is good practice to exclude Tomcat from the final runtime artifact. We demonstrate this in the pom.xml with the provided scope, and in build.gradle with the providedRuntime() dependency.
 
-Note: If you import the project to an IDE of your choice, you might experience local project compile errors. To resolve these errors you should refresh your IDEs configuration. For example, in Eclipse: for Gradle, right-click on "Project", select "Gradle -> Refresh Gradle Project", or for Maven, right-click on "Project", select "Maven -> Update Project...".
+Note: If you import the project to an IDE of your choice, you might experience local project compile errors. To resolve these errors you should refresh your IDEs configuration.    
+For example, if you are using Eclipse: 
+* for Gradle, right-click on "Project", select "Gradle -> Refresh Gradle Project", 
+* for Maven, right-click on "Project", select "Maven -> Update Project...".
 
 ### Gradle
 
@@ -58,7 +61,7 @@ Ensure you have the following features in server.xml:
 * springBoot-2.0
 * jdbc-4.0
 
-Note: servlet-4.0 will only work for CICS TS V5.5 or later
+Note: servlet-4.0 will only work for CICS TS V5.5 or later. If you use servlet-4.0 then you must specify `-Dcom.ibm.cics.jvmserver.wlp.wab=false` in your jvmprofile
 
 ### add a datasource definition to server.xml
 Add a datasource definition to your server.xml. this sample uses two (almost identical) data source definitions in order to demonstrate two different methods of identifying the datasource to be used by the application.
