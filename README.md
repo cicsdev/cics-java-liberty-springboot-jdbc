@@ -58,7 +58,6 @@ This creates a WAR file inside the target directory.
 Ensure you have the following features in server.xml:
 * servlet-3.1 or servlet-4.0
 * jsp-2.3
-* springBoot-2.0
 * jdbc-4.0
 
 Note: servlet-4.0 will only work for CICS TS V5.5 or later. If you use servlet-4.0 then you must specify `-Dcom.ibm.cics.jvmserver.wlp.wab=false` in your jvmprofile
