@@ -1,6 +1,6 @@
 # cics-java-liberty-springboot-jdbc
 
-This project demonstrates a Spring Boot JDBC application integrated with IBM CICS that can be deployed to a CICS Liberty JVM server. The application makes use of the employee sample table supplied with Db2 for z/OS. The application allows you to add, update, delete or display employee information from the table EMP.
+This project demonstrates a Spring Boot JDBC application integrated with IBM CICS that can be deployed to a CICS Liberty JVM server. The application makes use of the employee sample table supplied with Db2 for z/OS. The application allows you to add, update, delete or display employee information from the table EMP. The sample also provides a set of Maven and Gradle build files for use either in Eclipse or standalone build environments.
 
 ## Prerequisites
 
@@ -10,7 +10,17 @@ This project demonstrates a Spring Boot JDBC application integrated with IBM CIC
     Java SE 1.8 or later on the workstation
     Either Gradle or Apache Maven on the workstation
     IBM Db2 V11 or later on z/OS
- 
+    An Eclipse development environment on the workstation (optional)
+    Either Gradle or Apache Maven on the workstation (optional if using Wrappers)
+
+## Downloading
+    Clone the repository using your IDEs support, such as the Eclipse Git plugin
+    or, download the sample as a ZIP and unzip onto the workstation
+    
+### Check Dependencies
+
+Before building this sample, you should verify that the correct CICS TS bill of materials (BOM) is specified for your target release of CICS. The BOM specifies a consistent set of artifacts, and adds information about their scope. In the example below the version specified is compatible with CICS TS V5.5 with JCICS APAR PH25409, or newer. That is, the Java byte codes built by compiling against this version of JCICS will be compatible with later CICS TS versions and subsequent JCICS APARs. You can browse the published versions of the CICS BOM at Maven Central.
+
 ## Building
 
 You can choose to build the project using Gradle or Maven. The project includes both Gradle and Maven wrappers, these wrappers will automatically download required components from your chosen build tool; if not already present on your workstation.
