@@ -174,32 +174,32 @@ Both type 4 dataSource connections above are the same except for the `jndiName` 
 
    All the rows in table EMP should be returned.
 
-   The allRows request calls a method in the application which uses the `application.properties` file to determine which dataSource definition to use. If you make the same request to REST service `/allRows2` then the application uses the `@Bean` annotated dataSource method to determine the correct dataSource. The `@Bean` method will use the `jndiName` value specified in dataSource `t4b` whereas the `application.properties` file will used the `jndiName` value specified in `t4a`.
+   The `allRows` request calls a method in the application which uses the `application.properties` file to determine which dataSource definition to use. If you make the same request to REST service `/allRows2` then the application uses the `@Bean` annotated dataSource method to determine the correct dataSource. The `@Bean` method will use the `jndiName` value specified in dataSource `t4b` whereas the `application.properties` file will used the `jndiName` value specified in `t4a`.
     
 ## Summary of all available interfaces     
 
-- `http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/allRows`
+- `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/allRows`
     
   >All rows in table EMP will be returned - the dataSource is obtained from the `application.properties` file
     
-- `http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/allRows2`
+- `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/allRows2`
   
   >All rows in table EMP will be returned - the dataSource is obtained from an `@Bean` method
     
-- `http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/addEmployee/{firstName}/{lastName}`
+- `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/addEmployee/{firstName}/{lastName}`
   
   >A new employee record will be created using the first name and last name supplied. All other fields in
   the table will be set by the application to the same values by this demo application.
   If successful the employee number created will be returned.
     
-- `http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/oneEmployee/{empno}`
+- `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/oneEmployee/{empno}`
   
   >A single employee record will be displayed if it exists.
     
-- `http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/updateEmployee/{empNo}/{newSalary}`
+- `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/updateEmployee/{empNo}/{newSalary}`
   >The employee record will be updated with the salary amount specified.
     
-- `http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/deleteEmployee/{empNo}`
+- `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/deleteEmployee/{empNo}`
   
   >The employee record with the empNo specified will be deleted if it exists
 
@@ -215,5 +215,4 @@ Both type 4 dataSource connections above are the same except for the `jndiName` 
 >>the definition of SALARY in the EMP table is DECIMAL(9, 2)
 
 License
-
-This project is licensed under Apache License Version 2.0.
+This project is licensed under [Eclipse Public License - v 2.0](LICENSE). 
