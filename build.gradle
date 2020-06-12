@@ -9,7 +9,7 @@ plugins
 }
 
 group = 'com.ibm.cicsdev.springboot'
-archivesBaseName='com.ibm.cicsdev.springboot.jdbc'
+archivesBaseName='cics-java-liberty-springboot-jdbc'
 version = '0.1.0'
 sourceCompatibility = '1.8'
 
@@ -38,7 +38,7 @@ dependencies
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 
     // CICS BOM (as of 21st Nov 2019)
-    compileOnly enforcedPlatform("com.ibm.cics:com.ibm.cics.ts.bom:5.5-20191121085445-PH14856")
+    implementation enforcedPlatform("com.ibm.cics:com.ibm.cics.ts.bom:5.5-20191121085445-PH14856")
 
     // Don't include JCICS in the final build (no need for version because we have BOM)
     compileOnly("com.ibm.cics:com.ibm.cics.server")          
