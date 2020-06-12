@@ -14,7 +14,7 @@ This project demonstrates a Spring Boot JDBC application integrated with IBM CIC
 * Either Gradle or Apache Maven on the workstation (optional if using Wrappers)
 
 ## Downloading
-* Clone the repository using your IDEs support, such as the Eclipse Git plugin
+* Clone the repository using your IDE's support, such as the Eclipse Git plugin
 * **or**, download the sample as a ZIP and unzip onto the workstation
 
 >*Tip: Eclipse Git provides an 'Import existing Projects' check-box when cloning a repository.*
