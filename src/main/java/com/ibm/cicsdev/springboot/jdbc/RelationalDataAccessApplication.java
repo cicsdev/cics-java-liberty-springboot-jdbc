@@ -10,6 +10,10 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 
+/**
+ * @author Tony Fitzgerald
+ *
+ */
 @SpringBootApplication
 @ServletComponentScan
 public class RelationalDataAccessApplication extends SpringBootServletInitializer  {
@@ -18,10 +22,16 @@ public class RelationalDataAccessApplication extends SpringBootServletInitialize
 	private static final String DATA_SOURCE = "jdbc/jdbcDataSource-bean";
 
 
+	/**
+	 * @param args
+	 */
 	public static void main(String args[]) {
 		SpringApplication.run(RelationalDataAccessApplication.class, args);
 	}
 	
+	/**
+	 * @return a data Source
+	 */
 	@Bean
 	public DataSource dataSource() {		
 		try {

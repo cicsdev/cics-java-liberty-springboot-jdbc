@@ -2,6 +2,10 @@ package com.ibm.cicsdev.springboot.jdbc;
 
 import java.sql.Date;
 
+/**
+ * @author Tony Fitzgerald
+ *
+ */
 public class Employee {
 	
 	/*
@@ -60,6 +64,22 @@ public class Employee {
 	private long comm;
 
 	
+	/**
+	 * @param empNo		- employee Number 			- 6 characters
+	 * @param firstNme 	- employee first name 		- 12 characters
+	 * @param midinit	- employee middle initial	- 1 character
+	 * @param lastName	- employee last name		- 15 characters
+	 * @param workdept	- employee work department 	- 3 characters
+	 * @param phoneNo	- employee phone number 	- 4 characters
+	 * @param hireDate	- employee hire date
+	 * @param job		- job title					- 8 characters
+	 * @param edLevel	- employee education level	- integer (1,2, or 3)
+	 * @param sex		- employee gender 			- 1 character
+	 * @param birthDate	- employee birth date
+	 * @param salary	- employee salary amount	- decimal (9,2)
+	 * @param bonus		- employee bonus amount		- decimal (9,2)
+	 * @param comm		- employee commission amount-decimal (9,2)
+	 */
 	public Employee(String empNo, String firstNme, String midinit, String lastName, String workdept, String phoneNo,
 			Date hireDate, String job, int edLevel, String sex, String birthDate, long salary, long bonus, long comm) {
 		super();
@@ -97,114 +117,198 @@ public class Employee {
 				", comm=" + comm + "]";
 	}
 
+	/**
+	 * @return employee number
+	 */
 	public String getEmpNo() {
 		return empNo;
 	}
 
+	/**
+	 * @param empNo - set employee number
+	 */
 	public void setEmpNo(String empNo) {
 		this.empNo = empNo;
 	}
 
+	/**
+	 * @return employee first name
+	 */
 	public String getFirstName() {
 		return firstNme;
 	}
 
+	/**
+	 * @param firstName - set employee first name  
+	 */
 	public void setFirstName(String firstName) {
 		this.firstNme = firstName;
 	}
 
+	/**
+	 * @return employee middle initial
+	 */
 	public String getMidinit() {
 		return midinit;
 	}
 
+	/**
+	 * @param midinit - set employee middle initial
+	 */
 	public void setMidinit(String midinit) {
 		this.midinit = midinit;
 	}
 
+	/**
+	 * @return employee last name
+	 */
 	public String getLastName() {
 		return lastName;
 	}
 
+	/**
+	 * @param lastName - set employee last name
+	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 
+	/**
+	 * @return employee work department
+	 */
 	public String getWorkdept() {
 		return workdept;
 	}
 
+	/**
+	 * @param workdept - set employee work department
+	 */
 	public void setWorkdept(String workdept) {
 		this.workdept = workdept;
 	}
 
+	/**
+	 * @return employee phone number
+	 */
 	public String getPhoneNo() {
 		return phoneNo;
 	}
 
+	/**
+	 * @param phoneNo - set employee phone number
+	 */
 	public void setPhoneNo(String phoneNo) {
 		this.phoneNo = phoneNo;
 	}
 
+	/**
+	 * @return employee hire date
+	 */
 	public Date getHireDate() {
 		return hireDate;
 	}
 
+	/**
+	 * @param hireDate - set employee hire date
+	 */
 	public void setHireDate(Date hireDate) {
 		this.hireDate = hireDate;
 	}
 
+	/**
+	 * @return employee job title
+	 */
 	public String getJob() {
 		return job;
 	}
 
+	/**
+	 * @param job - set employee job title
+	 */
 	public void setJob(String job) {
 		this.job = job;
 	}
 
+	/**
+	 * @return employee education level 1, 2 or 3
+	 */
 	public int getEdLevel() {
 		return edLevel;
 	}
 
+	/**
+	 * @param edLevel set employee education level 1, 2 or 3
+	 */
 	public void setEdLevel(int edLevel) {
 		this.edLevel = edLevel;
 	}
 
+	/**
+	 * @return employee gender (1 character)
+	 */
 	public String getSex() {
 		return sex;
 	}
 
+	/**
+	 * @param sex - set employee gender (1 character)
+	 */
 	public void setSex(String sex) {
 		this.sex = sex;
 	}
 
+	/**
+	 * @return employee birthdate
+	 */
 	public String getBirthDate() {
 		return birthDate;
 	}
 
+	/**
+	 * @param birthDate - set employee birthdate
+	 */
 	public void setBirthDate(String birthDate) {
 		this.birthDate = birthDate;
 	}
 
+	/**
+	 * @return employee salary
+	 */
 	public long getSalary() {
 		return salary;
 	}
 
+	/**
+	 * @param salary - set employee salary 
+	 */
 	public void setSalary(long salary) {
 		this.salary = salary;
 	}
 
+	/**
+	 * @return employee bonus
+	 */
 	public long getBonus() {
 		return bonus;
 	}
 
+	/**
+	 * @param bonus - set employee bonus 
+	 */
 	public void setBonus(long bonus) {
 		this.bonus = bonus;
 	}
 
+	/**
+	 * @return employee commission
+	 */
 	public long getComm() {
 		return comm;
 	}
 
+	/**
+	 * @param comm - set employee commission
+	 */
 	public void setComm(long comm) {
 		this.comm = comm;
 	}

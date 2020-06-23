@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
+/**
+ * @author tony
+ *
+ */
 @RestController
 public class EmployeeRestController {
 	/*    
@@ -26,7 +30,11 @@ public class EmployeeRestController {
 	@Autowired  
 	private EmployeeService employeeService;
 
-	// Simple endpoint - returns date and time - simple test of the application
+	/**
+	 * Simple endpoint - returns date and time - simple test of the application
+	 * 
+	 * @return  a Hello message 
+	 */
 	@RequestMapping("/") 
 	@ResponseBody
 	public String Index()
@@ -37,31 +45,44 @@ public class EmployeeRestController {
 		return "Hello from employee service controller. Date/Time: " + myDateString;
 	}
 
-	/*
-	 *    example url http://<server>:<port>/allRows
+	/**
+	 *  example url http://<server>:<port>/allRows
+	 *  
+	 * @return a list of employees
+	 * @throws NamingException
 	 */
 	@RequestMapping(value={"/allRows","/allRows/"})
 	public List<Employee> getAllRows() throws NamingException {
 		return employeeService.selectAll();
 	}
 	
-	/*
-	 *    example url http://<server>:<port>/allRows2
+	/**
+	 *  example url http://<server>:<port>/allRows2
+	 *  
+	 * @return a list of employees
+	 * @throws NamingException
 	 */
 	@RequestMapping(value={"/allRows2","/allRows2/"})
 	public List<Employee> getAllRows2() throws NamingException {
 		return employeeService.selectAllUsingBeanDataSource();
 	}
-	/*
-	 *    example url http://<server>:<port>/oneEmployee/000100
+	/**
+	 * example url http://<server>:<port>/oneEmployee/000100
+	 * 
+	 * @param empno - employee number
+	 * @return a list of employee records for the passed parameter number
 	 */
 	@RequestMapping("/oneEmployee/{empno}")
 	public List<Employee> oneEmployee(@PathVariable String empno) {
 		return employeeService.selectWhereEmpno(empno);
 	}
 	
-	/*
-	 *    example url http://<server>:<port>/addEmployee/Tony/Fitzgerald
+	/**
+	 *  example url http://<server>:<port>/addEmployee/Tony/Fitzgerald
+	 *  
+	 * @param firstName - employee first name
+	 * @param lastName - employee last name
+	 * @return a message indicating success or failure of the add operation
 	 */
 	@RequestMapping("/addEmployee/{firstName}/{lastName}")
 	@ResponseBody
@@ -70,8 +91,11 @@ public class EmployeeRestController {
 		return result;
 	}
 	
-	/*
-	 *    example url http://<server>:<port>/deleteEmployee/368620
+	/**
+	 *  example url http://<server>:<port>/deleteEmployee/368620
+	 *  
+	 * @param empNo - employee number to be deleted
+	 * @return a message indicating success or failure of the delete operation
 	 */
 	@RequestMapping("/deleteEmployee/{empNo}")
 	@ResponseBody
@@ -80,8 +104,12 @@ public class EmployeeRestController {
 		return result;
 	}
 	
-	/*
-	 *  example url http://<server>:<port>/updateEmployee/368620/33333
+	/**
+	 * example url http://<server>:<port>/updateEmployee/368620/33333
+	 * 
+	 * @param empNo - employee number to be updated
+	 * @param newSalary - the new salary to be given to the employee
+	 * @return a message indicating success or failure of the update operation
 	 */
 	@RequestMapping("/updateEmployee/{empNo}/{newSalary}")
 	@ResponseBody

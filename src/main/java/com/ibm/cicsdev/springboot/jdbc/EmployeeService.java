@@ -11,6 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author Tony Fitzgerald
+ * 
+ * Service method for employee data
+ *
+ */
 @Service
 public class EmployeeService {
 
@@ -22,6 +28,10 @@ public class EmployeeService {
 	@Autowired
 	private DataSource datasource2;
 
+	/**
+	 * @return a list of employees
+	 * @throws NamingException
+	 */
 	public List<Employee> selectAll() throws NamingException {
 		/*
 		 * Select all rows from the emp table
@@ -55,12 +65,16 @@ public class EmployeeService {
 
 	}
 
+	/**
+	 * @return a list of employees
+	 * @throws NamingException
+	 */
 	public List<Employee> selectAllUsingBeanDataSource() throws NamingException {
 		/*
 		 * Select all rows from the emp table
 		 * 
 		 * Identical to preceding selectAll() method except that the 
-		 *   datasource information comes injected Bean datasource2
+		 *   dataSource information comes injected Bean datasource2
 		 *   this will override the setting in the application.properties file
 		 */
 
@@ -91,6 +105,10 @@ public class EmployeeService {
 						rs.getLong("COMM")));
 	}
 
+	/**
+	 * @param empNo
+	 * @return a list of employee records for a specific employee number
+	 */
 	public List<Employee> selectWhereEmpno(String empNo) {
 		/*
 		 * Return all rows for a specific employee number
@@ -123,6 +141,11 @@ public class EmployeeService {
 	}
 
 
+	/**
+	 * @param fName - first name 
+	 * @param lName - last name
+	 * @return a string indicating the result of the add operation
+	 */
 	public String addEmployee(String fName, String lName) {
 		/*
 		 *  Add a new employee.
@@ -188,11 +211,15 @@ public class EmployeeService {
 	}
 
 
+	/**
+	 * @param empNo - employee number to be deleted
+	 * @return - a message to indicate success or failure of the delete operation
+	 */
 	public String deleteEmployee(String empNo)
 	/*
 	 *  Delete an employee based on the empNo passed in
 	 *  
-	 *    datasource information comes from the application.properties file in the resources directory
+	 *    dataSource information comes from the application.properties file in the resources directory
 	 *    
 	 */
 	{
@@ -213,6 +240,11 @@ public class EmployeeService {
 	}
 
 
+	/**
+	 * @param newSalary - update the employee record with this salary amount
+	 * @param empNo - the employee number which is to be uodated
+	 * @return a message to indicate success or failure of the update operation
+	 */
 	public String updateEmployee(int newSalary, String empNo) {
 		/*
 		 * Update a specified employee's salary based on the empNo passed to the salary passed in.
