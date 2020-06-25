@@ -112,7 +112,7 @@ this sample uses two (almost identical) data source definitions in order to demo
 
 E.g. as follows:
 
-```
+``` XML
 <dataSource id="t4a" jndiName="jdbc/jdbcDataSource" type="javax.sql.DataSource">
     <jdbcDriver>
            <library name="DB2LIB">
@@ -125,7 +125,7 @@ E.g. as follows:
 </dataSource>
 ```        
 
-```
+``` XML
 <dataSource id="t4b" jndiName="jdbc/jdbcDataSource-bean" type="javax.sql.DataSource">
         <jdbcDriver>
             <library name="DB2LIB">
