@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 /**
  * @author Tony Fitzgerald
  * 
- * Service method for employee data
+ * Data access class for employee data. Retrieves the data requested by the REST controller methods 
  *
  */
 @Service

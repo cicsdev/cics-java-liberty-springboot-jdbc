@@ -15,18 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author tony
- *
+ * 
+ * Employee REST controller
+ * 
+ * REST controller used to direct incoming REST requests to the correct business service.
+ *  
+ *  In a real world application some of these functions would most likely be done by a POST
+ *    request. For simplicity all requests to this sample application are done with a GET request
+ *    
  */
 @RestController
 public class EmployeeRestController {
-	/*    
-	 *  REST controller used to direct incoming requests to the correct business service.
-	 *  
-	 *  In a real world application some of these functions would most likely be done by a POST
-	 *    request. For simplicity all requests to this sample application are done with a GET request
-	 *    
-	 */
-
+	
 	@Autowired  
 	private EmployeeService employeeService;
 
