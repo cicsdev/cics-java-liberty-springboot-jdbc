@@ -6,19 +6,11 @@ import javax.sql.DataSource;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.ServletComponentScan;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 
-/**
- * @author Tony Fitzgerald
- * 
- * Main application class
- *    also sets up a DataSource bean 
- */
+
 @SpringBootApplication
-@ServletComponentScan
-public class Application extends SpringBootServletInitializer  {
+public class Application {
 	
 	// name the dataSource jndi name
 	private static final String DATA_SOURCE = "jdbc/jdbcDataSource-bean";
