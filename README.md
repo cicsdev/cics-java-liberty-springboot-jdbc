@@ -76,7 +76,7 @@ On Windows:
 gradlew.bat clean bootWar
 ```
 
-This creates a WAR file inside the `build/libs` directory.
+This creates a WAR file in the `build/libs` directory.
 
 #### Maven Wrapper (command line)
 
@@ -95,7 +95,7 @@ On Windows:
 mvnw.cmd clean package
 ```
 
-This creates a WAR file inside the `target` directory.
+This creates a WAR file in the `target` directory.
 
 ## Deploying to a CICS Liberty JVM Server
 
