@@ -7,8 +7,8 @@ import java.util.List;
 import javax.naming.NamingException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,7 +35,7 @@ public class EmployeeRestController {
 	 * 
 	 * @return  a Hello message 
 	 */
-	@RequestMapping("/") 
+	@GetMapping("/")
 	@ResponseBody
 	public String Index()
 	{    
@@ -51,7 +51,7 @@ public class EmployeeRestController {
 	 * @return a list of employees
 	 * @throws NamingException
 	 */
-	@RequestMapping(value={"/allRows","/allRows/"})
+	@GetMapping({"/allRows","/allRows/"})
 	public List<Employee> getAllRows() throws NamingException {
 		return employeeService.selectAll();
 	}
@@ -62,7 +62,7 @@ public class EmployeeRestController {
 	 * @return a list of employees
 	 * @throws NamingException
 	 */
-	@RequestMapping(value={"/allRows2","/allRows2/"})
+	@GetMapping({"/allRows2","/allRows2/"})
 	public List<Employee> getAllRows2() throws NamingException {
 		return employeeService.selectAllUsingBeanDataSource();
 	}
@@ -72,7 +72,7 @@ public class EmployeeRestController {
 	 * @param empno - employee number
 	 * @return a list of employee records for the passed parameter number
 	 */
-	@RequestMapping("/oneEmployee/{empno}")
+	@GetMapping("/oneEmployee/{empno}")
 	public List<Employee> oneEmployee(@PathVariable String empno) {
 		return employeeService.selectWhereEmpno(empno);
 	}
@@ -84,7 +84,7 @@ public class EmployeeRestController {
 	 * @param lastName - employee last name
 	 * @return a message indicating success or failure of the add operation
 	 */
-	@RequestMapping("/addEmployee/{firstName}/{lastName}")
+	@GetMapping("/addEmployee/{firstName}/{lastName}")
 	@ResponseBody
 	public String addEmp(@PathVariable String firstName , @PathVariable String lastName) {
 		String result = employeeService.addEmployee(firstName,lastName);
@@ -97,7 +97,7 @@ public class EmployeeRestController {
 	 * @param empNo - employee number to be deleted
 	 * @return a message indicating success or failure of the delete operation
 	 */
-	@RequestMapping("/deleteEmployee/{empNo}")
+	@GetMapping("/deleteEmployee/{empNo}")
 	@ResponseBody
 	public String delEmployee(@PathVariable String empNo) {
 		String result = employeeService.deleteEmployee(empNo);
@@ -111,7 +111,7 @@ public class EmployeeRestController {
 	 * @param newSalary - the new salary to be given to the employee
 	 * @return a message indicating success or failure of the update operation
 	 */
-	@RequestMapping("/updateEmployee/{empNo}/{newSalary}")
+	@GetMapping("/updateEmployee/{empNo}/{newSalary}")
 	@ResponseBody
 	public String updateEmp(@PathVariable String empNo, @PathVariable int newSalary) {
 		String result = employeeService.updateEmployee(newSalary, empNo);
