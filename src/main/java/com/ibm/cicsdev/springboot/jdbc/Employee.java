@@ -21,8 +21,6 @@ package com.ibm.cicsdev.springboot.jdbc;
 import java.sql.Date;
 
 /**
- * @author Tony Fitzgerald
- *
  * class representing the EMP table
  */
 public class Employee {

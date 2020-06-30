@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Service class which retrieves the data requested by the REST controller
+ *    makes use of jdbcTemplate to retrieve the data from table EMP
  * 
  * @Autowired Marks a constructor, field, setter method, or config method as to be autowired by Spring's dependency injection facilities
  * @Service Marks a class as providing business logic
@@ -39,14 +40,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmployeeService {
 
-	//	private DataSource dataSource;	
-
+	//DataSource definitions;	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;	
 
 	@Autowired
 	private DataSource datasource2;
 
+	private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd"); 
+	private LocalDateTime now = LocalDateTime.now();
 	/**
 	 * @return a list of employees
 	 * @throws NamingException
@@ -187,9 +189,7 @@ public class EmployeeService {
 		String phoneNo = "1234";
 
 		//get today's date and set as hiredate
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
-		LocalDateTime now = LocalDateTime.now();  
-		String hireDate= dtf.format(now);  
+    	String hireDate= dtf.format(now);  
 
 		String job = "Engineer";
 		int edLevel =3 ;
