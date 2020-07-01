@@ -107,41 +107,41 @@ This creates a WAR file in the `target` directory.
 
 >**Note:** `servlet-4.0` will only work for CICS TS V5.5 or later
 
-- add a datasource definition to 'server.xml'
+- add a datasource definition to 'server.xml'.
 this sample uses two (almost identical) data source definitions in order to demonstrate two different methods of identifying the datasource to be used by the application.
 
 E.g. as follows:
 
 ``` XML
-<dataSource id="t4a" jndiName="jdbc/jdbcDataSource" type="javax.sql.DataSource">
-    <jdbcDriver>
-           <library name="DB2LIB">
+<dataSource id="t2a" jndiName="jdbc/jdbcDataSource" transactional="false">
+        <jdbcDriver>   
+            <library name="DB2LIB">
                 <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
-                <fileset dir="/usr/lpp/db2v11/jdbc/lib"/>
+                <fileset dir="/usr/lpp/db2v11/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
             </library>
-    </jdbcDriver>
-    <properties.db2.jcc currentSchema="DSN81110" databaseName="DSNV11P2" driverType="4"
-	     password="<your password>" portNumber="41100" serverName="<your server name>" user="<your userid>"/>
-</dataSource>
+        </jdbcDriver>
+        <properties.db2.jcc currentSchema="DSN81110" driverType="2"/>
+        <connectionManager agedTimeout="0"/>
+    </dataSource>
 ```        
 
 ``` XML
-<dataSource id="t4b" jndiName="jdbc/jdbcDataSource-bean" type="javax.sql.DataSource">
-        <jdbcDriver>
+<dataSource id="t2a" jndiName="jdbc/jdbcDataSource-bean" transactional="false">
+        <jdbcDriver>   
             <library name="DB2LIB">
                 <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
-                <fileset dir="/usr/lpp/db2v11/jdbc/lib"/>
+                <fileset dir="/usr/lpp/db2v11/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
             </library>
         </jdbcDriver>
-        <properties.db2.jcc currentSchema="DSN81110" databaseName="DSNV11P2" driverType="4" 
-	     password="<your password>" portNumber="41100" serverName="<your server name>" user="<your userid>"/>
-</dataSource> 
+        <properties.db2.jcc currentSchema="DSN81110" driverType="2"/>
+        <connectionManager agedTimeout="0"/>
+    </dataSource>
 ```
 
-Both type 4 dataSource connections above are the same except for the `jndiName` value. 
->The `jndiName` defined in dataSource t4a is referenced by the `application.properties` file in the `resources` directory of the application.
+Both type 2 dataSource connections above are the same except for the `jndiName` value. 
+>The `jndiName` defined in dataSource t2a is referenced by the `application.properties` file in the `resources` directory of the application.
 
->The `jndiName` defined in dataSource t4b is referenced by an `@Bean` annotated dataSource() method in the application.
+>The `jndiName` defined in dataSource t2b is referenced by an `@Bean` annotated dataSource() method in the application.
 
 - Deployment option 1:
     - Copy and paste the built WAR from your *target* or *build/libs* directory into a Eclipse CICS bundle project and create a new WAR bundlepart that references the WAR file. Then deploy the CICS bundle project from CICS Explorer using the **Export Bundle Project to z/OS UNIX File System** wizard.
