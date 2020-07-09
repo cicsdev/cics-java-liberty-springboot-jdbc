@@ -126,7 +126,7 @@ E.g. as follows:
 ```        
 
 ``` XML
-<dataSource id="t2a" jndiName="jdbc/jdbcDataSource-bean" transactional="false">
+<dataSource id="t2b" jndiName="jdbc/jdbcDataSource-bean" transactional="false">
         <jdbcDriver>   
             <library name="DB2LIB">
                 <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
