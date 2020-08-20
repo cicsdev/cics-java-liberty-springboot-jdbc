@@ -20,40 +20,44 @@ import org.springframework.context.annotation.Bean;
 
 /**
  * 
- * This class is the entry point of the spring boot application which contains @SpringBootApplication annotation and the main method to run the Spring Boot application.
+ * Spring boot application entry-point (including main method and @SpringBootApplication annotation).
  * 
- * A single @SpringBootApplication annotation can be used to enable those three features, that is:
+ * The @SpringBootApplication annotation is equivalent to:
  *
  *   @EnableAutoConfiguration: enable Spring Boot’s auto-configuration mechanism
  *   @ComponentScan: scan all the beans and package declarations when the application initializes.
  *   @Configuration: allow to register extra beans in the context or import additional configuration classes
  * 
  */
-
 @SpringBootApplication
-public class Application {
-	
-	// name the dataSource jndi name
+public class Application 
+{
+	// The dataSource jndi name
 	private static final String DATA_SOURCE = "jdbc/jdbcDataSource-bean";
 
 
 	/**
-	 * @param args
+	 * @param args - inputs
 	 */
-	public static void main(String args[]) {
+	public static void main(String args[]) 
+	{
 		SpringApplication.run(Application.class, args);
 	}
 	
 	/**
-	 * @return a data Source
+	 * @return the data Source
 	 */
 	@Bean
-	public DataSource dataSource() {		
-		try {
-			// Look up the connection factory from Liberty
+	public DataSource dataSource() 
+	{		
+		try 
+		{
+			// Look up the Liberty DataSource using JNDI
 			DataSource ds = InitialContext.doLookup(DATA_SOURCE);
 			return ds;
-		} catch (NamingException e) {
+		} 
+		catch (NamingException e) 
+		{
 			e.printStackTrace();
 			return null;
 		}

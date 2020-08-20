@@ -30,22 +30,26 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class EmployeeService {
-
-	//DataSource definitions;	
+public class EmployeeService 
+{
+	// The autowired JbdcTemplate gets its data-source definition from application.properties by default	
 	@Autowired
 	private JdbcTemplate jdbcTemplate;	
 
+	// 
 	@Autowired
 	private DataSource datasource2;
 
 	private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd"); 
 	private LocalDateTime now = LocalDateTime.now();
+	
+	
 	/**
 	 * @return a list of employees
 	 * @throws NamingException
 	 */
-	public List<Employee> selectAll() throws NamingException {
+	public List<Employee> selectAll() throws NamingException 
+	{
 		/*
 		 * Select all rows from the emp table
 		 * 
@@ -75,14 +79,15 @@ public class EmployeeService {
 						rs.getLong("SALARY"),
 						rs.getLong("BONUS"),
 						rs.getLong("COMM")));
-
 	}
 
+	
 	/**
 	 * @return a list of employees
 	 * @throws NamingException
 	 */
-	public List<Employee> selectAllUsingBeanDataSource() throws NamingException {
+	public List<Employee> selectAllUsingBeanDataSource() throws NamingException 
+	{
 		/*
 		 * Select all rows from the emp table
 		 * 
@@ -118,11 +123,13 @@ public class EmployeeService {
 						rs.getLong("COMM")));
 	}
 
+	
 	/**
 	 * @param empNo
 	 * @return a list of employee records for a specific employee number
 	 */
-	public List<Employee> selectWhereEmpno(String empNo) {
+	public List<Employee> selectWhereEmpno(String empNo) 
+	{
 		/*
 		 * Return all rows for a specific employee number
 		 * 
@@ -159,7 +166,8 @@ public class EmployeeService {
 	 * @param lName - last name
 	 * @return a string indicating the result of the add operation
 	 */
-	public String addEmployee(String fName, String lName) {
+	public String addEmployee(String fName, String lName) 
+	{
 		/*
 		 *  Add a new employee.
 		 *      Firstname and lastname are passed in 
@@ -215,7 +223,8 @@ public class EmployeeService {
 		if (numRows > 0) 
 		{
 			return "employee " + empno + " added";
-		} else
+		} 
+		else
 		{
 			return "employee insert failed try again";
 		}
@@ -244,7 +253,8 @@ public class EmployeeService {
 		if (numRows > 0) 
 		{
 			return "employee " + empNo + " deleted";
-		} else
+		} 
+		else
 		{
 			return "employee delete failed try again";
 		}
@@ -256,7 +266,8 @@ public class EmployeeService {
 	 * @param empNo - the employee number which is to be uodated
 	 * @return a message to indicate success or failure of the update operation
 	 */
-	public String updateEmployee(int newSalary, String empNo) {
+	public String updateEmployee(int newSalary, String empNo) 
+	{
 		/*
 		 * Update a specified employee's salary based on the empNo passed to the salary passed in.
 		 * 
@@ -274,10 +285,11 @@ public class EmployeeService {
 		if (numRows > 0) 
 		{
 			return "employee " + empNo + " salary changed to " + newSalary;
-		} else
+		}
+		else
 		{
 			return "employee update failed try again";
 		}
-
 	}
+	
 }

@@ -27,18 +27,18 @@ import org.springframework.web.bind.annotation.RestController;
  * 
  * Employee REST controller
  * 
- * REST controller used to direct incoming REST requests to the correct business service.
+ * A REST controller used to direct incoming REST requests to the correct business service.
  *  
- *  In a real world application some of these functions would most likely be done by a POST
- *    request. For simplicity all requests to this sample application are done with a GET request
- *    
+ * In a real world application some of these functions would most likely be done by a POST
+ * request. For simplicity all requests to this sample application are done with a GET request
  */
 @RestController
-public class EmployeeRestController {
-	
+public class EmployeeRestController
+{	
 	@Autowired  
 	private EmployeeService employeeService;
 
+	
 	/**
 	 * Simple endpoint - returns date and time - simple test of the application
 	 * 
@@ -51,9 +51,19 @@ public class EmployeeRestController {
 		Date myDate = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd:HH-mm-ss.SSSSSS");
 		String myDateString = sdf.format(myDate);
-		return "Hello from employee service controller. Date/Time: " + myDateString;
+		//return "Hello from employee service controller. Date/Time: " + myDateString;
+		
+		return "<h1>Spring Boot JDBC Employee REST sample. Date/Time: " + myDateString + "</h1>"
+		+ "<h3>Usage:</h3>"
+		+ "<b>/allRows</b> - return a list of employees using a classic SELECT statement<br>"
+		+ "<b>/allRowsFromTemplate</b> - return a lost of employees using Spring's JDBC template<br>"
+		+ "<b>/oneEmployee/{empno}</b> - a list of employee records for the employee number provided<br>"
+		+ "<b>/addEmployee/{firstName}/{lastName}</b> - add an employee<br>"				
+		+ "<b>/deleteEmployee/{empNo}</b> - delete an employee<br>"
+		+ "<b>/updateEmployee/{empNo}/{newSalary}</b> - update employee salary";
 	}
 
+	
 	/**
 	 *  example url http://<server>:<port>/allRows
 	 *  
@@ -61,9 +71,11 @@ public class EmployeeRestController {
 	 * @throws NamingException
 	 */
 	@GetMapping({"/allRows","/allRows/"})
-	public List<Employee> getAllRows() throws NamingException {
+	public List<Employee> getAllRows() throws NamingException
+	{
 		return employeeService.selectAll();
 	}
+	
 	
 	/**
 	 *  example url http://<server>:<port>/allRows2
@@ -71,10 +83,13 @@ public class EmployeeRestController {
 	 * @return a list of employees
 	 * @throws NamingException
 	 */
-	@GetMapping({"/allRows2","/allRows2/"})
-	public List<Employee> getAllRows2() throws NamingException {
+	@GetMapping({"/allRowsFromTemplate","/allRowsFromTemplate/"})
+	public List<Employee> getAllRows2() throws NamingException 
+	{
 		return employeeService.selectAllUsingBeanDataSource();
 	}
+	
+	
 	/**
 	 * example url http://<server>:<port>/oneEmployee/000100
 	 * 
@@ -82,9 +97,11 @@ public class EmployeeRestController {
 	 * @return a list of employee records for the passed parameter number
 	 */
 	@GetMapping("/oneEmployee/{empno}")
-	public List<Employee> oneEmployee(@PathVariable String empno) {
+	public List<Employee> oneEmployee(@PathVariable String empno) 
+	{
 		return employeeService.selectWhereEmpno(empno);
 	}
+	
 	
 	/**
 	 *  example url http://<server>:<port>/addEmployee/Tony/Fitzgerald
@@ -95,10 +112,12 @@ public class EmployeeRestController {
 	 */
 	@GetMapping("/addEmployee/{firstName}/{lastName}")
 	@ResponseBody
-	public String addEmp(@PathVariable String firstName , @PathVariable String lastName) {
+	public String addEmp(@PathVariable String firstName , @PathVariable String lastName) 
+	{
 		String result = employeeService.addEmployee(firstName,lastName);
 		return result;
 	}
+	
 	
 	/**
 	 *  example url http://<server>:<port>/deleteEmployee/368620
@@ -108,10 +127,12 @@ public class EmployeeRestController {
 	 */
 	@GetMapping("/deleteEmployee/{empNo}")
 	@ResponseBody
-	public String delEmployee(@PathVariable String empNo) {
+	public String delEmployee(@PathVariable String empNo) 
+	{
 		String result = employeeService.deleteEmployee(empNo);
 		return result;
 	}
+	
 	
 	/**
 	 * example url http://<server>:<port>/updateEmployee/368620/33333
@@ -122,10 +143,10 @@ public class EmployeeRestController {
 	 */
 	@GetMapping("/updateEmployee/{empNo}/{newSalary}")
 	@ResponseBody
-	public String updateEmp(@PathVariable String empNo, @PathVariable int newSalary) {
+	public String updateEmp(@PathVariable String empNo, @PathVariable int newSalary) 
+	{
 		String result = employeeService.updateEmployee(newSalary, empNo);
 		return result;
 	}
-
 	
 }
