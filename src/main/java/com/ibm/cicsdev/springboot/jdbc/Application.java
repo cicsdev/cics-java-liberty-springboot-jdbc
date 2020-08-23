@@ -10,8 +10,13 @@
 
 package com.ibm.cicsdev.springboot.jdbc;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 /**
  * 
@@ -28,10 +33,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application 
 {
 	/**
-	 * @param args
+	 * @param args - inputs
 	 */
-	public static void main(String args[])
+	public static void main(String args[]) 
 	{
 		SpringApplication.run(Application.class, args);
 	}
+	
 }
