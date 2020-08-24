@@ -121,7 +121,7 @@ E.g. as follows:
         </jdbcDriver>
         <properties.db2.jcc currentSchema="DSN81110" driverType="2"/>
         <connectionManager agedTimeout="0"/>
-    </dataSource>
+</dataSource>
 ```        
 
 - set spring.datasource.jndi-name in application.properties
@@ -140,7 +140,7 @@ the jndi-name can alternatively be set using a datasource bean in the applicatio
 public class Application {
 	
 	// name the dataSource jndi name
-	private static final String DATA_SOURCE = "jdbc/jdbcDataSource-bean";
+	private static final String DATA_SOURCE = "jdbc/jdbcDataSource";
 
 
 	/**
