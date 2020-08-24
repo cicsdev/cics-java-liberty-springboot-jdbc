@@ -12,10 +12,11 @@ package com.ibm.cicsdev.springboot.jdbc;
 
 import java.sql.Date;
 
+
 /**
  * class representing the EMP table
  */
-public class Employee
+public class Employee 
 {
 
 	/*
@@ -56,6 +57,7 @@ public class Employee
 		APPEND NO  ;                                                    
 	 */
 
+
 	private String empNo;
 	private String firstNme;
 	private String midinit;
@@ -71,24 +73,25 @@ public class Employee
 	private long bonus;
 	private long comm;
 
+
 	/**
-	 * @param empNo     - employee Number 		- 6 characters
-	 * @param firstNme  - employee first name 	- 12 characters
-	 * @param midinit   - employee middle initial 	- 1 character
-	 * @param lastName  - employee last name	- 15 characters
-	 * @param workdept  - employee work department 	- 3 characters
-	 * @param phoneNo   - employee phone number 	- 4 characters
-	 * @param hireDate  - employee hire date
-	 * @param job       - job title 		- 8 characters
-	 * @param edLevel   - employee education level 	- integer (1,2, or 3)
-	 * @param sex       - employee gender 		- 1 character
-	 * @param birthDate - employee birth date
-	 * @param salary    - employee salary amount 	- decimal (9,2)
-	 * @param bonus     - employee bonus amount 	- decimal (9,2)
-	 * @param comm      - employee commission amount-decimal (9,2)
+	 * @param empNo		- employee Number 			- 6 characters
+	 * @param firstNme 	- employee first name 		- 12 characters
+	 * @param midinit	- employee middle initial	- 1 character
+	 * @param lastName	- employee last name		- 15 characters
+	 * @param workdept	- employee work department 	- 3 characters
+	 * @param phoneNo	- employee phone number 	- 4 characters
+	 * @param hireDate	- employee hire date
+	 * @param job		- job title					- 8 characters
+	 * @param edLevel	- employee education level	- integer (1,2, or 3)
+	 * @param sex		- employee gender 			- 1 character
+	 * @param birthDate	- employee birth date
+	 * @param salary	- employee salary amount	- decimal (9,2)
+	 * @param bonus		- employee bonus amount		- decimal (9,2)
+	 * @param comm		- employee commission amount-decimal (9,2)
 	 */
 	public Employee(String empNo, String firstNme, String midinit, String lastName, String workdept, String phoneNo,
-			Date hireDate, String job, int edLevel, String sex, String birthDate, long salary, long bonus, long comm)
+			Date hireDate, String job, int edLevel, String sex, String birthDate, long salary, long bonus, long comm) 
 	{
 		super();
 		this.empNo = empNo;
@@ -108,7 +111,7 @@ public class Employee
 	}
 
 	@Override
-	public String toString()
+	public String toString() 
 	{
 		return "Employee [empNo=" + empNo + 
 				", firstName=" + firstNme + 
@@ -311,7 +314,7 @@ public class Employee
 	}
 
 	/**
-	 * @param salary - set employee salary
+	 * @param salary - set employee salary 
 	 */
 	public void setSalary(long salary)
 	{
@@ -327,7 +330,7 @@ public class Employee
 	}
 
 	/**
-	 * @param bonus - set employee bonus
+	 * @param bonus - set employee bonus 
 	 */
 	public void setBonus(long bonus)
 	{
@@ -349,5 +352,4 @@ public class Employee
 	{
 		this.comm = comm;
 	}
-
 }
