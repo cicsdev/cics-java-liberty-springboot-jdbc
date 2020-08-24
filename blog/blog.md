@@ -1,0 +1,1050 @@
+Introduction
+This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is destined to be deployed into a Liberty server, running in CICS. 
+
+
+JDBC is a Java API which allows a Java applications to access data stored in a relational database. In this tutorial we will be using IBM Db2® for z/OS as our relational database. The application will use the supplied EMP table which is supplied with DB2. Spring Boot JDBC supplies database related beans such as DataSource and JdbcTemplate,  which can be Autowired into an application to facilitate the usage of JDBC in the application. Follow the steps in this article to generate a Spring Boot web application which can then be built using either Gradle or Maven and deployed in a CICS Liberty JVM server and used to update the Db2 employee table  
+
+
+The application will allow you to:
+add an employee to the EMP table
+list all or a single employee 
+update an existing employee
+delete delete an existing employee.  
+
+
+The application is a web application where all requests can be made from a browser. The application uses the Spring Boot web interface to process GET REST requests only. In a real world implementation of this other types of REST interfaces, such as POST, would be more appropriate. GET requests are used here for simplicity.
+
+
+The application source and build scripts are available from github at cics-java-liberty-springboot-jdbc. 
+
+
+Generate the Spring web application
+Generate the Spring Boot Java web application using the website https://start.spring.io/ with the following selections:
+Project: Maven Project
+Language: Java
+Spring Boot: 2.3.0
+Project Metadata
+Group: com.ibm.cicsdev
+Artifact: com.ibm.cicsdev.springboot.jdbc
+Name: com.ibm.cicsdev.springboot.jdbc
+Description: Demo project for Spring Boot JDBC
+Package Name: com.ibm.cicsdev.springboot.jdbc
+Packaging: War
+Java: 8
+
+
+From the Dependencies portion of the screen, click ADD DEPENDENCIES and select/find Spring Data JDBC and Spring Web
+
+
+
+
+
+
+Click on Generate, download and unzip the sample project, which can then be imported into your your IDE. 
+
+
+Import into Eclipse
+Import the project by 
+selecting File > Import > Existing Maven Project.
+navigate to the root directory of the application (the one you just unzipped)
+the project box should show the pom.xml file for the application and it shoul dbe checked. 
+Click Finish
+
+
+With the Java source expanded it should look similar to the following once the application has downloaded all its dependencies and the application has correctly built.
+
+
+We now have a basic application which does not at this point do anything.
+
+
+Construct the application
+We will now add the various pieces of code to the application which will allow us to access the data in the EMP table in Db2.
+
+
+Add a class to define the data object(s)
+
+
+This example application will make use of a supplied Db2 table which contains employee data. The supplied table should be found on your Db2 for z/OS system in database DSN8D11A and specifically in schema DSN81110.
+
+
+The DDL used to create this table is as follows:
+
+
+    /*
+     * Db2 supplied EMP table 
+     * 
+     * CREATE TABLE DSN81110.EMP                                           
+   (EMPNO                CHAR(6) FOR SBCS DATA NOT NULL,            
+    FIRSTNME             VARCHAR(12) FOR SBCS DATA NOT NULL,        
+    MIDINIT              CHAR(1) FOR SBCS DATA NOT NULL,            
+    LASTNAME             VARCHAR(15) FOR SBCS DATA NOT NULL,        
+    WORKDEPT             CHAR(3) FOR SBCS DATA WITH DEFAULT NULL,   
+    PHONENO              CHAR(4) FOR SBCS DATA WITH DEFAULT NULL,   
+    HIREDATE             DATE WITH DEFAULT NULL,                    
+    JOB                  CHAR(8) FOR SBCS DATA WITH DEFAULT NULL,   
+    EDLEVEL              SMALLINT WITH DEFAULT NULL,                
+    SEX                  CHAR(1) FOR SBCS DATA WITH DEFAULT NULL,   
+    BIRTHDATE            DATE WITH DEFAULT NULL,                    
+    SALARY               DECIMAL(9, 2) WITH DEFAULT NULL,           
+    BONUS                DECIMAL(9, 2) WITH DEFAULT NULL,           
+    COMM                 DECIMAL(9, 2) WITH DEFAULT NULL,           
+    CONSTRAINT EMPNO                                                
+    PRIMARY KEY (EMPNO),                                            
+    CONSTRAINT NUMBER                                               
+      CHECK (PHONENO >= '0000' AND PHONENO <= '9999'),              
+    CONSTRAINT PERSON CHECK (SEX = 'M' OR SEX = 'F'))               
+  IN DSN8D11A.DSN8S11E                                              
+  PARTITION BY (EMPNO ASC)                                          
+   (PARTITION 1 ENDING AT ('099999'),                               
+    PARTITION 2 ENDING AT ('199999'),                               
+    PARTITION 3 ENDING AT ('299999'),                               
+    PARTITION 4 ENDING AT ('499999'),                               
+    PARTITION 5 ENDING AT ('999999'))                               
+  EDITPROC  DSN8EAE1 WITH ROW ATTRIBUTES                            
+  AUDIT NONE                                                        
+  DATA CAPTURE NONE                                                 
+  CCSID      EBCDIC                                                 
+  NOT VOLATILE                                                      
+  APPEND NO  ;                                                      
+     */ 
+
+
+We need to have a representation of this table in our application so the first item we need to add is a definition of an employee object. This is done in the Employee.java class
+
+
+package com.ibm.cicsdev.springboot.jdbc;
+
+
+import java.sql.Date;
+
+
+public class Employee {
+    
+    /*
+     * Db2 supplied EMP table 
+     * 
+     * CREATE TABLE DSN81110.EMP                                           
+   (EMPNO                CHAR(6) FOR SBCS DATA NOT NULL,            
+    FIRSTNME             VARCHAR(12) FOR SBCS DATA NOT NULL,        
+    MIDINIT              CHAR(1) FOR SBCS DATA NOT NULL,            
+    LASTNAME             VARCHAR(15) FOR SBCS DATA NOT NULL,        
+    WORKDEPT             CHAR(3) FOR SBCS DATA WITH DEFAULT NULL,   
+    PHONENO              CHAR(4) FOR SBCS DATA WITH DEFAULT NULL,   
+    HIREDATE             DATE WITH DEFAULT NULL,                    
+    JOB                  CHAR(8) FOR SBCS DATA WITH DEFAULT NULL,   
+    EDLEVEL              SMALLINT WITH DEFAULT NULL,                
+    SEX                  CHAR(1) FOR SBCS DATA WITH DEFAULT NULL,   
+    BIRTHDATE            DATE WITH DEFAULT NULL,                    
+    SALARY               DECIMAL(9, 2) WITH DEFAULT NULL,           
+    BONUS                DECIMAL(9, 2) WITH DEFAULT NULL,           
+    COMM                 DECIMAL(9, 2) WITH DEFAULT NULL,           
+    CONSTRAINT EMPNO                                                
+    PRIMARY KEY (EMPNO),                                            
+    CONSTRAINT NUMBER                                               
+      CHECK (PHONENO >= '0000' AND PHONENO <= '9999'),              
+    CONSTRAINT PERSON CHECK (SEX = 'M' OR SEX = 'F'))               
+  IN DSN8D11A.DSN8S11E                                              
+  PARTITION BY (EMPNO ASC)                                          
+   (PARTITION 1 ENDING AT ('099999'),                               
+    PARTITION 2 ENDING AT ('199999'),                               
+    PARTITION 3 ENDING AT ('299999'),                               
+    PARTITION 4 ENDING AT ('499999'),                               
+    PARTITION 5 ENDING AT ('999999'))                               
+  EDITPROC  DSN8EAE1 WITH ROW ATTRIBUTES                            
+  AUDIT NONE                                                        
+  DATA CAPTURE NONE                                                 
+  CCSID      EBCDIC                                                 
+  NOT VOLATILE                                                      
+  APPEND NO  ;                                                      
+     */
+    
+    
+    
+    private String empNo;
+    private String firstNme;
+    private String midinit;
+    private String lastName;
+    private String workdept;
+    private String phoneNo;
+    private Date hireDate;
+    private String job;
+    private int edLevel;
+    private String sex;
+    private String birthDate;
+    private long salary;
+    private long bonus;
+    private long comm;
+
+
+    
+    public Employee(String empNo, String firstNme, String midinit, String lastName, String workdept, String phoneNo,
+            Date hireDate, String job, int edLevel, String sex, String birthDate, long salary, long bonus, long comm) {
+        super();
+        this.empNo = empNo;
+        this.firstNme = firstNme;
+        this.midinit = midinit;
+        this.lastName = lastName;
+        this.workdept = workdept;
+        this.phoneNo = phoneNo;
+        this.hireDate = hireDate;
+        this.job = job;
+        this.edLevel = edLevel;
+        this.sex = sex;
+        this.birthDate = birthDate;
+        this.salary = salary;
+        this.bonus = bonus;
+        this.comm = comm;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Employee [empNo=" + empNo + 
+                ", firstName=" + firstNme + 
+                ", midinit=" + midinit + 
+                ", lastName=" + lastName + 
+                ", workdept=" + workdept + 
+                ", phoneNo=" + phoneNo + 
+                ", hireDate=" + hireDate + 
+                ", job=" + job + 
+                ", edLevel=" + edLevel + 
+                ", sex=" + sex + 
+                ", birthDate=" + birthDate + 
+                ", salary=" + salary + 
+                ", bonus=" + bonus + 
+                ", comm=" + comm + "]";
+    }
+
+
+    public String getEmpNo() {
+        return empNo;
+    }
+
+
+    public void setEmpNo(String empNo) {
+        this.empNo = empNo;
+    }
+
+
+    public String getFirstName() {
+        return firstNme;
+    }
+
+
+    public void setFirstName(String firstName) {
+        this.firstNme = firstName;
+    }
+
+
+    public String getMidinit() {
+        return midinit;
+    }
+
+
+    public void setMidinit(String midinit) {
+        this.midinit = midinit;
+    }
+
+
+    public String getLastName() {
+        return lastName;
+    }
+
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+
+    public String getWorkdept() {
+        return workdept;
+    }
+
+
+    public void setWorkdept(String workdept) {
+        this.workdept = workdept;
+    }
+
+
+    public String getPhoneNo() {
+        return phoneNo;
+    }
+
+
+    public void setPhoneNo(String phoneNo) {
+        this.phoneNo = phoneNo;
+    }
+
+
+    public Date getHireDate() {
+        return hireDate;
+    }
+
+
+    public void setHireDate(Date hireDate) {
+        this.hireDate = hireDate;
+    }
+
+
+    public String getJob() {
+        return job;
+    }
+
+
+    public void setJob(String job) {
+        this.job = job;
+    }
+
+
+    public int getEdLevel() {
+        return edLevel;
+    }
+
+
+    public void setEdLevel(int edLevel) {
+        this.edLevel = edLevel;
+    }
+
+
+    public String getSex() {
+        return sex;
+    }
+
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+
+    public String getBirthDate() {
+        return birthDate;
+    }
+
+
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
+    }
+
+
+    public long getSalary() {
+        return salary;
+    }
+
+
+    public void setSalary(long salary) {
+        this.salary = salary;
+    }
+
+
+    public long getBonus() {
+        return bonus;
+    }
+
+
+    public void setBonus(long bonus) {
+        this.bonus = bonus;
+    }
+
+
+    public long getComm() {
+        return comm;
+    }
+
+
+    public void setComm(long comm) {
+        this.comm = comm;
+    }
+
+
+    
+}
+
+
+This is a standard java representation of our employee record which contains definitions for each column in the table, a constructor and getters and setters for each field.
+
+
+Add a REST Controller
+
+
+The REST controller is the code which will process the requests coming in from the browser. It will direct the incoming requests to the appropriate service method to complete the request.
+
+
+Code for EmployeeRestController.java
+
+
+package com.ibm.cicsdev.springboot.jdbc;
+
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+
+import javax.naming.NamingException;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+
+
+
+@RestController
+public class EmployeeRestController {
+    /*    
+     *  REST controller used to direct incoming requests to the correct business service.
+     *  
+     *  In a real world application some of these functions would most likely be done by a POST
+     *    request. For simplicity all requests to this sample application are done with a GET request
+     *    
+     */
+
+
+    @Autowired  
+    private EmployeeService employeeService;
+
+
+    // Simple endpoint - returns date and time - simple test of the application
+    @RequestMapping("/") 
+    @ResponseBody
+    public String Index()
+    {    
+        Date myDate = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd:HH-mm-ss.SSSSSS");
+        String myDateString = sdf.format(myDate);
+        return "Hello from employee service controller. Date/Time: " + myDateString;
+    }
+
+
+    /*
+     *    example url http://<server>:<port>/allRows
+     */
+    @RequestMapping(value={"/allRows","/allRows/"})
+    public List<Employee> getAllRows() throws NamingException {
+        return employeeService.selectAll();
+    }
+    
+    /*
+     *    example url http://<server>:<port>/allRows2
+     */
+    @RequestMapping(value={"/allRows2","/allRows2/"})
+    public List<Employee> getAllRows2() throws NamingException {
+        return employeeService.selectAllUsingBeanDataSource();
+    }
+    /*
+     *    example url http://<server>:<port>/oneEmployee/000100
+     */
+    @RequestMapping("/oneEmployee/{empno}")
+    public List<Employee> oneEmployee(@PathVariable String empno) {
+        return employeeService.selectWhereEmpno(empno);
+    }
+    
+    /*
+     *    example url http://<server>:<port>/addEmployee/Tony/Fitzgerald
+     */
+    @RequestMapping("/addEmployee/{firstName}/{lastName}")
+    @ResponseBody
+    public String addEmp(@PathVariable String firstName , @PathVariable String lastName) {
+        String result = employeeService.addEmployee(firstName,lastName);
+        return result;
+    }
+    
+    /*
+     *    example url http://<server>:<port>/deleteEmployee/368620
+     */
+    @RequestMapping("/deleteEmployee/{empNo}")
+    @ResponseBody
+    public String delEmployee(@PathVariable String empNo) {
+        String result = employeeService.deleteEmployee(empNo);
+        return result;
+    }
+    
+    /*
+     *  example url http://<server>:<port>/updateEmployee/368620/33333
+     */
+    @RequestMapping("/updateEmployee/{empNo}/{newSalary}")
+    @ResponseBody
+    public String updateEmp(@PathVariable String empNo, @PathVariable int newSalary) {
+        String result = employeeService.updateEmployee(newSalary, empNo);
+        return result;
+    }
+
+
+    
+}
+
+
+
+
+Add Service class
+The REST controller contains an @Autowired annotation:
+
+
+@Autowired  
+    private EmployeeService employeeService;
+
+
+which enables the controller methods to call methods which service the incoming requests.  This service class makes the calls to the database using the jdbcTemplate class supplied by Spring. It is also often calls the dao(data access object) class. 
+
+
+jdbcTemplate "is the central class in the JDBC core package. It simplifies the use of JDBC and helps to avoid common errors. It executes core JDBC workflow, leaving application code to provide SQL and extract results. This class executes SQL queries or updates, initiating iteration over ResultSets and catching JDBC exceptions and translating them to the generic, more informative exception hierarchy defined in the org.springframework.dao package".    (from https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html  )
+
+
+jdbcTemplate in this example application uses the query and update methods of that class. The jdbcTemplate in each case is passed a piece of SQL as a string and any result sets are processed by jdbcTemplate and returned in the appropriate object. In the case of the queries using the update method the jdbcTemplate.update returns an integer indicating the number of rows which have been affected by the update. 
+ 
+ The service class for this application EmployeeService.java is as follows:
+
+
+package com.ibm.cicsdev.springboot.jdbc;
+
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+
+
+@Service
+public class EmployeeService {
+
+
+    //    private DataSource dataSource;    
+
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;    
+
+
+    @Autowired
+    private DataSource datasource2;
+
+
+    public List<Employee> selectAll() throws NamingException {
+        /*
+         * Select all rows from the emp table
+         * 
+         *   datasource information comes from the application.properties file in the resources directory
+         *   
+         */
+
+
+        //setup the select SQL
+        String sql = "SELECT * FROM emp";
+
+
+        //run the query
+        return jdbcTemplate.query(
+                sql,
+                (rs, rowNum) ->
+                new Employee(
+                        rs.getString("EMPNO"),
+                        rs.getString("FIRSTNME"),
+                        rs.getString("MIDINIT"),
+                        rs.getString("LASTNAME"),
+                        rs.getString("WORKDEPT"),
+                        rs.getString("PHONENO"),
+                        rs.getDate("HIREDATE"),
+                        rs.getString("JOB"),
+                        rs.getInt("EDLEVEL"),
+                        rs.getString("SEX"),
+                        rs.getString("BIRTHDATE"),
+                        rs.getLong("SALARY"),
+                        rs.getLong("BONUS"),
+                        rs.getLong("COMM")));
+
+
+    }
+
+
+    public List<Employee> selectAllUsingBeanDataSource() throws NamingException {
+        /*
+         * Select all rows from the emp table
+         * 
+         * Identical to preceding selectAll() method except that the 
+         *   datasource information comes injected Bean datasource2
+         *   this will override the setting in the application.properties file
+         */
+
+
+        //set the data source from the injected bean
+        jdbcTemplate = new JdbcTemplate(datasource2);        
+
+
+        //set up the select SQL
+        String sql = "SELECT * FROM emp";
+
+
+        //run the query
+        return jdbcTemplate.query(
+                sql,
+                (rs, rowNum) ->
+                new Employee(
+                        rs.getString("EMPNO"),
+                        rs.getString("FIRSTNME"),
+                        rs.getString("MIDINIT"),
+                        rs.getString("LASTNAME"),
+                        rs.getString("WORKDEPT"),
+                        rs.getString("PHONENO"),
+                        rs.getDate("HIREDATE"),
+                        rs.getString("JOB"),
+                        rs.getInt("EDLEVEL"),
+                        rs.getString("SEX"),
+                        rs.getString("BIRTHDATE"),
+                        rs.getLong("SALARY"),
+                        rs.getLong("BONUS"),
+                        rs.getLong("COMM")));
+    }
+
+
+    public List<Employee> selectWhereEmpno(String empNo) {
+        /*
+         * Return all rows for a specific employee number
+         * 
+         *   datasource information comes from the application.properties file in the resources directory
+         *   
+         */
+
+
+        String sql = "SELECT * FROM emp where empno = ?";
+
+
+        return jdbcTemplate.query(
+                sql,
+                new Object [] {empNo},
+                (rs, rowNum) ->
+                new Employee(
+                        rs.getString("EMPNO"),
+                        rs.getString("FIRSTNME"),
+                        rs.getString("MIDINIT"),
+                        rs.getString("LASTNAME"),
+                        rs.getString("WORKDEPT"),
+                        rs.getString("PHONENO"),
+                        rs.getDate("HIREDATE"),
+                        rs.getString("JOB"),
+                        rs.getInt("EDLEVEL"),
+                        rs.getString("SEX"),
+                        rs.getString("BIRTHDATE"),
+                        rs.getLong("SALARY"),
+                        rs.getLong("BONUS"),
+                        rs.getLong("COMM")));
+    }
+
+
+
+
+    public String addEmployee(String fName, String lName) {
+        /*
+         *  Add a new employee.
+         *      Firstname and lastname are passed in 
+         *      
+         *      for demo purposes all the other fields are set by this method
+         *      
+         *  datasource information comes from the application.properties file in the resources directory
+         *  
+         */
+
+
+        //generate an empNo between 300000 and 999999
+        int max = 999999;
+        int min = 300000;
+        String empno = String.valueOf((int) Math.round((Math.random()*((max-min)+1))+min));
+
+
+        //for demo purposes hard code all the remaining fields (except first name and last name) 
+        String midInit = "A";
+        String workdept = "E21";
+        String phoneNo = "1234";
+
+
+        //get today's date and set as hiredate
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
+        LocalDateTime now = LocalDateTime.now();  
+        String hireDate= dtf.format(now);  
+
+
+        String job = "Engineer";
+        int edLevel =3 ;
+        String sex ="M";
+        String birthDate = "1999-01-01" ;
+        long salary = 20000;
+        long bonus= 1000;
+        long comm = 1000;
+
+
+        //setup the SQL
+        String sql = "insert into emp (EMPNO, FIRSTNME, MIDINIT,LASTNAME,WORKDEPT,PHONENO,HIREDATE,JOB,EDLEVEL,SEX,BIRTHDATE,SALARY,BONUS,COMM) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+
+        //do the insert
+        int numRows =  jdbcTemplate.update (sql,
+                empno,
+                fName,
+                midInit,
+                lName,
+                workdept,
+                phoneNo,
+                hireDate,
+                job,
+                edLevel,
+                sex,
+                birthDate,
+                salary,
+                bonus,
+                comm);
+
+
+        //numRows is the number of rows inserted - will be zero if the insert fails
+        if (numRows > 0) 
+        {
+            return "employee " + empno + " added";
+        } else
+        {
+            return "employee insert failed try again";
+        }
+    }
+
+
+
+
+    public String deleteEmployee(String empNo)
+    /*
+     *  Delete an employee based on the empNo passed in
+     *  
+     *    datasource information comes from the application.properties file in the resources directory
+     *    
+     */
+    {
+        //set up the delete SQL
+        String sql = "DELETE FROM emp WHERE empno =?";
+
+
+        //do the delete
+        int numRows = jdbcTemplate.update(sql, empNo);
+
+
+        //numRows is the number of rows deleted - will be zero if the delete fails
+        if (numRows > 0) 
+        {
+            return "employee " + empNo + " deleted";
+        } else
+        {
+            return "employee delete failed try again";
+        }
+    }
+
+
+
+
+    public String updateEmployee(int newSalary, String empNo) {
+        /*
+         * Update a specified employee's salary based on the empNo passed to the salary passed in.
+         * 
+         *   datasource information comes from the application.properties file in the resources directory
+         *   
+         */
+
+
+        //set up the update SQL
+        String sql = "update emp set salary =? where empNo = ?";
+
+
+        //do the update
+        int numRows = jdbcTemplate.update(sql, newSalary, empNo);
+
+
+        //numRows is the number of rows updated - will be zero if the update fails   
+        if (numRows > 0) 
+        {
+            return "employee " + empNo + " salary changed to " + newSalary;
+        } else
+        {
+            return "employee update failed try again";
+        }
+
+
+    }
+}
+
+
+
+
+Update the Application.java file
+
+
+We need to add a datasource bean to the application which will be used by one of the REST interfaces in the EmployeeRestController to demomstrate the use of the DataSourceBean
+
+
+add the following method to the class 
+
+
+    @Bean
+    public DataSource dataSource() {        
+        try {
+            // Look up the connection factory from Liberty
+            DataSource ds = InitialContext.doLookup(DATA_SOURCE);
+            return ds;
+        } catch (NamingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    } 
+
+
+and also the following constant defintion
+
+
+    // name the dataSource jndi name
+    private static final String DATA_SOURCE = "jdbc/jdbcDataSource-bean";
+
+
+the value of the constant can be somnthing else of your chosing, but it must match the value we will set later in the datasource defintion we will create in our server.xml in a forthcoming step in this blog.
+
+
+You will need to resolve some imports when you paste the bean code into the class.
+
+
+import org.springframework.context.annotation.Bean;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
+
+Configure application.properties
+In the src/main/resources directory edit the application.properties file to contain the following line
+
+
+spring.datasource.jndi-name=jdbc/jdbcDataSource
+
+
+the name value should match exactly the jndi name which will be specified in the dataSource definition which we will add to server.xml later in this blog.
+
+
+Add a web.xml to the application
+To avoid the warnings about using BLANK and default CICS userid, you need to include a simple web.xml to the application to enable basic authentication. Please store this web.xml in src/main/webapp/WEB-INF. 
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+    <display-name>cics-java-liberty-springboot-jcics</display-name>   
+<login-config>
+        <auth-method>BASIC</auth-method>
+    </login-config>   
+    <security-constraint>
+        <display-name>com.ibm.cicsdev.springboot.jcics</display-name>
+        <web-resource-collection>
+            <web-resource-name>com.ibm.cicsdev.springboot.jcics</web-resource-name>
+            <description>Protection rules for all servlets</description>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description>All Authenticated users </description>
+            <role-name>cicsAllAuthenticated</role-name>
+        </auth-constraint>
+    </security-constraint>   
+    <security-role>
+        <description>The CICS cicsAllAuthenticated role</description>
+        <role-name>cicsAllAuthenticated</role-name>
+    </security-role>
+</web-app>
+
+
+
+
+Build the aplication
+We have now completed all the tasks required to develop our application. The next thing we must do is to build the application and deploy it to CICS.
+
+
+Building the application can be done using Maven by right clicking (in Eclipse) the pom.xml file and selecting the appropriate Run option to ask Maven to build the application.
+
+
+If you subsequently add JCICS calls to this application, please add the following dependencies to your pom.xml:
+
+
+<dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>com.ibm.cics</groupId>
+            <artifactId>com.ibm.cics.ts.bom</artifactId>
+            <version>5.5-20191121085445-PH14856</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+</dependencyManagement>
+
+
+<dependency>
+    <groupId>com.ibm.cics</groupId>
+    <artifactId>com.ibm.cics.server</artifactId>
+</dependency>
+
+
+
+
+
+
+
+
+Deploy the WAR into a CICS Liberty JVM server
+There are several ways to deploy the WAR. 
+You can add an <application> element to your server.xml which points to your uploaded WAR file location.
+You can use a CICS bundle. In this article, we will introduce how to deploy the Spring Boot WAR as a WAR bundlepart with a CICS bundle.
+
+
+Define the application to CICS with a CICS Bundle project
+
+
+a) Create a new CICS Bundle Project with id "com.ibm.cicsdev.springboot.jdbc.cicsBundle"
+
+
+Copy the WAR file into this CICS Bundle Project and then add a .warbundle file
+
+
+
+
+The content of the warbundle should be as follows:
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<warbundle symbolicname="com.ibm.cicsdev.springboot.jdbc.blog-0.1.0" jvmserver="YourJVMServerName"/>
+
+
+(where YourJVMServerName is the JVM server where the application will run)
+
+
+This warbundle file can be created by right clicking the CICS bundle project and then:
+clicking New --> other
+from the Select a Wizzard window - open CICS Resources and then click Dynamic Web Project Include
+click Next 
+click the web artifact you wish to include (the war file)
+enter the JVM server name that the application will run on
+
+
+b) Right-click the CICS Bundle Project and then click Export Bundle Project to z/OS UNIX File System. This will place the bundle in a directory on the USS system which you can then point to with a CICS Bundle defintion in CICS
+
+
+c) Create a new CICS Bundle named "JCICSSPG" like this:
+
+
+d) Start and enable your CICS Liberty JVM server. If you don't yet have a Liberty JVM server configured, using CICS auto-configuration is a great way to start. If you enable auto-configuration in the JVM profile, it will generate a basic server.xml when the JVM server is enabled. For more information, see Configuring a Liberty JVM server in the CICS Knowledge Center. 
+
+
+e) Customize the server.xml to add the elements necessary to run the JDBC aplication. You need to ensure you include the following features:
+servlet-3.1 or servlet-4.0
+cicsts:security-1.0
+jdbc-4.0 or jdbc-4.1
+jsp-2.3
+
+
+f) Add DataSource elements and a library id element to define the connection to DB2 from Liberty
+
+
+  <dataSource id="t4a"  jndiName="jdbc/jdbcDataSource" type="javax.sql.DataSource">
+         <jdbcDriver libraryRef="db2Lib"/>
+        <properties.db2.jcc currentSchema="DSN81110" databaseName="DSNV11P2" driverType="4" password="+++++++++++++"
+                      portNumber="<port num>" serverName="<your server name>" user="<user id"/>
+  </dataSource>
+ 
+  <dataSource id="t4b"  jndiName="jdbc/jdbcDataSource-bean" type="javax.sql.DataSource">
+         <jdbcDriver libraryRef="db2Lib"/>
+        <properties.db2.jcc currentSchema="DSN81110" databaseName="DSNV11P2" driverType="4" password="+++++++++++++"
+                       portNumber="<port num>" serverName="<your server name" user="<user id>"/>
+  </dataSource>
+  
+  <library id="db2Lib">
+        <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
+        <fileset dir="/usr/lpp/db2v11/jdbc/lib"/>
+   </library>
+
+
+Note: more than one dataSource is not normally required. This application demonstrates defining the dataSource to the application using the application.properties file and also by using a DataSource @Bean method
+
+
+g) stop and start the Liberty server to bring in these changes.
+
+
+h) Install and enable the CICS Bundle "JCICSSPG" you created in step c).
+
+
+i) Check the Liberty message.log file to see if the Spring Boot application deployed successfully.
+ 
+CWWKT0016I: Web application available (default_host): http://myzos.mycompany.com:myPortNumber/com.ibm.cicsdev.springboot.jdbc.blog-0.1.0/
+
+
+SRVE0292I: Servlet Message - [com.ibm.cicsdev.springboot.jdbc-0.1.0]:.Initializing Spring embedded WebApplicationContext
+
+
+Trying out the sample
+
+
+Find the base URL for the application in the Liberty messages.log 
+    e.g. http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0.
+
+
+Paste the base URL along with the REST service suffix 'allRows' into the browser 
+    e.g. http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/allRows
+
+
+The browser will prompt for basic authentication. Enter a valid userid and password - according to the configured registry for your target Liberty JVM server.
+
+
+All the rows in table EMP should be returned.
+
+
+The allRows request calls a method in the application which uses the application.properties file to determine which datasource definition to use. If you make the same request to REST service allRows2 then the application uses the @Bean annotated dataSource method to determine the correct dataSource. The @Bean method will use the jndiName used in dataSource t4b whereas the application.properties file will used the jndiName specified in t4a.
+    
+Summary of all available interfaces     
+
+
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/allRows
+    
+  >All rows in table EMP will be returned - the datasource is obtained from the application.properties file
+    
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/allRows2
+  
+  >All rows in table EMP will be returned - the datasource is obtained from an @Bean method
+    
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/addEmployee/{firstName}/{lastName}
+  
+  >A new employee record will be created using the first name and last name supplied. All other fields in
+  the table will be set by the application to the same values by this demo application.
+  If successful the employee number created will be returned.
+    
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/oneEmployee/{empno}
+  
+  >A single employee record will be displayed if it exists.
+    
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/updateEmployee/{empNo}/{newSalary}
+  >The employee record will be updated with the salary amount specified.
+    
+http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/deleteEmployee/{empNo}
+  
+  >The employee record with the empNo specified will be deleted if it exists
+
+
+Notes:
+{firstName} and {lastName} should be replaced by names of your choosing.
+>>the definition of FIRSTNME in table EMP is VARCHAR(12)
+>>the definition of LASTNAME in table EMP is VARCHAR(15)
+
+
+{empno} would be replaced by a 6 character employee number. 
+>>the definition of EMPNO in the EMP table is char(6)
+
+
+{newSalary} should be replaced by a numeric amount 
+>>the definition of SALARY in the EMP table is DECIMAL(9, 2)
+
+
+
+
+
