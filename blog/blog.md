@@ -7,12 +7,13 @@ JDBC is a Java API which allows a Java applications to access data stored in a r
 
 The application will allow you to:
 
-* add an employee to the EMP table
-* list all or a single employee 
-* update an existing employee
-* delete delete an existing employee.  
+1. add an employee to the EMP table
+1. list all or a single employee 
+1. update an existing employee
+1. delete an existing employee.  
 
 
+# The Application
 The application is a web application where all requests can be made from a browser. The application uses the Spring Boot web interface to process GET REST requests only. In a real world implementation of this other types of REST interfaces, such as POST, would be more appropriate. GET requests are used here for simplicity.
 
 
@@ -21,6 +22,7 @@ The application source and build scripts are available from github at cics-java-
 
 # Generate the Spring web application
 
+# Generate the Spring web application
 Generate the Spring Boot Java web application using the website https://start.spring.io/ with the following selections:
 * Project: Maven Project
 * Language: Java
@@ -33,12 +35,41 @@ Generate the Spring Boot Java web application using the website https://start.sp
 ** Package Name: com.ibm.cicsdev.springboot.jdbc
 ** Packaging: War
 ** Java: 8
+- __Project:__ Maven Project
+- __Language:__ Java
+- __Spring Boot:__ 2.3.0
+- __Project Metadata
+  - __Group:__ com.ibm.cicsdev
+  - __Artifact:__ com.ibm.cicsdev.springboot.jdbc
+  - __Name:__ com.ibm.cicsdev.springboot.jdbc
+  - __Description:__ Demo project for Spring Boot JDBC
+  - __Package Name:__ com.ibm.cicsdev.springboot.jdbc
+  - __Packaging:__ War
+  - __Java:__ 8
+- __Project:__ Maven Project
+- __Language:__ Java
+- __Spring Boot:__ 2.3.0
+- __Project Metadata
+  - __Group:__ com.ibm.cicsdev
+  - __Artifact:__ com.ibm.cicsdev.springboot.jdbc
+  - __Name:__ com.ibm.cicsdev.springboot.jdbc
+  - __Description:__ Demo project for Spring Boot JDBC
+  - __Package Name:__ com.ibm.cicsdev.springboot.jdbc
+  - __Packaging:__ War
+  - __Java:__ 8
 
 
-From the Dependencies portion of the screen, click ADD DEPENDENCIES and select/find Spring Data JDBC and Spring Web
+From the Dependencies portion of the screen, click ADD DEPENDENCIES and select/find *Spring Data JDBC* and *Spring Web*
+
+Click on *Generate*, download and unzip the sample project. This can then be imported into your your IDE. This blog will describe importing the project in to Eclipse.
 
 
-
+# Import into Eclipse
+Import the project by: 
+1. selecting **File > Import > Existing Maven Project**.
+1. navigate to the root directory of the application (the one you just unzipped)
+the project box should show the pom.xml file for the application and it should be checked. 
+1. Click Finish
 
 
 
@@ -111,9 +142,9 @@ The DDL used to create this table is as follows:
   NOT VOLATILE                                                      
   APPEND NO  ;                                                      
      */ 
-
 ```
 
+```
 We need to have a representation of this table in our application so the first item we need to add is a definition of an employee object. This is done in the Employee.java class
 
 ```
@@ -488,19 +519,21 @@ The REST controller contains an @Autowired annotation:
 
 ```
 @Autowired  
-    private EmployeeService employeeService;
+private EmployeeService employeeService;
 ```
-
+```
 
 which enables the controller methods to call methods which service the incoming requests.  This service class makes the calls to the database using the jdbcTemplate class supplied by Spring. It is also often calls the dao(data access object) class. 
 
 
-jdbcTemplate "is the central class in the JDBC core package. It simplifies the use of JDBC and helps to avoid common errors. It executes core JDBC workflow, leaving application code to provide SQL and extract results. This class executes SQL queries or updates, initiating iteration over ResultSets and catching JDBC exceptions and translating them to the generic, more informative exception hierarchy defined in the org.springframework.dao package".    (from https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html  )
+jdbcTemplate _"is the central class in the JDBC core package. It simplifies the use of JDBC and helps to avoid common errors. It executes core JDBC workflow, leaving application code to provide SQL and extract results. This class executes SQL queries or updates, initiating iteration over ResultSets and catching JDBC exceptions and translating them to the generic, more informative exception hierarchy defined in the org.springframework.dao package"._    
+
+(from https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html  )
 
 
 jdbcTemplate in this example application uses the query and update methods of that class. The jdbcTemplate in each case is passed a piece of SQL as a string and any result sets are processed by jdbcTemplate and returned in the appropriate object. In the case of the queries using the update method the jdbcTemplate.update returns an integer indicating the number of rows which have been affected by the update. 
  
- The service class for this application EmployeeService.java is as follows:
+The service class for this application EmployeeService.java is as follows:
 
 ```
 package com.ibm.cicsdev.springboot.jdbc;
@@ -780,6 +813,7 @@ public class EmployeeService {
 
     }
 }
+```
 
 ```
 
@@ -807,12 +841,12 @@ add the following method to the class 
 
 ```
 and also the following constant definition
-
+```
 ```
     // name the dataSource jndi name
-    private static final String DATA_SOURCE = "jdbc/jdbcDataSource-bean";
+    private static final String DATA_SOURCE = "jdbc/jdbcDataSource";
 ```
-
+```
 
 the value of the constant can be somnthing else of your chosing, but it must match the value we will set later in the datasource defintion we will create in our server.xml in a forthcoming step in this blog.
 
@@ -824,22 +858,22 @@ import org.springframework.context.annotation.Bean;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+```
 
-
-Configure application.properties
+## Configure application.properties
 In the src/main/resources directory edit the application.properties file to contain the following line
 
-
+```
 spring.datasource.jndi-name=jdbc/jdbcDataSource
-
+```
 
 the name value should match exactly the jndi name which will be specified in the dataSource definition which we will add to server.xml later in this blog.
 
 
-Add a web.xml to the application
+## Add a web.xml to the application
 To avoid the warnings about using BLANK and default CICS userid, you need to include a simple web.xml to the application to enable basic authentication. Please store this web.xml in src/main/webapp/WEB-INF. 
 
-
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
     <display-name>cics-java-liberty-springboot-jcics</display-name>   
@@ -863,6 +897,7 @@ To avoid the warnings about using BLANK and default CICS userid, you need to inc
         <role-name>cicsAllAuthenticated</role-name>
     </security-role>
 </web-app>
+```
 
 ```
 ## Build the application
@@ -896,8 +931,13 @@ If you subsequently add JCICS calls to this application, please add the followin
 ```
 
 
+#Deploy the WAR into a CICS Liberty JVM server
+There are two ways to deploy the WAR. 
+1. You can add an <application> element to your server.xml which points to your uploaded WAR file location.
+2. You can use a CICS bundle. In this article, we will introduce how to deploy the Spring Boot WAR as a WAR bundlepart with a CICS bundle.
 
 
+#Define the application to CICS with a CICS Bundle project
 
 
 
@@ -957,7 +997,7 @@ e) Customize the server.xml to add the elements necessary to run the JDBC aplica
 
 f) Add DataSource elements and a library id element to define the connection to DB2 from Liberty
 
-
+```xml
 ``` xml
   <dataSource id="t4a"  jndiName="jdbc/jdbcDataSource" type="javax.sql.DataSource">
          <jdbcDriver libraryRef="db2Lib"/>
@@ -996,6 +1036,7 @@ SRVE0292I: Servlet Message - [com.ibm.cicsdev.springboot.jdbc-0.1.0]:.Initializi
 # Trying out the sample
 
 
+#Trying out the sample
 Find the base URL for the application in the Liberty messages.log 
     e.g. `http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0.`
 
