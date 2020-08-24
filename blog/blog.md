@@ -1,4 +1,4 @@
-Introduction
+# Introduction
 This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is destined to be deployed into a Liberty server, running in CICS. 
 
 
