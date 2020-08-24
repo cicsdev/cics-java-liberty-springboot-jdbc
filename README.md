@@ -124,14 +124,14 @@ E.g. as follows:
     </dataSource>
 ```        
 
-### application.properties
+- set spring.datasource.jndi-name in application.properties
 The file application.properties in /src/main/resources/ contains the setting 
 ``` shell
 spring.datasource.jndi-name=jdbc/jdbcDataSource
 ```
 which will direct the application to the dataSource defintion in the server.xml which must have parameter jndiName set to the same value specified in the application properties file
 
-### datasource Bean alternative
+- alternatively use a datasource Bean
 the jndi-name can alternatively be set using a datasource bean in the application code. In order to do this you would define the bean in the application. To do this the application.java class would be as follows:
 
 ``` 
