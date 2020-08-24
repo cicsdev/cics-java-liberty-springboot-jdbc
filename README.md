@@ -133,7 +133,8 @@ spring.datasource.jndi-name=jdbc/jdbcDataSource
 which will direct the application to the dataSource defintion in the server.xml which must have parameter jndiName set to the same value specified in the application properties file
 
 - alternatively use a datasource Bean
-the jndi-name can alternatively be set using a datasource bean in the application code. In order to do this you would define the bean in the application. To do this the application.java class would be as follows:
+
+The jndi-name can alternatively be set using a datasource bean in the application code. In order to do this you would define the bean in the application. To do this the application.java class would be as follows:
 
 ``` 
 @SpringBootApplication
