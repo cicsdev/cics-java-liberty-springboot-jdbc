@@ -1,4 +1,4 @@
-Introduction
+# Introduction
 This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is destined to be deployed into a Liberty server, running in CICS. 
 
 
@@ -6,10 +6,11 @@ JDBC is a Java API which allows a Java applications to access data stored in a r
 
 
 The application will allow you to:
-add an employee to the EMP table
-list all or a single employee 
-update an existing employee
-delete delete an existing employee.  
+
+* add an employee to the EMP table
+* list all or a single employee 
+* update an existing employee
+* delete delete an existing employee.  
 
 
 The application is a web application where all requests can be made from a browser. The application uses the Spring Boot web interface to process GET REST requests only. In a real world implementation of this other types of REST interfaces, such as POST, would be more appropriate. GET requests are used here for simplicity.
@@ -18,19 +19,20 @@ The application is a web application where all requests can be made from a brows
 The application source and build scripts are available from github at cics-java-liberty-springboot-jdbc. 
 
 
-Generate the Spring web application
+# Generate the Spring web application
+
 Generate the Spring Boot Java web application using the website https://start.spring.io/ with the following selections:
-Project: Maven Project
-Language: Java
-Spring Boot: 2.3.0
-Project Metadata
-Group: com.ibm.cicsdev
-Artifact: com.ibm.cicsdev.springboot.jdbc
-Name: com.ibm.cicsdev.springboot.jdbc
-Description: Demo project for Spring Boot JDBC
-Package Name: com.ibm.cicsdev.springboot.jdbc
-Packaging: War
-Java: 8
+* Project: Maven Project
+* Language: Java
+* Spring Boot: 2.3.0
+* Project Metadata
+** Group: com.ibm.cicsdev
+** Artifact: com.ibm.cicsdev.springboot.jdbc
+** Name: com.ibm.cicsdev.springboot.jdbc
+** Description: Demo project for Spring Boot JDBC
+** Package Name: com.ibm.cicsdev.springboot.jdbc
+** Packaging: War
+** Java: 8
 
 
 From the Dependencies portion of the screen, click ADD DEPENDENCIES and select/find Spring Data JDBC and Spring Web
@@ -43,12 +45,13 @@ From the Dependencies portion of the screen, click ADD DEPENDENCIES and select/f
 Click on Generate, download and unzip the sample project, which can then be imported into your your IDE. 
 
 
-Import into Eclipse
-Import the project by 
-selecting File > Import > Existing Maven Project.
-navigate to the root directory of the application (the one you just unzipped)
-the project box should show the pom.xml file for the application and it shoul dbe checked. 
-Click Finish
+# Import into Eclipse
+Import the project by:
+
+1 selecting File > Import > Existing Maven Project.
+2 navigate to the root directory of the application (the one you just unzipped)
+3 the project box should show the pom.xml file for the application and it shoul dbe checked. 
+4 Click Finish
 
 
 With the Java source expanded it should look similar to the following once the application has downloaded all its dependencies and the application has correctly built.
@@ -57,11 +60,12 @@ With the Java source expanded it should look similar to the following once the a
 We now have a basic application which does not at this point do anything.
 
 
-Construct the application
+#Construct the application
+
 We will now add the various pieces of code to the application which will allow us to access the data in the EMP table in Db2.
 
 
-Add a class to define the data object(s)
+## Add a class to define the data object(s)
 
 
 This example application will make use of a supplied Db2 table which contains employee data. The supplied table should be found on your Db2 for z/OS system in database DSN8D11A and specifically in schema DSN81110.
@@ -69,7 +73,7 @@ This example application will make use of a supplied Db2 table which contains em
 
 The DDL used to create this table is as follows:
 
-
+```
     /*
      * Db2 supplied EMP table 
      * 
@@ -108,10 +112,11 @@ The DDL used to create this table is as follows:
   APPEND NO  ;                                                      
      */ 
 
+```
 
 We need to have a representation of this table in our application so the first item we need to add is a definition of an employee object. This is done in the Employee.java class
 
-
+```
 package com.ibm.cicsdev.springboot.jdbc;
 
 
@@ -358,12 +363,12 @@ public class Employee {
 
     
 }
-
+```
 
 This is a standard java representation of our employee record which contains definitions for each column in the table, a constructor and getters and setters for each field.
 
 
-Add a REST Controller
+## Add a REST Controller
 
 
 The REST controller is the code which will process the requests coming in from the browser. It will direct the incoming requests to the appropriate service method to complete the request.
@@ -371,7 +376,7 @@ The REST controller is the code which will process the requests coming in from t
 
 Code for EmployeeRestController.java
 
-
+``` code 
 package com.ibm.cicsdev.springboot.jdbc;
 
 
@@ -475,16 +480,16 @@ public class EmployeeRestController {
 
     
 }
+```
 
+##Add Service class
 
-
-
-Add Service class
 The REST controller contains an @Autowired annotation:
 
-
+```
 @Autowired  
     private EmployeeService employeeService;
+```
 
 
 which enables the controller methods to call methods which service the incoming requests.  This service class makes the calls to the database using the jdbcTemplate class supplied by Spring. It is also often calls the dao(data access object) class. 
@@ -497,7 +502,7 @@ jdbcTemplate in this example application uses the query and update methods of th
  
  The service class for this application EmployeeService.java is as follows:
 
-
+```
 package com.ibm.cicsdev.springboot.jdbc;
 
 
@@ -776,18 +781,18 @@ public class EmployeeService {
     }
 }
 
+```
 
 
+##Update the Application.java file
 
-Update the Application.java file
 
-
-We need to add a datasource bean to the application which will be used by one of the REST interfaces in the EmployeeRestController to demomstrate the use of the DataSourceBean
+We need to add a datasource bean to the application which will be used by one of the REST interfaces in the EmployeeRestController to demonstrate the use of the DataSourceBean
 
 
 add the following method to the class 
 
-
+``
     @Bean
     public DataSource dataSource() {        
         try {
@@ -800,12 +805,13 @@ add the following method to the class 
         }
     } 
 
+```
+and also the following constant definition
 
-and also the following constant defintion
-
-
+```
     // name the dataSource jndi name
     private static final String DATA_SOURCE = "jdbc/jdbcDataSource-bean";
+```
 
 
 the value of the constant can be somnthing else of your chosing, but it must match the value we will set later in the datasource defintion we will create in our server.xml in a forthcoming step in this blog.
@@ -813,7 +819,7 @@ the value of the constant can be somnthing else of your chosing, but it must mat
 
 You will need to resolve some imports when you paste the bean code into the class.
 
-
+```
 import org.springframework.context.annotation.Bean;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -858,10 +864,9 @@ To avoid the warnings about using BLANK and default CICS userid, you need to inc
     </security-role>
 </web-app>
 
+```
+## Build the application
 
-
-
-Build the aplication
 We have now completed all the tasks required to develop our application. The next thing we must do is to build the application and deploy it to CICS.
 
 
@@ -870,7 +875,7 @@ Building the application can be done using Maven by right clicking (in Eclipse) 
 
 If you subsequently add JCICS calls to this application, please add the following dependencies to your pom.xml:
 
-
+``` xml
 <dependencyManagement>
     <dependencies>
         <dependency>
@@ -888,6 +893,7 @@ If you subsequently add JCICS calls to this application, please add the followin
     <groupId>com.ibm.cics</groupId>
     <artifactId>com.ibm.cics.server</artifactId>
 </dependency>
+```
 
 
 
@@ -895,14 +901,14 @@ If you subsequently add JCICS calls to this application, please add the followin
 
 
 
-
-Deploy the WAR into a CICS Liberty JVM server
+#Deploy the WAR into a CICS Liberty JVM server
 There are several ways to deploy the WAR. 
-You can add an <application> element to your server.xml which points to your uploaded WAR file location.
-You can use a CICS bundle. In this article, we will introduce how to deploy the Spring Boot WAR as a WAR bundlepart with a CICS bundle.
+
+1 You can add an <application> element to your server.xml which points to your uploaded WAR file location.
+2 You can use a CICS bundle. In this article, we will introduce how to deploy the Spring Boot WAR as a WAR bundlepart with a CICS bundle.
 
 
-Define the application to CICS with a CICS Bundle project
+#Define the application to CICS with a CICS Bundle project
 
 
 a) Create a new CICS Bundle Project with id "com.ibm.cicsdev.springboot.jdbc.cicsBundle"
@@ -914,19 +920,22 @@ Copy the WAR file into this CICS Bundle Project and then add a .warbundle file
 
 
 The content of the warbundle should be as follows:
+
+``` xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <warbundle symbolicname="com.ibm.cicsdev.springboot.jdbc.blog-0.1.0" jvmserver="YourJVMServerName"/>
-
+```
 
 (where YourJVMServerName is the JVM server where the application will run)
 
 
 This warbundle file can be created by right clicking the CICS bundle project and then:
-clicking New --> other
-from the Select a Wizzard window - open CICS Resources and then click Dynamic Web Project Include
-click Next 
-click the web artifact you wish to include (the war file)
-enter the JVM server name that the application will run on
+
+* clicking New --> other
+* from the Select a Wizzard window - open CICS Resources and then click Dynamic Web Project Include
+* click Next 
+*click the web artifact you wish to include (the war file)
+* enter the JVM server name that the application will run on
 
 
 b) Right-click the CICS Bundle Project and then click Export Bundle Project to z/OS UNIX File System. This will place the bundle in a directory on the USS system which you can then point to with a CICS Bundle defintion in CICS
@@ -939,15 +948,17 @@ d) Start and enable your CICS Liberty JVM server. If you don't yet have a Libert
 
 
 e) Customize the server.xml to add the elements necessary to run the JDBC aplication. You need to ensure you include the following features:
-servlet-3.1 or servlet-4.0
-cicsts:security-1.0
-jdbc-4.0 or jdbc-4.1
-jsp-2.3
+
+* servlet-3.1 or servlet-4.0
+* cicsts:security-1.0
+* jdbc-4.0 or jdbc-4.1
+* jsp-2.3
 
 
 f) Add DataSource elements and a library id element to define the connection to DB2 from Liberty
 
 
+``` xml
   <dataSource id="t4a"  jndiName="jdbc/jdbcDataSource" type="javax.sql.DataSource">
          <jdbcDriver libraryRef="db2Lib"/>
         <properties.db2.jcc currentSchema="DSN81110" databaseName="DSNV11P2" driverType="4" password="+++++++++++++"
@@ -965,9 +976,7 @@ f) Add DataSource elements and a library id element to define the connection to 
         <fileset dir="/usr/lpp/db2v11/jdbc/lib"/>
    </library>
 
-
-Note: more than one dataSource is not normally required. This application demonstrates defining the dataSource to the application using the application.properties file and also by using a DataSource @Bean method
-
+```
 
 g) stop and start the Liberty server to bring in these changes.
 
@@ -976,22 +985,23 @@ h) Install and enable the CICS Bundle "JCICSSPG" you created in step c).
 
 
 i) Check the Liberty message.log file to see if the Spring Boot application deployed successfully.
- 
+
+``` 
 CWWKT0016I: Web application available (default_host): http://myzos.mycompany.com:myPortNumber/com.ibm.cicsdev.springboot.jdbc.blog-0.1.0/
 
 
 SRVE0292I: Servlet Message - [com.ibm.cicsdev.springboot.jdbc-0.1.0]:.Initializing Spring embedded WebApplicationContext
+```
 
-
-Trying out the sample
+# Trying out the sample
 
 
 Find the base URL for the application in the Liberty messages.log 
-    e.g. http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0.
+    e.g. `http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0.`
 
 
 Paste the base URL along with the REST service suffix 'allRows' into the browser 
-    e.g. http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/allRows
+    e.g. `http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc-0.1.0/allRows`
 
 
 The browser will prompt for basic authentication. Enter a valid userid and password - according to the configured registry for your target Liberty JVM server.
@@ -1002,31 +1012,31 @@ All the rows in table EMP should be returned.
 
 The allRows request calls a method in the application which uses the application.properties file to determine which datasource definition to use. If you make the same request to REST service allRows2 then the application uses the @Bean annotated dataSource method to determine the correct dataSource. The @Bean method will use the jndiName used in dataSource t4b whereas the application.properties file will used the jndiName specified in t4a.
     
-Summary of all available interfaces     
+#Summary of all available interfaces     
 
 
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/allRows
+`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/allRows`
     
-  >All rows in table EMP will be returned - the datasource is obtained from the application.properties file
+ > All rows in table EMP will be returned - the datasource is obtained from the application.properties file
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/allRows2
+`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/allRows2`
   
   >All rows in table EMP will be returned - the datasource is obtained from an @Bean method
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/addEmployee/{firstName}/{lastName}
+`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/addEmployee/{firstName}/{lastName}`
   
   >A new employee record will be created using the first name and last name supplied. All other fields in
   the table will be set by the application to the same values by this demo application.
   If successful the employee number created will be returned.
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/oneEmployee/{empno}
+`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/oneEmployee/{empno}`
   
   >A single employee record will be displayed if it exists.
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/updateEmployee/{empNo}/{newSalary}
+`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/updateEmployee/{empNo}/{newSalary}`
   >The employee record will be updated with the salary amount specified.
     
-http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/deleteEmployee/{empNo}
+`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/deleteEmployee/{empNo}`
   
   >The employee record with the empNo specified will be deleted if it exists
 
