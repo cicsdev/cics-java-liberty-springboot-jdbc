@@ -108,7 +108,6 @@ This creates a WAR file in the `target` directory.
 >**Note:** `servlet-4.0` will only work for CICS TS V5.5 or later
 
 - add a datasource definition to 'server.xml'.
-this sample uses two (almost identical) data source definitions in order to demonstrate two different methods of identifying the datasource to be used by the application.
 
 E.g. as follows:
 
@@ -125,20 +124,7 @@ E.g. as follows:
     </dataSource>
 ```        
 
-``` XML
-<dataSource id="t2b" jndiName="jdbc/jdbcDataSource-bean" transactional="false">
-        <jdbcDriver>   
-            <library name="DB2LIB">
-                <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
-                <fileset dir="/usr/lpp/db2v11/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
-            </library>
-        </jdbcDriver>
-        <properties.db2.jcc currentSchema="DSN81110" driverType="2"/>
-        <connectionManager agedTimeout="0"/>
-    </dataSource>
-```
-
-Both type 2 dataSource connections above are the same except for the `jndiName` value. 
+The file application.properties in /src/main/resources/ contains the setting *spring.datasource.jndi-name=jdbc/jdbcDataSource`jndiName` value. 
 >The `jndiName` defined in dataSource t2a is referenced by the `application.properties` file in the `resources` directory of the application.
 
 >The `jndiName` defined in dataSource t2b is referenced by an `@Bean` annotated dataSource() method in the application.

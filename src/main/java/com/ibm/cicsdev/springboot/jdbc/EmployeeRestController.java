@@ -64,10 +64,9 @@ public class EmployeeRestController
 	 *  example url http://<server>:<port>/allRows
 	 *  
 	 * @return a list of employees
-	 * @throws NamingException
 	 */
 	@GetMapping({"/allRows","/allRows/"})
-	public List<Employee> getAllRows() throws NamingException
+	public List<Employee> getAllRows() 
 	{
 		return employeeService.selectAll();
 	}

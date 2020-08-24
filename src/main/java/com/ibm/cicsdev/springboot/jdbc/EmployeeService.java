@@ -44,7 +44,7 @@ public class EmployeeService
 	 * @return a list of employees
 	 * @throws NamingException
 	 */
-	public List<Employee> selectAll() throws NamingException 
+	public List<Employee> selectAll() 
 	{
 		/*
 		 * Select all rows from the emp table
@@ -82,7 +82,7 @@ public class EmployeeService
 	 * @return a list of employees
 	 * @throws NamingException
 	 */
-	public List<Employee> selectAllUsingBeanDataSource() throws NamingException 
+	public List<Employee> selectAllUsingBeanDataSource()
 	{
 		/*
 		 * Select all rows from the emp table
@@ -91,9 +91,6 @@ public class EmployeeService
 		 *   dataSource information comes injected Bean datasource2
 		 *   this will override the setting in the application.properties file
 		 */
-
-		//set the data source from the injected bean
-		jdbcTemplate = new JdbcTemplate(datasource2);	    
 
 		//set up the select SQL
 		String sql = "SELECT * FROM emp";
