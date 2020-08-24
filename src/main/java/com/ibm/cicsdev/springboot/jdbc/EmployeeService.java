@@ -36,10 +36,6 @@ public class EmployeeService
 	@Autowired
 	private JdbcTemplate jdbcTemplate;	
 
-	// 
-	@Autowired
-	private DataSource datasource2;
-
 	private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd"); 
 	private LocalDateTime now = LocalDateTime.now();
 	
@@ -189,7 +185,7 @@ public class EmployeeService
 		String phoneNo = "1234";
 
 		//get today's date and set as hiredate
-    	String hireDate= dtf.format(now);  
+		String hireDate= dtf.format(now);  
 
 		String job = "Engineer";
 		int edLevel =3 ;

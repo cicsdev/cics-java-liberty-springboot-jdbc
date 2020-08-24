@@ -23,7 +23,7 @@ public class Employee
 	 * Db2 supplied EMP table 
 	 * 
 	 * CREATE TABLE DSN81110.EMP                                        
-		(EMPNO                CHAR(6) FOR SBCS DATA NOT NULL,           
+		(EMPNO               CHAR(6) FOR SBCS DATA NOT NULL,           
 		FIRSTNME             VARCHAR(12) FOR SBCS DATA NOT NULL,        
 		MIDINIT              CHAR(1) FOR SBCS DATA NOT NULL,            
 		LASTNAME             VARCHAR(15) FOR SBCS DATA NOT NULL,        

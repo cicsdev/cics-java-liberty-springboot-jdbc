@@ -14,8 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.NamingException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,12 +49,10 @@ public class EmployeeRestController
 		Date myDate = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd:HH-mm-ss.SSSSSS");
 		String myDateString = sdf.format(myDate);
-		//return "Hello from employee service controller. Date/Time: " + myDateString;
 		
 		return "<h1>Spring Boot JDBC Employee REST sample. Date/Time: " + myDateString + "</h1>"
 		+ "<h3>Usage:</h3>"
 		+ "<b>/allRows</b> - return a list of employees using a classic SELECT statement<br>"
-		+ "<b>/allRowsFromTemplate</b> - return a lost of employees using Spring's JDBC template<br>"
 		+ "<b>/oneEmployee/{empno}</b> - a list of employee records for the employee number provided<br>"
 		+ "<b>/addEmployee/{firstName}/{lastName}</b> - add an employee<br>"				
 		+ "<b>/deleteEmployee/{empNo}</b> - delete an employee<br>"
@@ -74,19 +70,6 @@ public class EmployeeRestController
 	public List<Employee> getAllRows() throws NamingException
 	{
 		return employeeService.selectAll();
-	}
-	
-	
-	/**
-	 *  example url http://<server>:<port>/allRows2
-	 *  
-	 * @return a list of employees
-	 * @throws NamingException
-	 */
-	@GetMapping({"/allRowsFromTemplate","/allRowsFromTemplate/"})
-	public List<Employee> getAllRows2() throws NamingException 
-	{
-		return employeeService.selectAllUsingBeanDataSource();
 	}
 	
 	
