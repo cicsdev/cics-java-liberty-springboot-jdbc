@@ -9,9 +9,10 @@ The application will allow you to:
 1. add an employee to the EMP table
 1. list all or a single employee 
 1. update an existing employee
-1. delete delete an existing employee.  
+1. delete an existing employee.  
 
 
+# The Application
 The application is a web application where all requests can be made from a browser. The application uses the Spring Boot web interface to process GET REST requests only. In a real world implementation of this other types of REST interfaces, such as POST, would be more appropriate. GET requests are used here for simplicity.
 
 
@@ -33,19 +34,14 @@ Generate the Spring Boot Java web application using the website https://start.sp
   - __Java:__ 8
 
 
-From the Dependencies portion of the screen, click ADD DEPENDENCIES and select/find Spring Data JDBC and Spring Web
+From the Dependencies portion of the screen, click ADD DEPENDENCIES and select/find *Spring Data JDBC* and *Spring Web*
 
-
-
-
-
-
-Click on Generate, download and unzip the sample project, which can then be imported into your your IDE. 
+Click on *Generate*, download and unzip the sample project. This can then be imported into your your IDE. This blog will describe importing the project in to Eclipse.
 
 
 # Import into Eclipse
 Import the project by: 
-1. selecting File > Import > Existing Maven Project.
+1. selecting **File > Import > Existing Maven Project**.
 1. navigate to the root directory of the application (the one you just unzipped)
 the project box should show the pom.xml file for the application and it should be checked. 
 1. Click Finish
