@@ -19,33 +19,8 @@ The application is a web application where all requests can be made from a brows
 
 The application source and build scripts are available from github at cics-java-liberty-springboot-jdbc. 
 
-
-# Generate the Spring web application
-
 # Generate the Spring web application
 Generate the Spring Boot Java web application using the website https://start.spring.io/ with the following selections:
-* Project: Maven Project
-* Language: Java
-* Spring Boot: 2.3.0
-* Project Metadata
-** Group: com.ibm.cicsdev
-** Artifact: com.ibm.cicsdev.springboot.jdbc
-** Name: com.ibm.cicsdev.springboot.jdbc
-** Description: Demo project for Spring Boot JDBC
-** Package Name: com.ibm.cicsdev.springboot.jdbc
-** Packaging: War
-** Java: 8
-- __Project:__ Maven Project
-- __Language:__ Java
-- __Spring Boot:__ 2.3.0
-- __Project Metadata
-  - __Group:__ com.ibm.cicsdev
-  - __Artifact:__ com.ibm.cicsdev.springboot.jdbc
-  - __Name:__ com.ibm.cicsdev.springboot.jdbc
-  - __Description:__ Demo project for Spring Boot JDBC
-  - __Package Name:__ com.ibm.cicsdev.springboot.jdbc
-  - __Packaging:__ War
-  - __Java:__ 8
 - __Project:__ Maven Project
 - __Language:__ Java
 - __Spring Boot:__ 2.3.0
@@ -61,6 +36,8 @@ Generate the Spring Boot Java web application using the website https://start.sp
 
 From the Dependencies portion of the screen, click ADD DEPENDENCIES and select/find *Spring Data JDBC* and *Spring Web*
 
+![springInitializrScreen](graphics/springInitializrScreen.png) 
+
 Click on *Generate*, download and unzip the sample project. This can then be imported into your your IDE. This blog will describe importing the project in to Eclipse.
 
 
@@ -71,21 +48,9 @@ Import the project by: 
 the project box should show the pom.xml file for the application and it should be checked. 
 1. Click Finish
 
-
-
-Click on Generate, download and unzip the sample project, which can then be imported into your your IDE. 
-
-
-# Import into Eclipse
-Import the project by:
-
-1 selecting File > Import > Existing Maven Project.
-2 navigate to the root directory of the application (the one you just unzipped)
-3 the project box should show the pom.xml file for the application and it shoul dbe checked. 
-4 Click Finish
-
-
 With the Java source expanded it should look similar to the following once the application has downloaded all its dependencies and the application has correctly built.
+
+![projectExplorer](graphics/projectExplorer.png) 
 
 
 We now have a basic application which does not at this point do anything.
@@ -144,7 +109,6 @@ The DDL used to create this table is as follows:
      */ 
 ```
 
-```
 We need to have a representation of this table in our application so the first item we need to add is a definition of an employee object. This is done in the Employee.java class
 
 ```
@@ -407,7 +371,7 @@ The REST controller is the code which will process the requests coming in from t
 
 Code for EmployeeRestController.java
 
-``` code 
+```  
 package com.ibm.cicsdev.springboot.jdbc;
 
 
@@ -521,7 +485,7 @@ The REST controller contains an @Autowired annotation:
 @Autowired  
 private EmployeeService employeeService;
 ```
-```
+
 
 which enables the controller methods to call methods which service the incoming requests.  This service class makes the calls to the database using the jdbcTemplate class supplied by Spring. It is also often calls the dao(data access object) class. 
 
@@ -534,6 +498,7 @@ jdbcTemplate _"is the central class in the JDBC core package. It simplifies the 
 jdbcTemplate in this example application uses the query and update methods of that class. The jdbcTemplate in each case is passed a piece of SQL as a string and any result sets are processed by jdbcTemplate and returned in the appropriate object. In the case of the queries using the update method the jdbcTemplate.update returns an integer indicating the number of rows which have been affected by the update. 
  
 The service class for this application EmployeeService.java is as follows:
+
 
 ```
 package com.ibm.cicsdev.springboot.jdbc;
@@ -815,8 +780,6 @@ public class EmployeeService {
 }
 ```
 
-```
-
 
 ##Update the Application.java file
 
@@ -826,7 +789,7 @@ We need to add a datasource bean to the application which will be used by one of
 
 add the following method to the class 
 
-``
+```
     @Bean
     public DataSource dataSource() {        
         try {
@@ -841,12 +804,12 @@ add the following method to the class 
 
 ```
 and also the following constant definition
-```
+
 ```
     // name the dataSource jndi name
     private static final String DATA_SOURCE = "jdbc/jdbcDataSource";
 ```
-```
+
 
 the value of the constant can be somnthing else of your chosing, but it must match the value we will set later in the datasource defintion we will create in our server.xml in a forthcoming step in this blog.
 
@@ -899,7 +862,6 @@ To avoid the warnings about using BLANK and default CICS userid, you need to inc
 </web-app>
 ```
 
-```
 ## Build the application
 
 We have now completed all the tasks required to develop our application. The next thing we must do is to build the application and deploy it to CICS.
@@ -939,20 +901,9 @@ There are two ways to deploy the WAR. 
 
 #Define the application to CICS with a CICS Bundle project
 
-
-
-#Deploy the WAR into a CICS Liberty JVM server
-There are several ways to deploy the WAR. 
-
-1 You can add an <application> element to your server.xml which points to your uploaded WAR file location.
-2 You can use a CICS bundle. In this article, we will introduce how to deploy the Spring Boot WAR as a WAR bundlepart with a CICS bundle.
-
-
-#Define the application to CICS with a CICS Bundle project
-
-
 a) Create a new CICS Bundle Project with id "com.ibm.cicsdev.springboot.jdbc.cicsBundle"
 
+![cicsBundle](graphics/cicsBundle.png) 
 
 Copy the WAR file into this CICS Bundle Project and then add a .warbundle file
 
@@ -997,8 +948,8 @@ e) Customize the server.xml to add the elements necessary to run the JDBC aplica
 
 f) Add DataSource elements and a library id element to define the connection to DB2 from Liberty
 
+
 ```xml
-``` xml
   <dataSource id="t4a"  jndiName="jdbc/jdbcDataSource" type="javax.sql.DataSource">
          <jdbcDriver libraryRef="db2Lib"/>
         <properties.db2.jcc currentSchema="DSN81110" databaseName="DSNV11P2" driverType="4" password="+++++++++++++"
