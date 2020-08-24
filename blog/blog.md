@@ -908,7 +908,7 @@ a) Create a new CICS Bundle Project with id "com.ibm.cicsdev.springboot.jdbc.cic
 
 Copy the WAR file into this CICS Bundle Project and then add a .warbundle file
 
-
+![cicsBundle](graphics/cicsBundle.png) 
 
 
 The content of the warbundle should be as follows:
@@ -933,7 +933,9 @@ This warbundle file can be created by right clicking the CICS bundle project and
 b) Right-click the CICS Bundle Project and then click Export Bundle Project to z/OS UNIX File System. This will place the bundle in a directory on the USS system which you can then point to with a CICS Bundle defintion in CICS
 
 
-c) Create a new CICS Bundle named "JCICSSPG" like this:
+c) Create a new CICS Bundle like this:
+
+![newBundle](graphics/newBundleDefintion.png)
 
 
 d) Start and enable your CICS Liberty JVM server. If you don't yet have a Liberty JVM server configured, using CICS auto-configuration is a great way to start. If you enable auto-configuration in the JVM profile, it will generate a basic server.xml when the JVM server is enabled. For more information, see Configuring a Liberty JVM server in the CICS Knowledge Center. 
