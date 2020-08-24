@@ -903,7 +903,7 @@ There are two ways to deploy the WAR. 
 
 a) Create a new CICS Bundle Project with id "com.ibm.cicsdev.springboot.jdbc.cicsBundle"
 
-![cicsBundle](graphics/cicsBundle.png) 
+![cicsBundle](graphics/cicsBundleSelectwizard.jpg) 
 
 Copy the WAR file into this CICS Bundle Project and then add a .warbundle file
 
@@ -956,12 +956,6 @@ f) Add DataSource elements and a library id element to define the connection to 
                       portNumber="<port num>" serverName="<your server name>" user="<user id"/>
   </dataSource>
  
-  <dataSource id="t4b"  jndiName="jdbc/jdbcDataSource-bean" type="javax.sql.DataSource">
-         <jdbcDriver libraryRef="db2Lib"/>
-        <properties.db2.jcc currentSchema="DSN81110" databaseName="DSNV11P2" driverType="4" password="+++++++++++++"
-                       portNumber="<port num>" serverName="<your server name" user="<user id>"/>
-  </dataSource>
-  
   <library id="db2Lib">
         <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
         <fileset dir="/usr/lpp/db2v11/jdbc/lib"/>
