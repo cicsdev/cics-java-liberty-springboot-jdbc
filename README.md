@@ -124,10 +124,55 @@ E.g. as follows:
     </dataSource>
 ```        
 
-The file application.properties in /src/main/resources/ contains the setting *spring.datasource.jndi-name=jdbc/jdbcDataSource`jndiName` value. 
->The `jndiName` defined in dataSource t2a is referenced by the `application.properties` file in the `resources` directory of the application.
+### application.properties
+The file application.properties in /src/main/resources/ contains the setting 
+``` shell
+spring.datasource.jndi-name=jdbc/jdbcDataSource
+```
+which will direct the application to the dataSource defintion in the server.xml which must have parameter jndiName set to the same value specified in the application properties file
 
->The `jndiName` defined in dataSource t2b is referenced by an `@Bean` annotated dataSource() method in the application.
+### datasource Bean alternative
+the jndi-name can alternatively be set using a datasource bean in the application code. In order to do this you would define the bean in the application. To do this the application.java class would be as follows:
+
+``` 
+@SpringBootApplication
+public class Application {
+	
+	// name the dataSource jndi name
+	private static final String DATA_SOURCE = "jdbc/jdbcDataSource-bean";
+
+
+	/**
+	 * @param args
+	 * @throws NamingException 
+	 */
+	public static void main(String args[]) throws NamingException {
+		SpringApplication.run(Application.class, args);		
+	}
+	
+	/**
+	 * @return a data Source
+	 */
+	@Bean
+	public static DataSource dataSource() {		
+		try {
+			// Look up the connection factory from Liberty
+			DataSource ds = InitialContext.doLookup(DATA_SOURCE);
+			return ds;
+		} catch (NamingException e) {
+			e.printStackTrace();
+			return null;
+		}
+	} 
+}
+
+```
+and then in the EMployee service class the bean must be Autowired as follows:
+
+```
+@Autowired
+private DataSource myDatasource;
+```
 
 - Deployment option 1:
     - Copy and paste the built WAR from your *target* or *build/libs* directory into a Eclipse CICS bundle project and create a new WAR bundlepart that references the WAR file. Then deploy the CICS bundle project from CICS Explorer using the **Export Bundle Project to z/OS UNIX File System** wizard.
