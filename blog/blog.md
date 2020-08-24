@@ -56,7 +56,7 @@ With the Java source expanded it should look similar to the following once the a
 We now have a basic application which does not at this point do anything.
 
 
-#Construct the application
+# Construct the application
 
 We will now add the various pieces of code to the application which will allow us to access the data in the EMP table in Db2.
 
@@ -477,7 +477,7 @@ public class EmployeeRestController {
 }
 ```
 
-##Add Service class
+## Add Service class
 
 The REST controller contains an @Autowired annotation:
 
@@ -781,7 +781,7 @@ public class EmployeeService {
 ```
 
 
-##Update the Application.java file
+## Update the Application.java file
 
 
 We need to add a datasource bean to the application which will be used by one of the REST interfaces in the EmployeeRestController to demonstrate the use of the DataSourceBean
@@ -893,17 +893,17 @@ If you subsequently add JCICS calls to this application, please add the followin
 ```
 
 
-#Deploy the WAR into a CICS Liberty JVM server
+# Deploy the WAR into a CICS Liberty JVM server
 There are two ways to deploy the WAR. 
 1. You can add an <application> element to your server.xml which points to your uploaded WAR file location.
 2. You can use a CICS bundle. In this article, we will introduce how to deploy the Spring Boot WAR as a WAR bundlepart with a CICS bundle.
 
 
-#Define the application to CICS with a CICS Bundle project
+# Define the application to CICS with a CICS Bundle project
 
 a) Create a new CICS Bundle Project with id "com.ibm.cicsdev.springboot.jdbc.cicsBundle"
 
-![cicsBundle](graphics/cicsBundleSelectwizard.jpg) 
+![wizzard](graphics/cicsBundleSelectwizard.png) 
 
 Copy the WAR file into this CICS Bundle Project and then add a .warbundle file
 
@@ -960,7 +960,6 @@ f) Add DataSource elements and a library id element to define the connection to 
         <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
         <fileset dir="/usr/lpp/db2v11/jdbc/lib"/>
    </library>
-
 ```
 
 g) stop and start the Liberty server to bring in these changes.
@@ -1027,7 +1026,7 @@ The allRows request calls a method in the application which uses the application
   >The employee record with the empNo specified will be deleted if it exists
 
 
-Notes:
+# Notes:
 {firstName} and {lastName} should be replaced by names of your choosing.
 >>the definition of FIRSTNME in table EMP is VARCHAR(12)
 >>the definition of LASTNAME in table EMP is VARCHAR(15)
