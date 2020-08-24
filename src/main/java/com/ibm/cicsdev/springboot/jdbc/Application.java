@@ -32,13 +32,6 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class Application 
 {
-<<<<<<< HEAD
-=======
-	// The dataSource jndi name
-	private static final String DATA_SOURCE = "jdbc/jdbcDataSource-bean";
-
-
->>>>>>> refs/remotes/origin/master
 	/**
 	 * @param args - inputs
 	 */
@@ -46,26 +39,4 @@ public class Application
 	{
 		SpringApplication.run(Application.class, args);
 	}
-	
-<<<<<<< HEAD
-=======
-	/**
-	 * @return the data Source
-	 */
-	@Bean
-	public DataSource dataSource() 
-	{		
-		try 
-		{
-			// Look up the Liberty DataSource using JNDI
-			DataSource ds = InitialContext.doLookup(DATA_SOURCE);
-			return ds;
-		} 
-		catch (NamingException e) 
-		{
-			e.printStackTrace();
-			return null;
-		}
-	} 
->>>>>>> refs/remotes/origin/master
 }
