@@ -167,7 +167,7 @@ public class Application {
 }
 
 ```
-and then in the EMployee service class the bean must be Autowired as follows:
+and then in the EmployeeService class the bean must be Autowired as follows:
 
 ```
 @Autowired
