@@ -14,9 +14,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -216,11 +213,9 @@ public class EmployeeService
 		if (numRows > 0) 
 		{
 			return "employee " + empno + " added";
-		} 
-		else
-		{
-			return "employee insert failed try again";
 		}
+		
+		return "employee insert failed try again";
 	}
 
 
@@ -246,11 +241,9 @@ public class EmployeeService
 		if (numRows > 0) 
 		{
 			return "employee " + empNo + " deleted";
-		} 
-		else
-		{
-			return "employee delete failed try again";
 		}
+		
+		return "employee delete failed try again";
 	}
 
 
@@ -279,10 +272,8 @@ public class EmployeeService
 		{
 			return "employee " + empNo + " salary changed to " + newSalary;
 		}
-		else
-		{
-			return "employee update failed try again";
-		}
+		
+		return "employee update failed try again";
 	}
 	
 }

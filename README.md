@@ -1,6 +1,6 @@
 # cics-java-liberty-springboot-jdbc
 
-This project demonstrates a Spring Boot JDBC application integrated with IBM CICS that can be deployed to a CICS Liberty JVM server. The application makes use of the employee sample table supplied with Db2 for z/OS. The application allows you to add, update, delete or display employee information from the table EMP. The sample also provides a set of Maven and Gradle build files for use either in Eclipse or standalone build environments.
+This project demonstrates a Spring Boot JDBC application integrated with IBM CICS that can be deployed to a CICS Liberty JVM server. The application makes use of the employee sample table supplied with Db2 for z/OS. The application allows you to add, update, delete or display employee information from the table EMP. The sample also provides a set of Gradle and Maven build files for use either in Eclipse or standalone build environments.
 
 ## Requirements
 
@@ -8,7 +8,6 @@ This project demonstrates a Spring Boot JDBC application integrated with IBM CIC
 * A configured Liberty JVM server
 * Java SE 1.8 or later on the z/OS system
 * Java SE 1.8 or later on the workstation
-* Either Gradle or Apache Maven on the workstation
 * IBM Db2 V11 or later on z/OS
 * An Eclipse development environment on the workstation (optional)
 * Either Gradle or Apache Maven on the workstation (optional if using Wrappers)
@@ -112,7 +111,7 @@ This creates a WAR file in the `target` directory.
 E.g. as follows:
 
 ``` XML
-<dataSource id="t2a" jndiName="jdbc/jdbcDataSource" transactional="false">
+<dataSource id="t2" jndiName="jdbc/jdbcDataSource" transactional="false">
         <jdbcDriver>   
             <library name="DB2LIB">
                 <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
@@ -138,8 +137,8 @@ The jndi-name can alternatively be set using a datasource bean in the applicatio
 
 ``` 
 @SpringBootApplication
-public class Application {
-	
+public class Application 
+{
 	// name the dataSource jndi name
 	private static final String DATA_SOURCE = "jdbc/jdbcDataSource";
 
@@ -148,20 +147,26 @@ public class Application {
 	 * @param args
 	 * @throws NamingException 
 	 */
-	public static void main(String args[]) throws NamingException {
+	public static void main(String args[]) throws NamingException 
+    {
 		SpringApplication.run(Application.class, args);		
 	}
 	
+    
 	/**
 	 * @return a data Source
 	 */
 	@Bean
-	public static DataSource dataSource() {		
-		try {
+	public static DataSource dataSource() 
+    {		
+		try 
+        {
 			// Look up the connection factory from Liberty
 			DataSource ds = InitialContext.doLookup(DATA_SOURCE);
 			return ds;
-		} catch (NamingException e) {
+		} 
+        catch (NamingException e) 
+        {
 			e.printStackTrace();
 			return null;
 		}
