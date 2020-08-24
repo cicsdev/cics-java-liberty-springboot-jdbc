@@ -903,7 +903,8 @@ There are two ways to deploy the WAR. 
 
 a) Create a new CICS Bundle Project with id "com.ibm.cicsdev.springboot.jdbc.cicsBundle"
 
-![wizzard](graphics/cicsBundleSelectwizard.png) 
+
+![cicsBundleSelectwizard](graphics/cicsBundleSelectwizard.png) 
 
 Copy the WAR file into this CICS Bundle Project and then add a .warbundle file
 
