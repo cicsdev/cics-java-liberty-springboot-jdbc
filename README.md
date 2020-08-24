@@ -125,6 +125,7 @@ E.g. as follows:
 ```        
 
 - set spring.datasource.jndi-name in application.properties
+
 The file application.properties in /src/main/resources/ contains the setting 
 ``` shell
 spring.datasource.jndi-name=jdbc/jdbcDataSource
