@@ -1,8 +1,15 @@
-# Introduction
-This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is destined to be deployed into a Liberty server, running in CICS. 
+# Learning Objectives
+Accessing a relational database from your SPringboot application is likely to be an essential requirement for your application. This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is destined to be deployed into a Liberty server, running in CICS. 
+
+1. We will Create a Spring Boot app that uses JDBC and setup a Maven/Gradle build for this
+1. Use JDBC Template to access a data source
+1. Configure a Datasource to define the connection to the database
+1. Deploy and test the app in CICS/Liberty
 
 
-JDBC is a Java API which allows a Java applications to access data stored in a relational database. In this tutorial we will be using IBM Db2® for z/OS as our relational database. The application will use the supplied EMP table which is supplied with DB2. Spring Boot JDBC supplies database related beans such as DataSource and JdbcTemplate,  which can be Autowired into an application to facilitate the usage of JDBC in the application. Follow the steps in this article to generate a Spring Boot web application which can then be built using either Gradle or Maven and deployed in a CICS Liberty JVM server and used to update the Db2 employee table  
+JDBC is a Java API which allows a Java applications to access data stored in a relational database. In this tutorial we will be using IBM Db2® for z/OS as our relational database. The application will use the supplied EMP table which is supplied with DB2. 
+
+Spring Boot JDBC supplies database related beans such as DataSource and JdbcTemplate,  which can be Autowired into an application to facilitate the usage of JDBC in the application. Follow the steps in this article to generate a Spring Boot web application which can then be built using either Gradle or Maven and deployed in a CICS Liberty JVM server and used to update the Db2 employee table  
 
 
 The application will allow you to:
@@ -34,7 +41,7 @@ Generate the Spring Boot Java web application using the website https://start.sp
   - __Java:__ 8
 
 
-From the Dependencies portion of the screen, click ADD DEPENDENCIES and select/find *Spring Data JDBC* and *Spring Web*
+From the Dependencies portion of the screen, click ADD DEPENDENCIES and select/find *Spring Data JDBC* and *Spring Web*. This will ensure that the correct dependancies are added to the **pom.xml** file (for Maven) or the **build.gradle** file for Gradle builds.
 
 ![springInitializrScreen](graphics/springInitializrScreen.png) 
 
@@ -64,50 +71,10 @@ We will now add the various pieces of code to the application which will allow u
 ## Add a class to define the data object(s)
 
 
-This example application will make use of a supplied Db2 table which contains employee data. The supplied table should be found on your Db2 for z/OS system in database DSN8D11A and specifically in schema DSN81110.
+This example application will make use of a supplied Db2 table which contains employee data. The supplied table should be found on your Db2 for z/OS system in database DSN8D11A. The DDL for this table can be found in the Db2 for z/OS Knowledge Center at the folloiwng location https://www.ibm.com/support/knowledgecenter/SSEPEK_11.0.0/intro/src/tpc/db2z_sampletablesemployeemain.html
 
 
-The DDL used to create this table is as follows:
 
-```
-    /*
-     * Db2 supplied EMP table 
-     * 
-     * CREATE TABLE DSN81110.EMP                                           
-   (EMPNO                CHAR(6) FOR SBCS DATA NOT NULL,            
-    FIRSTNME             VARCHAR(12) FOR SBCS DATA NOT NULL,        
-    MIDINIT              CHAR(1) FOR SBCS DATA NOT NULL,            
-    LASTNAME             VARCHAR(15) FOR SBCS DATA NOT NULL,        
-    WORKDEPT             CHAR(3) FOR SBCS DATA WITH DEFAULT NULL,   
-    PHONENO              CHAR(4) FOR SBCS DATA WITH DEFAULT NULL,   
-    HIREDATE             DATE WITH DEFAULT NULL,                    
-    JOB                  CHAR(8) FOR SBCS DATA WITH DEFAULT NULL,   
-    EDLEVEL              SMALLINT WITH DEFAULT NULL,                
-    SEX                  CHAR(1) FOR SBCS DATA WITH DEFAULT NULL,   
-    BIRTHDATE            DATE WITH DEFAULT NULL,                    
-    SALARY               DECIMAL(9, 2) WITH DEFAULT NULL,           
-    BONUS                DECIMAL(9, 2) WITH DEFAULT NULL,           
-    COMM                 DECIMAL(9, 2) WITH DEFAULT NULL,           
-    CONSTRAINT EMPNO                                                
-    PRIMARY KEY (EMPNO),                                            
-    CONSTRAINT NUMBER                                               
-      CHECK (PHONENO >= '0000' AND PHONENO <= '9999'),              
-    CONSTRAINT PERSON CHECK (SEX = 'M' OR SEX = 'F'))               
-  IN DSN8D11A.DSN8S11E                                              
-  PARTITION BY (EMPNO ASC)                                          
-   (PARTITION 1 ENDING AT ('099999'),                               
-    PARTITION 2 ENDING AT ('199999'),                               
-    PARTITION 3 ENDING AT ('299999'),                               
-    PARTITION 4 ENDING AT ('499999'),                               
-    PARTITION 5 ENDING AT ('999999'))                               
-  EDITPROC  DSN8EAE1 WITH ROW ATTRIBUTES                            
-  AUDIT NONE                                                        
-  DATA CAPTURE NONE                                                 
-  CCSID      EBCDIC                                                 
-  NOT VOLATILE                                                      
-  APPEND NO  ;                                                      
-     */ 
-```
 
 We need to have a representation of this table in our application so the first item we need to add is a definition of an employee object. This is done in the Employee.java class
 
@@ -834,33 +801,8 @@ the name value should match exactly the jndi name which will be specified in the
 
 
 ## Add a web.xml to the application
-To avoid the warnings about using BLANK and default CICS userid, you need to include a simple web.xml to the application to enable basic authentication. Please store this web.xml in src/main/webapp/WEB-INF. 
+To avoid the warnings about using BLANK and default CICS userid, you need to include a simple web.xml to the application to enable basic authentication. This is described in the blog [Spring Boot Java applications for CICS - Part 2 - Security](https://github.com/cicsdev/cics-java-liberty-springboot-security/blob/master/blog/blog.md)
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
-    <display-name>cics-java-liberty-springboot-jcics</display-name>   
-<login-config>
-        <auth-method>BASIC</auth-method>
-    </login-config>   
-    <security-constraint>
-        <display-name>com.ibm.cicsdev.springboot.jcics</display-name>
-        <web-resource-collection>
-            <web-resource-name>com.ibm.cicsdev.springboot.jcics</web-resource-name>
-            <description>Protection rules for all servlets</description>
-            <url-pattern>/*</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <description>All Authenticated users </description>
-            <role-name>cicsAllAuthenticated</role-name>
-        </auth-constraint>
-    </security-constraint>   
-    <security-role>
-        <description>The CICS cicsAllAuthenticated role</description>
-        <role-name>cicsAllAuthenticated</role-name>
-    </security-role>
-</web-app>
-```
 
 ## Build the application
 
@@ -870,27 +812,17 @@ We have now completed all the tasks required to develop our application. The nex
 Building the application can be done using Maven by right clicking (in Eclipse) the pom.xml file and selecting the appropriate Run option to ask Maven to build the application.
 
 
-If you subsequently add JCICS calls to this application, please add the following dependencies to your pom.xml:
+If you subsequently add JCICS calls to this application then you will need to add the appropriate dependancies to your pom.xml or build.gradle files. This are described in the blog [Spring Boot Java applications for CICS, Part 1: JCICS, Gradle, and Maven](https://developer.ibm.com/tutorials/spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle/)
 
-``` xml
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>com.ibm.cics</groupId>
-            <artifactId>com.ibm.cics.ts.bom</artifactId>
-            <version>5.5-20191121085445-PH14856</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
+# Liberty configuration
 
+To deploy the sample into a CICS Liberty JVM server you will need to first build build the application as a WAR. Maven pom.xml and Gradle build.gradle files are provided in the sample Git repository to simplify this task. You will then need to
 
-<dependency>
-    <groupId>com.ibm.cics</groupId>
-    <artifactId>com.ibm.cics.server</artifactId>
-</dependency>
-```
+* Configure your CICS Liberty JVM server to use a SAF user registry
+* Define the application to the Liberty server using an <application> element in the Liberty server.xml just as we did for scenario 1
+* Configure an authorization method, using either Java EE roles or EJBROLE profiles defined in SAF.
+* Start the Liberty server and login to the application using the login form on the landing page as shown.
+
 
 
 # Deploy the WAR into a CICS Liberty JVM server
