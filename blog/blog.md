@@ -829,7 +829,8 @@ To deploy the sample into a CICS Liberty JVM server you will need to first build
 ---
 ``` 
 Spring Boot JDBC Employee REST sample. Date/Time: 2020-08-25:11-14-31.000188       
-Usage:                                                                            
+Usage: 
+
 /allRows - return a list of employees using a classic SELECT statement 
 /oneEmployee/{empno} - a list of employee records for the employee number provided 
 /addEmployee/{firstName}/{lastName} - add an employee 
