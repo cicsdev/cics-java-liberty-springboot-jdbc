@@ -821,8 +821,22 @@ To deploy the sample into a CICS Liberty JVM server you will need to first build
 * Configure your CICS Liberty JVM server to use a SAF user registry
 * Define the application to the Liberty server using an <application> element in the Liberty server.xml just as we did for scenario 1
 * Configure an authorization method, using either Java EE roles or EJBROLE profiles defined in SAF.
-* Start the Liberty server and login to the application using the login form on the landing page as shown.
-
+* Start the Liberty server and start the application using the following example url 
+   * http://<your host name>:<your port number>/com.ibm.cicsdev.springboot.jdbc-0.1.0/
+  
+  this will display a screen which looks as follows:
+  
+---
+``` 
+Spring Boot JDBC Employee REST sample. Date/Time: 2020-08-25:11-14-31.000188       
+Usage:                                                                            
+/allRows - return a list of employees using a classic SELECT statement 
+/oneEmployee/{empno} - a list of employee records for the employee number provided 
+/addEmployee/{firstName}/{lastName} - add an employee 
+/deleteEmployee/{empNo} - delete an employee 
+/updateEmployee/{empNo}/{newSalary} - update employee salary 
+```
+---
 
 
 # Deploy the WAR into a CICS Liberty JVM server
