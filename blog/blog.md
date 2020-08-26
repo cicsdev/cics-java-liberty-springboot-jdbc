@@ -57,7 +57,7 @@ With the Java source expanded it should look similar to the following once the a
 ![projectExplorer](graphics/projectExplorer.png) 
 
 
-We now have a basic application which does not at this point do anything.
+We now have a basic application which does nothing at this point do anything.
 
 
 # Construct the application
