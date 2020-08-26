@@ -236,7 +236,7 @@ For Maven, you'll need the following dependencies in your pom.xml
 ```
 If you subsequently add JCICS calls to this application then you will need to add the appropriate dependancies to your pom.xml or build.gradle files. This are described in the blog [Spring Boot Java applications for CICS, Part 1: JCICS, Gradle, and Maven](https://developer.ibm.com/tutorials/spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle/)
 
-## Step 3 : Congigure Liberty
+## Step 3 : Configure Liberty
 
 To deploy the sample into a CICS Liberty JVM server you will need to first build build the application as a WAR. Maven pom.xml and Gradle build.gradle files are provided in the sample Git repository to simplify this task. You will then need to
 
