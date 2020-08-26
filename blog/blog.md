@@ -332,32 +332,15 @@ All the rows in table EMP should be returned.
 
 The allRows request calls a method in the application which uses the application.properties file to determine which datasource definition to use. If you make the same request to REST service allRows2 then the application uses the @Bean annotated dataSource method to determine the correct dataSource. The @Bean method will use the jndiName used in dataSource t4b whereas the application.properties file will used the jndiName specified in t4a.
     
-## Summary of all available interfaces     
+## Summary of all available interfaces  
 
--`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/allRows`
-    
- > All rows in table EMP will be returned - the datasource is obtained from the application.properties file
-    
--`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/allRows2`
-  
-  >All rows in table EMP will be returned - the datasource is obtained from an @Bean method
-    
--`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/addEmployee/{firstName}/{lastName}`
-  
-  >A new employee record will be created using the first name and last name supplied. All other fields in
-  the table will be set by the application to the same values by this demo application.
-  If successful the employee number created will be returned.
-    
--`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/oneEmployee/{empno}`
-  
-  >A single employee record will be displayed if it exists.
-    
--`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/updateEmployee/{empNo}/{newSalary}`
-  >The employee record will be updated with the salary amount specified.
-    
--`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/deleteEmployee/{empNo}`
-  
-  >The employee record with the empNo specified will be deleted if it exists
+|     aa    |    bb        |
+| ------------- |:-------------:| 
+| `http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/allRows`    | All rows in table EMP will be returned |
+|`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/addEmployee/{firstName}/{lastName}`| A new employee record will be created using the first name and last name supplied. All other fields in the table will be set by the application to the same values by this demo application. If successful the employee number created will be returned. |
+| `http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/oneEmployee/{empno}` | A single employee record will be displayed if it exists.|
+|`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/updateEmployee/{empNo}/{newSalary}`|The employee record will be updated with the salary amount specified. |
+|`http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/deleteEmployee/{empNo}`|The employee record with the empNo specified will be deleted if it exists|
 
 
 ## Notes:
