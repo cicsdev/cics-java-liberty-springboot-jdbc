@@ -84,46 +84,6 @@ import java.sql.Date;
 
 public class Employee {
     
-    /*
-     * Db2 supplied EMP table 
-     * 
-     * CREATE TABLE DSN81110.EMP                                           
-   (EMPNO                CHAR(6) FOR SBCS DATA NOT NULL,            
-    FIRSTNME             VARCHAR(12) FOR SBCS DATA NOT NULL,        
-    MIDINIT              CHAR(1) FOR SBCS DATA NOT NULL,            
-    LASTNAME             VARCHAR(15) FOR SBCS DATA NOT NULL,        
-    WORKDEPT             CHAR(3) FOR SBCS DATA WITH DEFAULT NULL,   
-    PHONENO              CHAR(4) FOR SBCS DATA WITH DEFAULT NULL,   
-    HIREDATE             DATE WITH DEFAULT NULL,                    
-    JOB                  CHAR(8) FOR SBCS DATA WITH DEFAULT NULL,   
-    EDLEVEL              SMALLINT WITH DEFAULT NULL,                
-    SEX                  CHAR(1) FOR SBCS DATA WITH DEFAULT NULL,   
-    BIRTHDATE            DATE WITH DEFAULT NULL,                    
-    SALARY               DECIMAL(9, 2) WITH DEFAULT NULL,           
-    BONUS                DECIMAL(9, 2) WITH DEFAULT NULL,           
-    COMM                 DECIMAL(9, 2) WITH DEFAULT NULL,           
-    CONSTRAINT EMPNO                                                
-    PRIMARY KEY (EMPNO),                                            
-    CONSTRAINT NUMBER                                               
-      CHECK (PHONENO >= '0000' AND PHONENO <= '9999'),              
-    CONSTRAINT PERSON CHECK (SEX = 'M' OR SEX = 'F'))               
-  IN DSN8D11A.DSN8S11E                                              
-  PARTITION BY (EMPNO ASC)                                          
-   (PARTITION 1 ENDING AT ('099999'),                               
-    PARTITION 2 ENDING AT ('199999'),                               
-    PARTITION 3 ENDING AT ('299999'),                               
-    PARTITION 4 ENDING AT ('499999'),                               
-    PARTITION 5 ENDING AT ('999999'))                               
-  EDITPROC  DSN8EAE1 WITH ROW ATTRIBUTES                            
-  AUDIT NONE                                                        
-  DATA CAPTURE NONE                                                 
-  CCSID      EBCDIC                                                 
-  NOT VOLATILE                                                      
-  APPEND NO  ;                                                      
-     */
-    
-    
-    
     private String empNo;
     private String firstNme;
     private String midinit;
@@ -138,7 +98,6 @@ public class Employee {
     private long salary;
     private long bonus;
     private long comm;
-
 
     
     public Employee(String empNo, String firstNme, String midinit, String lastName, String workdept, String phoneNo,
