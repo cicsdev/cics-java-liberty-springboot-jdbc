@@ -1,16 +1,14 @@
 # Learning Objectives
-Accessing a relational database from your SPringboot application is likely to be an essential requirement for your application. This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is destined to be deployed into a Liberty server, running in CICS. 
+Accessing a relational database from your Springboot application is likely to be an essential requirement for your application. This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is destined to be deployed into a Liberty server, running in CICS. 
 
 1. We will Create a Spring Boot app that uses JDBC and setup a Maven/Gradle build for this
 1. Use JDBC Template to access a data source
 1. Configure a Datasource to define the connection to the database
 1. Deploy and test the app in CICS/Liberty
 
-
 JDBC is a Java API which allows a Java applications to access data stored in a relational database. In this tutorial we will be using IBM Db2® for z/OS as our relational database. The application will use the supplied EMP table which is supplied with DB2. 
 
 Spring Boot JDBC supplies database related beans such as DataSource and JdbcTemplate,  which can be Autowired into an application to facilitate the usage of JDBC in the application. Follow the steps in this article to generate a Spring Boot web application which can then be built using either Gradle or Maven and deployed in a CICS Liberty JVM server and used to update the Db2 employee table  
-
 
 The application will allow you to:
 
@@ -23,8 +21,7 @@ The application will allow you to:
 # The Application
 The application is a web application where all requests can be made from a browser. The application uses the Spring Boot web interface to process GET REST requests only. In a real world implementation of this other types of REST interfaces, such as POST, would be more appropriate. GET requests are used here for simplicity.
 
-
-The application source and build scripts are available from github at cics-java-liberty-springboot-jdbc. 
+The application source and build scripts are available from github at <<<insert link>>>. 
 
 # Generate the Spring web application
 Generate the Spring Boot Java web application using the website https://start.spring.io/ with the following selections:
