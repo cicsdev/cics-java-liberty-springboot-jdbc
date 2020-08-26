@@ -17,60 +17,31 @@ The application will allow you to:
 1. update an existing employee
 1. delete an existing employee.  
 
+## Step 1: Create the Application
 
-# The Application
+You can develop the code by following this tutorial step-by-step, or by downloading or cloning the [cics-java-liberty-springboot-transactions](https://github.com/cicsdev/cics-java-liberty-springboot-transactions) example in GitHub.
+
+If you are following step-by-step, generate and download a Spring Boot web application using the Spring initializr website tool. For further details on how to do this, and how to deploy bundles to CICS, see this tutorial - [spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle](https://developer.ibm.com/technologies/java/tutorials/spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle). We use Eclipse as our preferred IDE.
+
+Once your newly generated project has been imported into your IDE, you should have the `Application.java` and `ServletInitializer.java` classes which provide the basic framework of a Spring Boot web application. 
+
+
+## The Application
 The application is a web application where all requests can be made from a browser. The application uses the Spring Boot web interface to process GET REST requests only. In a real world implementation of this other types of REST interfaces, such as POST, would be more appropriate. GET requests are used here for simplicity.
 
 The application source and build scripts are available from github at <<<insert link>>>. 
 
-# Generate the Spring web application
-Generate the Spring Boot Java web application using the website https://start.spring.io/ with the following selections:
-- __Project:__ Maven Project
-- __Language:__ Java
-- __Spring Boot:__ 2.3.0
-- __Project Metadata
-  - __Group:__ com.ibm.cicsdev
-  - __Artifact:__ com.ibm.cicsdev.springboot.jdbc
-  - __Name:__ com.ibm.cicsdev.springboot.jdbc
-  - __Description:__ Demo project for Spring Boot JDBC
-  - __Package Name:__ com.ibm.cicsdev.springboot.jdbc
-  - __Packaging:__ War
-  - __Java:__ 8
 
 
-From the Dependencies portion of the screen, click ADD DEPENDENCIES and select/find *Spring Data JDBC* and *Spring Web*. This will ensure that the correct dependancies are added to the **pom.xml** file (for Maven) or the **build.gradle** file for Gradle builds.
-
-![springInitializrScreen](graphics/springInitializrScreen.png) 
-
-Click on *Generate*, download and unzip the sample project. This can then be imported into your your IDE. This blog will describe importing the project in to Eclipse.
-
-
-# Import into Eclipse
-Import the project by: 
-1. selecting **File > Import > Existing Maven Project**.
-1. navigate to the root directory of the application (the one you just unzipped)
-the project box should show the pom.xml file for the application and it should be checked. 
-1. Click Finish
-
-With the Java source expanded it should look similar to the following once the application has downloaded all its dependencies and the application has correctly built.
-
-![projectExplorer](graphics/projectExplorer.png) 
-
-
-We now have a basic application which does nothing at this point do anything.
-
-
-# Construct the application
+## Construct the application
 
 We will now add the various pieces of code to the application which will allow us to access the data in the EMP table in Db2.
 
 
-## Add a class to define the data object(s)
+### Add a class to define the data object(s)
 
 
 This example application will make use of a supplied Db2 table which contains employee data. The supplied table should be found on your Db2 for z/OS system in database DSN8D11A. The DDL for this table can be found in the Db2 for z/OS Knowledge Center at the folloiwng location https://www.ibm.com/support/knowledgecenter/SSEPEK_11.0.0/intro/src/tpc/db2z_sampletablesemployeemain.html
-
-
 
 
 We need to have a representation of this table in our application so the first item we need to add is a definition of an employee object. This is done in the Employee.java class
@@ -286,7 +257,7 @@ public class Employee {
 This is a standard java representation of our employee record which contains definitions for each column in the table, a constructor and getters and setters for each field.
 
 
-## Add a REST Controller
+### Add a REST Controller
 
 
 The REST controller is the code which will process the requests coming in from the browser. It will direct the incoming requests to the appropriate service method to complete the request.
@@ -400,7 +371,7 @@ public class EmployeeRestController {
 }
 ```
 
-## Add Service class
+### Add Service class
 
 The REST controller contains an @Autowired annotation:
 
@@ -703,50 +674,7 @@ public class EmployeeService {
 }
 ```
 
-
-## Update the Application.java file
-
-
-We need to add a datasource bean to the application which will be used by one of the REST interfaces in the EmployeeRestController to demonstrate the use of the DataSourceBean
-
-
-add the following method to the class 
-
-```
-    @Bean
-    public DataSource dataSource() {        
-        try {
-            // Look up the connection factory from Liberty
-            DataSource ds = InitialContext.doLookup(DATA_SOURCE);
-            return ds;
-        } catch (NamingException e) {
-            e.printStackTrace();
-            return null;
-        }
-    } 
-
-```
-and also the following constant definition
-
-```
-    // name the dataSource jndi name
-    private static final String DATA_SOURCE = "jdbc/jdbcDataSource";
-```
-
-
-the value of the constant can be somnthing else of your chosing, but it must match the value we will set later in the datasource defintion we will create in our server.xml in a forthcoming step in this blog.
-
-
-You will need to resolve some imports when you paste the bean code into the class.
-
-```
-import org.springframework.context.annotation.Bean;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-```
-
-## Configure application.properties
+### Configure application.properties
 In the src/main/resources directory edit the application.properties file to contain the following line
 
 ```
@@ -755,12 +683,11 @@ spring.datasource.jndi-name=jdbc/jdbcDataSource
 
 the name value should match exactly the jndi name which will be specified in the dataSource definition which we will add to server.xml later in this blog.
 
-
-## Add a web.xml to the application
+### Add a web.xml to the application
 To avoid the warnings about using BLANK and default CICS userid, you need to include a simple web.xml to the application to enable basic authentication. This is described in the blog [Spring Boot Java applications for CICS - Part 2 - Security](https://github.com/cicsdev/cics-java-liberty-springboot-security/blob/master/blog/blog.md)
 
 
-## Build the application
+### Build the application
 
 We have now completed all the tasks required to develop our application. The next thing we must do is to build the application and deploy it to CICS.
 
@@ -770,7 +697,7 @@ Building the application can be done using Maven by right clicking (in Eclipse) 
 
 If you subsequently add JCICS calls to this application then you will need to add the appropriate dependancies to your pom.xml or build.gradle files. This are described in the blog [Spring Boot Java applications for CICS, Part 1: JCICS, Gradle, and Maven](https://developer.ibm.com/tutorials/spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle/)
 
-# Liberty configuration
+## Liberty configuration
 
 To deploy the sample into a CICS Liberty JVM server you will need to first build build the application as a WAR. Maven pom.xml and Gradle build.gradle files are provided in the sample Git repository to simplify this task. You will then need to
 
@@ -796,13 +723,13 @@ Usage:
 ---
 
 
-# Deploy the WAR into a CICS Liberty JVM server
+## Deploy the WAR into a CICS Liberty JVM server
 There are two ways to deploy the WAR. 
 1. You can add an <application> element to your server.xml which points to your uploaded WAR file location.
 2. You can use a CICS bundle. In this article, we will introduce how to deploy the Spring Boot WAR as a WAR bundlepart with a CICS bundle.
 
 
-# Define the application to CICS with a CICS Bundle project
+## Define the application to CICS with a CICS Bundle project
 
 a) Create a new CICS Bundle Project with id "com.ibm.cicsdev.springboot.jdbc.cicsBundle"
 
@@ -871,7 +798,7 @@ f) Add DataSource elements and a library id element to define the connection to 
 g) stop and start the Liberty server to bring in these changes.
 
 
-h) Install and enable the CICS Bundle "JCICSSPG" you created in step c).
+h) Install and enable the CICS Bundle you created in step c).
 
 
 i) Check the Liberty message.log file to see if the Spring Boot application deployed successfully.
@@ -883,7 +810,7 @@ CWWKT0016I: Web application available (default_host): http://myzos.mycompany.com
 SRVE0292I: Servlet Message - [com.ibm.cicsdev.springboot.jdbc-0.1.0]:.Initializing Spring embedded WebApplicationContext
 ```
 
-# Trying out the sample
+## Trying out the sample
 
 
 #Trying out the sample
@@ -903,7 +830,7 @@ All the rows in table EMP should be returned.
 
 The allRows request calls a method in the application which uses the application.properties file to determine which datasource definition to use. If you make the same request to REST service allRows2 then the application uses the @Bean annotated dataSource method to determine the correct dataSource. The @Bean method will use the jndiName used in dataSource t4b whereas the application.properties file will used the jndiName specified in t4a.
     
-#Summary of all available interfaces     
+## Summary of all available interfaces     
 
 
 `http://myzos.mycompany.com:httpPort/com.ibm.cicsdev.springboot.jdbc/allRows`
@@ -932,7 +859,7 @@ The allRows request calls a method in the application which uses the application
   >The employee record with the empNo specified will be deleted if it exists
 
 
-# Notes:
+## Notes:
 {firstName} and {lastName} should be replaced by names of your choosing.
 >>the definition of FIRSTNME in table EMP is VARCHAR(12)
 >>the definition of LASTNAME in table EMP is VARCHAR(15)
