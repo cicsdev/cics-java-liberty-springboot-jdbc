@@ -108,7 +108,7 @@ This creates a WAR file in the `target` directory.
 
 - add a datasource definition to 'server.xml'.
 
-E.g. as follows:
+E.g. as follows for JDBC type 2 connectivity (substitute values as necessary!):
 
 ``` XML
 <dataSource id="t2" jndiName="jdbc/jdbcDataSource" transactional="false">
@@ -118,10 +118,32 @@ E.g. as follows:
                 <fileset dir="/usr/lpp/db2v11/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
             </library>
         </jdbcDriver>
-        <properties.db2.jcc currentSchema="DSN81110" driverType="2"/>
+        <properties.db2.jcc currentSchema="YOUR_SCHEMA" driverType="2"/>
         <connectionManager agedTimeout="0"/>
 </dataSource>
 ```        
+
+...or for JDBC type 4 connectivity (substitute values as necessary!):
+
+``` XML
+<dataSource id="t4" jndiName="jdbc/jdbcDataSource" type="javax.sql.XADataSource">
+    <jdbcDriver>   
+        <library name="DB2LIB">
+            <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
+            <fileset dir="/usr/lpp/db2v11/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
+        </library>
+    </jdbcDriver>
+    <properties.db2.jcc driverType="4" 
+        serverName="yourserver.corporation.com"   
+        portNumber="41100" 
+        currentSchema="YOUR_SCHEMA"       
+        databaseName="YOUR_DATABASE" 
+        user="USER"
+        password="PASSWORD"               
+    />     
+</dataSource>        
+```
+
 
 - set spring.datasource.jndi-name in application.properties
 
@@ -205,52 +227,40 @@ private DataSource myDatasource;
     - `A CWWKT0016I: Web application available (default_host): http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jcics-0.1.0`
     - `I SRVE0292I: Servlet Message - [com.ibm.cicsdev.springboot.jcics-0.1.0]:.Initializing Spring embedded WebApplicationContext`
 
-2. Copy the context root from message CWWKT0016I along with the REST service suffix into you web browser. For example display all the rows from the EMP table:
-    - `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/allRows` 
+2. Copy the context root from message CWWKT0016I along with the REST service suffix into you web browser. For example display all the Employees from the EMP table:
+    - `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/allEmployees` 
 
    The browser will prompt for basic authentication. Enter a valid userid and password - according to the configured registry for your target Liberty JVM server.
-
-   All the rows in table EMP should be returned.
-
-   The `allRows` request calls a method in the application which uses the `application.properties` file to determine which dataSource definition to use. If you make the same request to REST service `/allRows2` then the application uses the `@Bean` annotated dataSource method to determine the correct dataSource. The `@Bean` method will use the `jndiName` value specified in dataSource `t4b` whereas the `application.properties` file will used the `jndiName` value specified in `t4a`.
+   
+3. For more information on how to use this sample, request the context root:
+   - `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/`
+     
     
-## Summary of all available interfaces     
+## Additional notes on Transactional behaviour
+There are three types of Db2 DataSource definition that can be used in CICS Liberty, all use the Db2 JDBC driver (JCC). They are:
+- the original `cicsts_dataSource` using type 2 connectivity (DB2CONN) and supporting driver manager
+- a Liberty `dataSource` with type 2 connectivity (using CICS DB2CONN for connection management)
+- a Liberty `dataSource` with type 4 connectivity (using TCP/IP and Liberty for connection management)
 
-- `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/allRows`
-    
-  >All rows in table EMP will be returned - the dataSource is obtained from the `application.properties` file
-    
-- `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/allRows2`
-  
-  >All rows in table EMP will be returned - the dataSource is obtained from an `@Bean` method
-    
-- `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/addEmployee/{firstName}/{lastName}`
-  
-  >A new employee record will be created using the first name and last name supplied. All other fields in
-  the table will be set by the application to the same values by this demo application.
-  If successful the employee number created will be returned.
-    
-- `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/oneEmployee/{empno}`
-  
-  >A single employee record will be displayed if it exists.
-    
-- `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/updateEmployee/{empNo}/{newSalary}`
-  >The employee record will be updated with the salary amount specified.
-    
-- `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/deleteEmployee/{empNo}`
-  
-  >The employee record with the empNo specified will be deleted if it exists
+DataSources are defined in server.xml, and JNDI is used by this application to autowire to the specified DataSource given by the URL in `application.properties`. 
+It is important to note that when the Db2 JDBC driver is operating in a CICS environment with type 2 connectivity, the autocommit property is <i>forced</i> to 'false' and  
+by default the `commitOrRollbackOnCleanup` property is set to 'rollback'. Traditionally this has been because the driver defers to CICS UOW processing to demark transactions in a CICS application.
+Conversely, JDBC type 4 connectivity defaults to 'autocommit=true' as this is more standard in a distributed environment. 
 
-### Notes:
-{firstName} and {lastName} should be replaced by names of your choosing.
->>the definition of FIRSTNME in table EMP is VARCHAR(12)
->>the definition of LASTNAME in table EMP is VARCHAR(15)
+Additionally the `commitOrRollbackOnCleanup` property does <b>not</b> apply if autocommit is on, AND autocommit does not apply if using a global txn.
 
-{empno} would be replaced by a 6 character employee number. 
->>the definition of EMPNO in the EMP table is char(6)
+The differing values of these properties for different DataSource types, give rise to different transactional behaviour when used in CICS Liberty. 
+For example, calling the `/addEmployee` endpoint in this sample with a Liberty type 4 DataSource will result in an automatic commit, 
+the same call using a Liberty type 2 DataSource will result in rollback, because autocommit=false (forced by JCC driver) and the clean-up behaviour (if there is no explicit transaction) is to rollback.
+For the `cicsts_dataSource` which uses type 2 connectivity, the behaviour is similar to Liberty type 4 but this DataSource implementation does not involve the Liberty transaction manager by default and so the clean-up behaviour does not apply. 
+Thus when the transaction finishes, CICS will implicitly commit the UOW, and the database updates are committed. 
 
-{newSalary} should be replaced by a numeric amount 
->>the definition of SALARY in the EMP table is DECIMAL(9, 2)
+You can emulate the autocommit behaviour for a Liberty DataSource with type 2 connectivity by setting the `commitOrRollbackOnCleanUp` property to 'commit'. 
+However, should the application then cause an exception or abend, the CICS UOW containing the Db2 update, has already been committed and only a second new (empty) UOW is rolled back.
 
-License
+Thus, for each update operation in this sample we provide a second end-point version (postfix 'Tx') which wraps the call in an XA (global) transaction and in all environments the behaviour remains fully transactional and consistent.
+You can observe the differences in behaviour by defining different DataSource types in your server.xml, and driving the different local vs global transaction endpoints.
+
+
+### License:
 This project is licensed under [Eclipse Public License - v 2.0](LICENSE). 
