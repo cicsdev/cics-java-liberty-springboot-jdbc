@@ -85,7 +85,7 @@ public class EmployeeRestController
 	 * @return a list of employee records for the passed parameter number
 	 */
 	@GetMapping("/listEmployee/{empno}")
-	public List<Employee> oneEmployee(@PathVariable String empno) 
+	public List<Employee> listEmployee(@PathVariable String empno) 
 	{
 		return employeeService.selectWhereEmpno(empno);
 	}

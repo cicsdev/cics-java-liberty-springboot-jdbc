@@ -249,14 +249,20 @@ To deploy the sample into a CICS Liberty JVM server you will need to build the a
   
 ---
 ``` 
-Spring Boot JDBC Employee REST sample. Date/Time: 2020-08-25:11-14-31.000188       
-Usage: 
+Spring Boot JDBC Employee REST sample. Date/Time: 2020-08-27:16-26-33.000197
+Usage:
+/allEmployees - return a list of employees using a classic SELECT statement
+/listEmployee/{empno} - a list of employee records for the employee number provided
 
-/allEmployees - return a list of employees using a classic SELECT statement 
-/listEmployee/{empno} - a list of employee records for the employee number provided 
-/addEmployee/{firstName}/{lastName} - add an employee 
-/deleteEmployee/{empNo} - delete an employee 
-/updateEmployee/{empNo}/{newSalary} - update employee salary 
+--- Update operations ---
+/addEmployee/{firstName}/{lastName} - add an employee
+/deleteEmployee/{empNo} - delete an employee
+/updateEmployee/{empNo}/{newSalary} - update employee salary
+
+--- Update operations within a Global (XA) Transaction ---
+/addEmployeeTx/{firstName}/{lastName} - add an employee using an XA transaction
+/deleteEmployeeTx/{empNo} - delete an employee using an XA transaction
+/updateEmployeeTx/{empNo}/{newSalary} - update employee salary using an XA transaction
 ```
 ---
 
