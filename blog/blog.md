@@ -1,23 +1,40 @@
-# Learning Objectives
-Accessing a relational database from your Springboot application is likely to be an essential requirement for your application. This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is destined to be deployed into a Liberty server, running in CICS. 
+# Spring Boot Java applications for CICS, Part 3: JDBC
 
-1. We will Create a Spring Boot app that uses JDBC and setup a Gradle/Maven build for this
-1. Use JDBC Template to access a data source
-1. Configure a Datasource to define the connection to the database
-1. Deploy and test the app in CICS/Liberty
+
+## Learning Objectives
+Accessing a relational database from your Spring Boot application is likely to be an essential requirement for your application. This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is destined to be deployed into a Liberty server, running in CICS. 
 
 JDBC is a Java API which allows a Java applications to access data stored in a relational database. In this tutorial we will be using IBM Db2® for z/OS as our relational database. The application will use the supplied EMP table which is supplied with DB2. 
 
 Spring Boot's JDBC support provides database related beans, such as `DataSource` and `JdbcTemplate`. These beans can be Autowired into an application to facilitate an automatic JDBC connection to your Database. Follow the steps in this article to generate a Spring Boot web application used to update the Db2 employee table. The application is built using Gradle or Maven, and deployed in a CICS Liberty JVM server.
 
-The application will allow you to:
+This tutorial will show you how to
 
-1. add an employee to the EMP table
-1. list all or a single employee 
-1. update an existing employee
-1. delete an existing employee.  
+1. Create and build Spring Boot application that uses JDBC
+1. ...
+1. Use Spring's JDBC Template to execute an SQL statement
+1. Make the JDBC updates transactional
+1. ...
 
-We provide options to perform these updates using either local transaction behaviour specific to the DataSource type, or consistently using an XA (global) transaction.
+The application is a web application where all requests can be made from a browser. The application uses the Spring Boot web interface to process GET REST requests only. In a real world implementation of this other types of REST interfaces, such as POST, would be more appropriate. GET requests are used here for simplicity.
+
+The application source and build scripts are available in the (cicsdev/cics-java-liberty-springboot-jdbc)[https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/] repository.
+
+
+## Prerequisites
+
+- CICS TS V5.3 or later
+- A configured Liberty JVM server in CICS
+- Db2 for z/OS (or another relational database)
+- Java SE 1.8 on the z/OS system
+- Java SE 1.8 on the workstation
+- An Eclipse development environment on the workstation
+- Either Gradle or Apache Maven on the workstation
+
+## Estimated time
+
+It should take you about 2 hours to complete this tutorial.
+
 
 ## Step 1: Create the Application
 
@@ -25,37 +42,42 @@ You can develop the code by following this tutorial step-by-step, or by download
 
 If you are following step-by-step, generate and download a Spring Boot web application using the Spring initializr website tool. For further details on how to do this, and how to deploy bundles to CICS, see this tutorial - [spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle](https://developer.ibm.com/technologies/java/tutorials/spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle). We use Eclipse as our preferred IDE.
 
-Once your newly generated project has been imported into your IDE, you should have the `Application.java` and `ServletInitializer.java` classes which provide the basic framework of a Spring Boot web application. 
+Once your newly generated project has been imported into your IDE, you should have the `Application.java` and `ServletInitializer.java` classes which provide the basic framework of a Spring Boot web application.  
 
+In the [first part](https://developer.ibm.com/technologies/spring/tutorials/spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle/) of this tutorial series we looked in-depth at how to use Gradle or Maven to build a Spring Boot web application. Using that knowledge you should now be in a position to enhance the `build.gradle`, or `pom.xml` to include the necessary dependencies to compile against the additinal Spring Boot librariesy. In particular we require the libraries that provide the Spring JDBC and Spring Transaction support. 
 
-## The Application
-The application is a web application where all requests can be made from a browser. The application uses the Spring Boot web interface to process GET REST requests only. In a real world implementation of this other types of REST interfaces, such as POST, would be more appropriate. GET requests are used here for simplicity.
+For Gradle, your build file should have the additional following dependencies:
 
-The application source and build scripts are available from github at <<<insert link>>>. 
+```gradle
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation ("org.springframework:spring-tx")     
+ ```
 
-## Construct the application
+For Maven, you'll need the following additonal dependencies in your `pom.xml`
+```xml 
+<dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jdbc</artifactId>
+</dependency>
+<dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+</dependency>
+```
 
-We will now add the various pieces of code to the application which will allow us to access the data in the EMP table in Db2.
-
+## Step 2. Access the relational data base.
+In this section blah blah...
 
 ### Add a class to define the data object(s)
 
+This example application will make use of a supplied Db2 table which contains employee data. The supplied table can be found on your Db2 for z/OS system in database DSN8D11A. The DDL for this table can be found in the (Db2 for z/OS Knowledge Center)[https://www.ibm.com/support/knowledgecenter/SSEPEK_11.0.0/intro/src/tpc/db2z_sampletablesemployeemain.html]
 
-This example application will make use of a supplied Db2 table which contains employee data. The supplied table should be found on your Db2 for z/OS system in database DSN8D11A. The DDL for this table can be found in the Db2 for z/OS Knowledge Center at the following location https://www.ibm.com/support/knowledgecenter/SSEPEK_11.0.0/intro/src/tpc/db2z_sampletablesemployeemain.html
+We need to have a representation of this table in our application so the first item we add is a definition of an employee object. This is provided in the [`Employee.java`](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/src/main/java/com/ibm/cicsdev/springboot/jdbc/Employee.java) class. This is a standard Java representation of our employee record which contains definitions for each column in the table, a constructor plus getters and setters for each field.
 
+### Add a REST controller
 
-We need to have a representation of this table in our application so the first item we add is a definition of an employee object. This is done in the Employee.java class. The Employee.class can be found in the git sample [here](https:\\link.here.com)
+The REST controller is the code which will process the requests coming in from the browser. It will direct the incoming requests to the appropriate service method to complete the request. Code for `EmployeeRestController.java` is provided in the [sample](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/src/main/java/com/ibm/cicsdev/springboot/jdbc/EmployeeRestController.java). The controller contains endpoints to perform the following functions:
 
-This is a standard java representation of our employee record which contains definitions for each column in the table, a constructor plus getters and setters for each field.
-
-
-### Add a REST Controller
-
-
-The REST controller is the code which will process the requests coming in from the browser. It will direct the incoming requests to the appropriate service method to complete the request.
-
-
-Code for EmployeeRestController.java can be seen in the git sample [here](https:\\link.here.com). The controller contains endpoints to perform the following functions
 * simple end point to display usage information
 * display all rows int the table
 * display one row in the table
@@ -66,9 +88,9 @@ Code for EmployeeRestController.java can be seen in the git sample [here](https:
 * delete a row (Employee) from the table under an XA transaction
 * update row (Employee) in the table under an XA transaction
 
-the root endpoint providing usage details will look something like the following: 
+The root endpoint providing usage details looks like the following: 
 
-```  
+```java  
 	/**
 	 * Simple endpoint - returns date and time - simple test of the application
 	 * 
@@ -97,29 +119,25 @@ the root endpoint providing usage details will look something like the following
 	}
 ```
 
-### Add Service class
+### Add service class which uses Spring's `JdbcTemplate`
 
-The REST controller contains an @Autowired annotation:
+The REST controller contains an `@Autowired` annotation for our employee service.
 
-```
+```java
 @Autowired  
 private EmployeeService employeeService;
 ```
+This enables the controller to call methods which service the incoming requests. This service class makes calls to the database using the `JdbcTemplate` class supplied by Spring. It also calls the dao(data access object) class to construct an object representation of the EMP table row. 
 
-which enables the controller to call methods which service the incoming requests. This service class makes calls to the database using the jdbcTemplate class supplied by Spring. It also calls the dao(data access object) class to construct an object representation of the EMP table row. 
+`JdbcTemplate` is the central class in Spring's JDBC core package. It simplifies the use of JDBC and helps to avoid common errors. `JdbcTemplate` executes core JDBC workflow, leaving application code to provide the SQL and extract results. The class also executes SQL queries or updates, initiates iteration over ResultSets, catches JDBC exceptions and translates them to the generic, more informative exception hierarchy defined in the `org.springframework.dao package`.
 
-`jdbcTemplate` is the central class in Spring's JDBC core package. It simplifies the use of JDBC and helps to avoid common errors. `jdbcTemplate` executes core JDBC workflow, leaving application code to provide SQL and extract results. The class also executes SQL queries or updates, initiates iteration over ResultSets, catches JDBC exceptions and translates them to the generic, more informative exception hierarchy defined in the org.springframework.dao package"._    
-
-(from https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html  )
-
-
-jdbcTemplate in this example application uses the query and update methods of that class. The jdbcTemplate in each case is passed a piece of SQL as a string and any result sets are processed by jdbcTemplate and returned in the appropriate object. In the case of the queries using the update method the jdbcTemplate.update returns an integer indicating the number of rows which have been affected by the update. 
+JdbcTemplate in this example application uses the query and update methods of that class. The jdbcTemplate in each case is passed a piece of SQL as a string and any result sets are processed by jdbcTemplate and returned in the appropriate object. In the case of the queries using the update method the jdbcTemplate.update returns an integer indicating the number of rows which have been affected by the update. 
  
-The service class for this application EmployeeService.java can be viewed [here](https:\\link.here.com) in the git sample application
+The service class for this application EmployeeService.java can be viewed [here](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/src/main/java/com/ibm/cicsdev/springboot/jdbc/EmployeeService.java) in the sample application.
 
-The following snippet of code shows the jdbcTemplace being used to access all rows in the table
+The following snippet of code shows the `JdbcTemplate` being used to query all rows in the employee table
 
-```
+```java
     public List<Employee> selectAll() throws NamingException 
     {
         // setup the select SQL
@@ -148,104 +166,46 @@ The following snippet of code shows the jdbcTemplace being used to access all ro
 ```
 
 ### Configure application.properties
-In the src/main/resources directory edit the application.properties file to contain the following line
-
+Next in the `src/main/resources` directory edit the `application.properties` file to contain the following property. The value should match exactly the JNDI name which will be specified in the dataSource definition which we will add to our Liberty `server.xml` later in this tutorial.
 ```
 spring.datasource.jndi-name=jdbc/jdbcDataSource
 ```
 
-the name value should match exactly the jndi name which will be specified in the dataSource definition which we will add to server.xml later in this blog.
-
-### Add a web.xml to the application
-To avoid the warnings about using BLANK and default CICS userid, you need to include a simple web.xml to the application to enable basic authentication. This is described in the blog [Spring Boot Java applications for CICS - Part 2 - Security](https://github.com/cicsdev/cics-java-liberty-springboot-security/blob/master/blog/blog.md)
+> **Note:** If application security is enabled in the target Liberty server, you will also need to enable an authentication method, and authorisation roles. To do this you will need to create a Jave EE `web.xml file`, and place this in the src/main/webapp/WEB-INF/ folder. A sample `web.xml` file that supports basic authentication is provided in the associated Git repository. For further details on enabling security refer to the previous tutorial [Spring Boot Java applications for CICS, Part 2: Security](https://developer.ibm.com/technologies/spring/tutorials/spring-boot-java-applications-for-cics-part-2-security/)
 
 
-## Step 2: Build the application
+## Step 3. Add transaction support
 
-We have now completed all the tasks required to develop our application. The next thing we must do is to build the application and deploy it to CICS.
+There are three types of Db2 DataSource definition that can be used in CICS Liberty, all use the Db2 JDBC driver (JCC). They are:
+- the original `cicsts_dataSource` using type 2 connectivity (DB2CONN) and supporting the DriverManager interface. 
+- a Liberty `dataSource` with type 2 connectivity (using CICS DB2CONN for connection management)
+- a Liberty `dataSource` with type 4 connectivity (using TCP/IP and Liberty for connection management)
 
+Data sources are defined in server.xml, and JNDI is used by this application to autowire to the specified data source given by the URL in `application.properties`.   
+It is important to note that when the Db2 JDBC driver is operating in a CICS environment with type 2 connectivity, the autocommit property is <i>forced</i> to 'false' and by default the `commitOrRollbackOnCleanup` property is set to 'rollback'. Traditionally this has been because the driver defers to CICS UOW processing to demark transactions in a CICS application. Conversely, JDBC type 4 connectivity defaults to 'autocommit=true' as this is more standard in a distributed environment. Additionally the `commitOrRollbackOnCleanup` property does <b>not</b> apply if autocommit is on, AND autocommit does not apply if using a global txn.
 
-Building the application can be done using Gradle, or alternatively Maven. The use of these two methods was discussed in detail in the first part of this blog series[Spring Boot Java applications for CICS, Part 1: JCICS, Gradle, and Maven](https://developer.ibm.com/tutorials/spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle/).
+The differing values of these properties for different DataSource types, give rise to different transactional behaviour when used in CICS Liberty. For example, calling the `/addEmployee` endpoint in this sample with a Liberty type 4 DataSource will result in an automatic commit, the same call using a Liberty type 2 DataSource will result in rollback, because autocommit=false (forced by JCC driver) and the clean-up behaviour (if there is no explicit transaction) is to rollback.
 
-Using that knowledge you should now be in a position to enhance the *build.gradle*, or *pom.xml* to include the necessary dependencies to compile against this Springboot JDBC application
+For the `cicsts_dataSource` which uses type 2 connectivity, the behaviour is similar to Liberty type 4 but this DataSource implementation does not involve the Liberty transaction manager by default and so the clean-up behaviour does not apply. Thus when the transaction finishes, CICS will implicitly commit the UOW, and the database updates are committed. 
 
-For Gradle, your build file should have the following dependencies.
+You can emulate the autocommit behaviour for a Liberty DataSource with type 2 connectivity by setting the `commitOrRollbackOnCleanUp` property to 'commit'. However, should the application then cause an exception or abend, the CICS UOW containing the Db2 update, has already been committed and only a second new (empty) UOW is rolled back.
 
-```Gradle
-dependencies 
-{
-    implementation("org.springframework.boot:spring-boot-starter-web")
+Thus, for each update operation in this sample we provide a second end-point version (post-fix 'Tx') which wraps the call in an XA (global) transaction and in all environments the behaviour remains fully transactional and consistent. You can observe the differences in behaviour by defining different DataSource types in your server.xml and driving the different local vs global transaction endpoints.
 
-    // Don't include TomCat in the runtime build, but do put it in WEB-INF so it can be run standalone a well as embedded
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+For more details about using the @Transactional annotation and XA transactions see [Spring Boot Java applications for CICS - Part 3 - Transactions](https://github.com/cicsdev/cics-java-liberty-springboot-transactions/blob/master/blog/Blog.md)
 
-    // CICS BOM (as of May 2020)
-    compileOnly enforcedPlatform("com.ibm.cics:com.ibm.cics.ts.bom:5.5-20200519131930-PH25409")
-
-    // Don't include JCICS in the final build (no need for version because we have BOM)
-    compileOnly("com.ibm.cics:com.ibm.cics.server")          
-
-    // Spring JDBC Support    
-    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
-}
-```
-
-For Maven, you'll need the following dependencies in your pom.xml
-
-```XML
-  <!-- CICS BOM (as of MAy 2020) -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.ibm.cics</groupId>
-        <artifactId>com.ibm.cics.ts.bom</artifactId>
-        <version>5.5-20200519131930-PH25409</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <dependencies>
-    <!-- Compile against, but don't include JCICS in the final build (version and scope are from BOM) -->
-    <dependency>
-      <groupId>com.ibm.cics</groupId>
-      <artifactId>com.ibm.cics.server</artifactId>
-    </dependency>
-
-    <!-- Spring Boot web support -->   
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-
-    <!-- Spring Integration JDBC Support  -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jdbc</artifactId>
-    </dependency>
-
-    <!-- Compile against, but don't include TomCat in the runtime build --> 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-tomcat</artifactId>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-```
-If you subsequently add JCICS calls to this application then you will need to add the appropriate dependencies to your build.gradle or pom.xml files. This are described in the blog [Spring Boot Java applications for CICS, Part 1: JCICS, Gradle, and Maven](https://developer.ibm.com/tutorials/spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle/)
 
 ## Step 3 : Configure Liberty
 
-To deploy the sample into a CICS Liberty JVM server you will need to build the application as a WAR. Gradle build.gradle and Maven pom.xml files are provided in the sample Git repository to simplify this task. You will need to:
+To deploy the sample into a CICS Liberty JVM server you will need to build the application as a WAR. Gradle [build.gradle]() and Maven [pom.xml]() files are provided in the sample Git repository to simplify this task. You will need to:
 
-* Configure your CICS Liberty JVM server to use a SAF user registry
+* Configure your CICS Liberty JVM server 
 * Define the application to the Liberty server either in CICS bundle, or using an <application> element in the Liberty server.xml
-* Configure an authorization method, using either Java EE roles or EJBROLE profiles defined in SAF.
-* Start the Liberty server and start the application using the following example url 
-   * http://*your host name*:*your port number*/cics-java-liberty-springboot-jdbc-0.1.0/
+* Start the Liberty server 
+* Invoke the application using the following example URL
+   `http://hostname:port/cics-java-liberty-springboot-jdbc-0.1.0/`
   
-  this will display a screen which looks similar to the following:
+This will return a response which looks similar to the following:
   
 ---
 ``` 
@@ -315,25 +275,6 @@ An example of a DataSource using JDBC type 2 connectivity follows:
 
 For JDBC type 2 connectivity to Db2, an active CICS DB2CONN resource must be installed and available in the CICS region. 
 
-## Transactional Discussion
-
-There are three types of Db2 DataSource definition that can be used in CICS Liberty, all use the Db2 JDBC driver (JCC). They are:
-- the original `cicsts_dataSource` using type 2 connectivity (DB2CONN) and supporting driver manager
-- a Liberty `dataSource` with type 2 connectivity (using CICS DB2CONN for connection management)
-- a Liberty `dataSource` with type 4 connectivity (using TCP/IP and Liberty for connection management)
-
-DataSources are defined in server.xml, and JNDI is used by this application to autowire to the specified DataSource given by the URL in `application.properties`.   
-It is important to note that when the Db2 JDBC driver is operating in a CICS environment with type 2 connectivity, the autocommit property is <i>forced</i> to 'false' and by default the `commitOrRollbackOnCleanup` property is set to 'rollback'. Traditionally this has been because the driver defers to CICS UOW processing to demark transactions in a CICS application. Conversely, JDBC type 4 connectivity defaults to 'autocommit=true' as this is more standard in a distributed environment. Additionally the `commitOrRollbackOnCleanup` property does <b>not</b> apply if autocommit is on, AND autocommit does not apply if using a global txn.
-
-The differing values of these properties for different DataSource types, give rise to different transactional behaviour when used in CICS Liberty. For example, calling the `/addEmployee` endpoint in this sample with a Liberty type 4 DataSource will result in an automatic commit, the same call using a Liberty type 2 DataSource will result in rollback, because autocommit=false (forced by JCC driver) and the clean-up behaviour (if there is no explicit transaction) is to rollback.
-
-For the `cicsts_dataSource` which uses type 2 connectivity, the behaviour is similar to Liberty type 4 but this DataSource implementation does not involve the Liberty transaction manager by default and so the clean-up behaviour does not apply. Thus when the transaction finishes, CICS will implicitly commit the UOW, and the database updates are committed. 
-
-You can emulate the autocommit behaviour for a Liberty DataSource with type 2 connectivity by setting the `commitOrRollbackOnCleanUp` property to 'commit'. However, should the application then cause an exception or abend, the CICS UOW containing the Db2 update, has already been committed and only a second new (empty) UOW is rolled back.
-
-Thus, for each update operation in this sample we provide a second end-point version (post-fix 'Tx') which wraps the call in an XA (global) transaction and in all environments the behaviour remains fully transactional and consistent. You can observe the differences in behaviour by defining different DataSource types in your server.xml and driving the different local vs global transaction endpoints.
-
-For more details about using the @Transactional annotation and XA transactions see [Spring Boot Java applications for CICS - Part 3 - Transactions](https://github.com/cicsdev/cics-java-liberty-springboot-transactions/blob/master/blog/Blog.md)
 
 
 ## Step 4: Trying out the sample
@@ -349,3 +290,5 @@ For more details about using the @Transactional annotation and XA transactions s
     e.g. `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/allEmployees`
 
 
+##References
+https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html
