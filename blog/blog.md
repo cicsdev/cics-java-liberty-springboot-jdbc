@@ -13,7 +13,8 @@ This tutorial will show you how to
 1. Create and build Spring Boot application that uses JDBC
 1. ...
 1. Use Spring's JDBC Template to execute an SQL statement
-1. Make the JDBC updates transactional
+1. Use a DataSource bean
+1. Understand how to make JDBC updates transactional in CICS
 1. ...
 
 The application is a web application where all requests can be made from a browser. The application uses the Spring Boot web interface to process GET REST requests only. In a real world implementation of this other types of REST interfaces, such as POST, would be more appropriate. GET requests are used here for simplicity.
@@ -171,7 +172,53 @@ Next in the `src/main/resources` directory edit the `application.properties` fil
 spring.datasource.jndi-name=jdbc/jdbcDataSource
 ```
 
-> **Note:** If application security is enabled in the target Liberty server, you will also need to enable an authentication method, and authorisation roles. To do this you will need to create a Jave EE `web.xml file`, and place this in the src/main/webapp/WEB-INF/ folder. A sample `web.xml` file that supports basic authentication is provided in the associated Git repository. For further details on enabling security refer to the previous tutorial [Spring Boot Java applications for CICS, Part 2: Security](https://developer.ibm.com/technologies/spring/tutorials/spring-boot-java-applications-for-cics-part-2-security/)
+
+## Usiong a datasource bean
+Instead of using the `spring.datasource.jndi-name` property to name the JNDI reference for the data source, the JNDI name can alternatively be set using a datasource bean in the application code. In order to do this you would define the bean in the application. To do this, the `Application` class would need to create the DataSource object using `InitialContext.doLookup();` as shown.
+
+```
+@SpringBootApplication
+public class Application 
+{
+	// name the dataSource jndi name
+	private static final String DATA_SOURCE = "jdbc/jdbcDataSource";
+
+	/**
+	 * @param args
+	 * @throws NamingException 
+	 */
+	public static void main(String args[]) throws NamingException 
+    {
+		SpringApplication.run(Application.class, args);		
+	}
+	
+    
+	/**
+	 * @return a data Source
+	 */
+	@Bean
+	public static DataSource dataSource() 
+    {		
+		try 
+        {
+			// Look up the connection factory from Liberty
+			DataSource ds = InitialContext.doLookup(DATA_SOURCE);
+			return ds;
+		} 
+        catch (NamingException e) 
+        {
+			e.printStackTrace();
+			return null;
+		}
+	} 
+}
+```
+
+Then in the `EmployeeService` class the bean must be Autowired as follows:
+```java
+@Autowired
+private DataSource myDatasource
+```
 
 
 ## Step 3. Add transaction support
@@ -196,6 +243,8 @@ For more details about using the @Transactional annotation and XA transactions s
 
 
 ## Step 3 : Configure Liberty
+
+> **Note:** If application security is enabled in the target Liberty server, you will also need to enable an authentication method, and authorisation roles. To do this you will need to create a Jave EE `web.xml file`, and place this in the src/main/webapp/WEB-INF/ folder. A sample `web.xml` file that supports basic authentication is provided in the associated Git repository. For further details on enabling security refer to the previous tutorial [Spring Boot Java applications for CICS, Part 2: Security](https://developer.ibm.com/technologies/spring/tutorials/spring-boot-java-applications-for-cics-part-2-security/)
 
 To deploy the sample into a CICS Liberty JVM server you will need to build the application as a WAR. Gradle [build.gradle]() and Maven [pom.xml]() files are provided in the sample Git repository to simplify this task. You will need to:
 
