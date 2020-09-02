@@ -1,5 +1,5 @@
 # Learning Objectives
-Accessing a relational database from your Springboot application is likely to be an essential requirement for your application. This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is destined to be deployed into a Liberty server, running in CICS. 
+Accessing a relational database from your Springboot application is likely to be an essential requirement for your application. This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is designed to be deployed into a Liberty server, running in CICS. 
 
 1. We will Create a Spring Boot app that uses JDBC and setup a Gradle/Maven build for this
 1. Use JDBC Template to access a data source
@@ -31,7 +31,7 @@ Once your newly generated project has been imported into your IDE, you should ha
 ## The Application
 The application is a web application where all requests can be made from a browser. The application uses the Spring Boot web interface to process GET REST requests only. In a real world implementation of this other types of REST interfaces, such as POST, would be more appropriate. GET requests are used here for simplicity.
 
-The application source and build scripts are available from github at <<<insert link>>>. 
+The application source and build scripts are available from github at [CICS Liberty Spring Boot JDBC sample](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc). 
 
 ## Construct the application
 
@@ -44,7 +44,7 @@ We will now add the various pieces of code to the application which will allow u
 This example application will make use of a supplied Db2 table which contains employee data. The supplied table should be found on your Db2 for z/OS system in database DSN8D11A. The DDL for this table can be found in the Db2 for z/OS Knowledge Center at the following location https://www.ibm.com/support/knowledgecenter/SSEPEK_11.0.0/intro/src/tpc/db2z_sampletablesemployeemain.html
 
 
-We need to have a representation of this table in our application so the first item we add is a definition of an employee object. This is done in the Employee.java class. The Employee.class can be found in the git sample [here](https:\\link.here.com)
+We need to have a representation of this table in our application so the first item we add is a definition of an employee object. This is done in the Employee.java class. The Employee.class can be found in the git sample [here](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/src/main/java/com/ibm/cicsdev/springboot/jdbc/Employee.java)
 
 This is a standard java representation of our employee record which contains definitions for each column in the table, a constructor plus getters and setters for each field.
 
@@ -55,13 +55,13 @@ This is a standard java representation of our employee record which contains def
 The REST controller is the code which will process the requests coming in from the browser. It will direct the incoming requests to the appropriate service method to complete the request.
 
 
-Code for EmployeeRestController.java can be seen in the git sample [here](https:\\link.here.com). The controller contains endpoints to perform the following functions
+Code for EmployeeRestController.java can be seen in the git sample [here](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/src/main/java/com/ibm/cicsdev/springboot/jdbc/EmployeeRestController.java). The controller contains endpoints to perform the following functions
 * simple end point to display usage information
-* display all rows int the table
-* display one row in the table
+* display all Employees in the table
+* display one Employee in the table
 * add a new row (Employee) to the table
 * delete a row (Employee) from the table
-* update row (Employee) in the table
+* update a row (Employee) in the table
 * add a new row (Employee) to the table under an XA transaction
 * delete a row (Employee) from the table under an XA transaction
 * update row (Employee) in the table under an XA transaction
@@ -115,7 +115,7 @@ which enables the controller to call methods which service the incoming requests
 
 jdbcTemplate in this example application uses the query and update methods of that class. The jdbcTemplate in each case is passed a piece of SQL as a string and any result sets are processed by jdbcTemplate and returned in the appropriate object. In the case of the queries using the update method the jdbcTemplate.update returns an integer indicating the number of rows which have been affected by the update. 
  
-The service class for this application EmployeeService.java can be viewed [here](https:\\link.here.com) in the git sample application
+The service class for this application EmployeeService.java can be viewed [here](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/src/main/java/com/ibm/cicsdev/springboot/jdbc/EmployeeService.java) in the git sample application
 
 The following snippet of code shows the jdbcTemplace being used to access all rows in the table
 
@@ -325,11 +325,11 @@ There are three types of Db2 DataSource definition that can be used in CICS Libe
 DataSources are defined in server.xml, and JNDI is used by this application to autowire to the specified DataSource given by the URL in `application.properties`.   
 It is important to note that when the Db2 JDBC driver is operating in a CICS environment with type 2 connectivity, the autocommit property is <i>forced</i> to 'false' and by default the `commitOrRollbackOnCleanup` property is set to 'rollback'. Traditionally this has been because the driver defers to CICS UOW processing to demark transactions in a CICS application. Conversely, JDBC type 4 connectivity defaults to 'autocommit=true' as this is more standard in a distributed environment. Additionally the `commitOrRollbackOnCleanup` property does <b>not</b> apply if autocommit is on, AND autocommit does not apply if using a global txn.
 
-The differing values of these properties for different DataSource types, give rise to different transactional behaviour when used in CICS Liberty. For example, calling the `/addEmployee` endpoint in this sample with a Liberty type 4 DataSource will result in an automatic commit, the same call using a Liberty type 2 DataSource will result in rollback, because autocommit=false (forced by JCC driver) and the clean-up behaviour (if there is no explicit transaction) is to rollback.
+The differing values of these properties for different DataSource types, give rise to different transactional behaviour when used in CICS Liberty. For example, calling the `/addEmployee` endpoint in this sample with a Liberty type 4 DataSource will result in an automatic commit, the same call using a Liberty type 2 DataSource will result in rollback, because autocommit=false (is forced by JCC driver) and the clean-up behaviour (if there is no explicit transaction) is to rollback.
 
 For the `cicsts_dataSource` which uses type 2 connectivity, the behaviour is similar to Liberty type 4 but this DataSource implementation does not involve the Liberty transaction manager by default and so the clean-up behaviour does not apply. Thus when the transaction finishes, CICS will implicitly commit the UOW, and the database updates are committed. 
 
-You can emulate the autocommit behaviour for a Liberty DataSource with type 2 connectivity by setting the `commitOrRollbackOnCleanUp` property to 'commit'. However, should the application then cause an exception or abend, the CICS UOW containing the Db2 update, has already been committed and only a second new (empty) UOW is rolled back.
+You can emulate the autocommit behaviour for a Liberty DataSource with type 2 connectivity by setting the `commitOrRollbackOnCleanUp` property to 'commit'. However, should the application then cause an exception or abend, the CICS UOW containing the Db2 update has already been committed and only a second new (empty) UOW is rolled back.
 
 Thus, for each update operation in this sample we provide a second end-point version (post-fix 'Tx') which wraps the call in an XA (global) transaction and in all environments the behaviour remains fully transactional and consistent. You can observe the differences in behaviour by defining different DataSource types in your server.xml and driving the different local vs global transaction endpoints.
 
