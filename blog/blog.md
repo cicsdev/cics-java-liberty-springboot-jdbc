@@ -208,7 +208,8 @@ A working example for this technique is provided in the CICSDev git repository[c
 
 ## Step 4. Add transaction support
 
-Transactional support is a key part of using JDBC within CICS. Our sample can be used either within the default transactional scope of a CICS unit-of-work, or within the scope of global JTA transaction by using the REST endpoints prefixed with `Tx` such as `addEmployeeTx/{firstName}/{lastName}`
+Transactional support is a key part of using JDBC within CICS. Our sample can be used either within the default transactional scope of a CICS unit-of-work, or within the scope of global 
+transaction by using the REST endpoints prefixed with `Tx` such as `addEmployeeTx/{firstName}/{lastName}`
 
 There are three types of Db2 DataSource definition that can be used in CICS Liberty, all use the same Db2 JDBC driver (JCC) but have slightly different transactional behaviours. They are as follows:
 - The original `cicsts_dataSource` using type 2 connectivity and a CICS DB2CONN resource.
@@ -224,7 +225,7 @@ When using the default transactional scope of the CICS unit-of-work with a T2 Li
 |Liberty datasource |T2     |false         |false               |rollback CICS UOW   |
 |Liberty dataSource |T4     |true or false |true                |commit database udpate     |
 
-To avoid this situation a JTA transactional scope can be used to control the transactional scope. If a transactional service endpoint such as `/addEmployeeTx` is used then the service method it maps to creates a global transaction using the Spring `@Transactional` annotation as shown. This ensures all the work called from this methods is part of a single global transaction coordinated by Libety. This includes the CICS UOW, and any requests to Liberty managed resources such as JDBC type 4 connections. 
+To avoid this situation a global transactional scope can be used to control the transactional scope of all updates. Our sample provides a set of transactional service endpoint such as `/addEmployeeTx`. These map to service methods that create a global transaction using the Spring `@Transactional` annotation as shown below. This ensures all the work called from this method is part of a single global transaction coordinated by Libety. This includes the CICS UOW and resource it controls such as JDBC type 2 connections, and any requests to Liberty managed resources such as JDBC type 4 connections. 
 
 ```java
     @GetMapping("/addEmployeeTx/{firstName}/{lastName}")
