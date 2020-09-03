@@ -80,7 +80,7 @@ This creates a WAR file in the `target` directory.
     - `<servlet-3.1>` or `<servlet-4.0>` depending on the version of Java EE in use.  
     - `<cicsts:security-1.0>` if CICS security is enabled.
     - `<jsp-2.3>`
-    - `<jdbc-4.0>`
+    - `<jdbc-4.0>` or `<jdbc-4.1>`
 
 >**Note:** `servlet-4.0` will only work for CICS TS V5.5 or later
 
