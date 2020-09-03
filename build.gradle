@@ -32,17 +32,15 @@ repositories
 
 dependencies 
 {
+    // Spring Boot web starter dependency
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     // Don't include TomCat in the runtime build, but do put it in WEB-INF so it can be run standalone a well as embedded
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
-
-    // CICS BOM (as of May 2020)
-    compileOnly enforcedPlatform("com.ibm.cics:com.ibm.cics.ts.bom:5.5-20200519131930-PH25409")
-
-    // Don't include JCICS in the final build (no need for version because we have BOM)
-    compileOnly("com.ibm.cics:com.ibm.cics.server")          
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")     
 
     // Spring JDBC Support    
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    
+    // Spring Transaction support
+    implementation ("org.springframework:spring-tx") 
 }
