@@ -12,6 +12,10 @@ This project demonstrates a Spring Boot JDBC application integrated with IBM CIC
 * An Eclipse development environment on the workstation (optional)
 * Either Gradle or Apache Maven on the workstation (optional if using Wrappers)
 
+## erence
+
+More information about the development of this sample can be found in the blog [Spring Boot Java applications for CICS, Part 4: JDBC](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/blog/blog.md)
+
 ## Downloading
 * Clone the repository using your IDE's support, such as the Eclipse Git plugin
 * **or**, download the sample as a ZIP and unzip onto the workstation
