@@ -282,3 +282,4 @@ Using JDBC to access relataional database is made easy in Spring using the JdbcT
 
 ## References
 - [Spring JdbcTemplate class](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html)
+- [Accessing Relational Data using JDBC with Spring](https://spring.io/guides/gs/relational-data-access/)
