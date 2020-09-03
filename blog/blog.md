@@ -2,18 +2,14 @@
 
 
 ## Learning Objectives
-Accessing a relational database from your Spring Boot application is likely to be an essential requirement for your application. This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is destined to be deployed into a Liberty server, running in CICS. 
+Accessing a relational database from your Springboot application is likely to be an essential requirement for your application. This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is designed to be deployed into a Liberty server, running in CICS. 
 
-JDBC is a Java API which allows a Java applications to access data stored in a relational database. In this tutorial we will be using IBM Db2® for z/OS as our relational database. The application will use the supplied EMP table which is supplied with DB2. 
-
-Spring Boot's JDBC support provides database related beans, such as `DataSource` and `JdbcTemplate`. These beans can be Autowired into an application to facilitate an automatic JDBC connection to your Database. Follow the steps in this article to generate a Spring Boot web application used to update the Db2 employee table. The application is built using Gradle or Maven, and deployed in a CICS Liberty JVM server.
+Spring Boot's JDBC support provides database related beans, such as `JdbcTemplate` and `DataSource`. These beans can be auto-wired into an application to facilitate an automatic JDBC connection to your database. Follow the steps in this article to create a Spring Boot web application that reads and updates the Db2 employee table. The application is designed to be built using Gradle or Maven, and deployed in a CICS Liberty JVM server using IBM Db2® for z/OS as the relational database. 
 
 This tutorial will show you how to
 
-1. Create and build Spring Boot application that uses JDBC
-1. ...
-1. Use Spring's JDBC Template to execute an SQL statement
-1. Use a DataSource bean
+1. Create and build a Spring Boot application that uses JDBC
+1. Access the data base using either the `JdbcTemplate` or the `DataSource` Spring beans.
 1. Understand how to make JDBC updates transactional in CICS
 1. ...
 
@@ -67,27 +63,27 @@ For Maven, you'll need the following additonal dependencies in your `pom.xml`
 ```
 
 ## Step 2. Access the relational data base.
-In this section blah blah...
+In this section we will describe how to access the data base using either the `JdbcTemplate` or the `DataSource` Spring beans.
 
 ### Add a class to define the data object(s)
 
-This example application will make use of a supplied Db2 table which contains employee data. The supplied table can be found on your Db2 for z/OS system in database DSN8D11A. The DDL for this table can be found in the (Db2 for z/OS Knowledge Center)[https://www.ibm.com/support/knowledgecenter/SSEPEK_11.0.0/intro/src/tpc/db2z_sampletablesemployeemain.html]
+This example application makes use of a supplied Db2 table which contains employee data. The supplied table can be found on your Db2 for z/OS system in database DSN8D11A. The DDL for this table can be found in the (Db2 for z/OS Knowledge Center)[https://www.ibm.com/support/knowledgecenter/SSEPEK_11.0.0/intro/src/tpc/db2z_sampletablesemployeemain.html]
 
 We need to have a representation of this table in our application so the first item we add is a definition of an employee object. This is provided in the [`Employee.java`](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/src/main/java/com/ibm/cicsdev/springboot/jdbc/Employee.java) class. This is a standard Java representation of our employee record which contains definitions for each column in the table, a constructor plus getters and setters for each field.
 
 ### Add a REST controller
 
-The REST controller is the code which will process the requests coming in from the browser. It will direct the incoming requests to the appropriate service method to complete the request. Code for `EmployeeRestController.java` is provided in the [sample](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/src/main/java/com/ibm/cicsdev/springboot/jdbc/EmployeeRestController.java). The controller contains endpoints to perform the following functions:
+The REST controller is the code which will process the requests coming in from the browser. It will direct the incoming requests to the appropriate service methods to complete the request. Code for `EmployeeRestController.java` is provided in the [sample](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/src/main/java/com/ibm/cicsdev/springboot/jdbc/EmployeeRestController.java). The controller contains endpoints to perform the following functions:
 
-* simple end point to display usage information
-* display all rows int the table
-* display one row in the table
-* add a new row (Employee) to the table
-* delete a row (Employee) from the table
-* update row (Employee) in the table
-* add a new row (Employee) to the table under an XA transaction
-* delete a row (Employee) from the table under an XA transaction
-* update row (Employee) in the table under an XA transaction
+* Simple end point to display usage information
+* Display all Employees in the table
+* Display one Employee in the table
+* Add a new row (Employee) to the table
+* Delete a row (Employee) from the table
+* Update a row (Employee) in the table
+* Add a new row (Employee) to the table under an XA transaction
+* Delete a row (Employee) from the table under an XA transaction
+* Update row (Employee) in the table under an XA transaction
 
 The root endpoint providing usage details looks like the following: 
 
@@ -120,7 +116,7 @@ The root endpoint providing usage details looks like the following:
 	}
 ```
 
-### Add service class which uses Spring's `JdbcTemplate`
+### Add service class using Spring's `JdbcTemplate`
 
 The REST controller contains an `@Autowired` annotation for our employee service.
 
@@ -167,14 +163,14 @@ The following snippet of code shows the `JdbcTemplate` being used to query all r
 ```
 
 ### Configure application.properties
-Next in the `src/main/resources` directory edit the `application.properties` file to contain the following property. The value should match exactly the JNDI name which will be specified in the dataSource definition which we will add to our Liberty `server.xml` later in this tutorial.
+Next in the `src/main/resources` folder create an `application.properties` file to contain the following property. The value should match exactly the JNDI name which will be specified in the data source definition which we will add to our Liberty `server.xml` later in this tutorial. This enables the JdbcTemplate to locate the JNDI reference for our data source.
 ```
 spring.datasource.jndi-name=jdbc/jdbcDataSource
 ```
 
 
-## Usiong a datasource bean
-Instead of using the `spring.datasource.jndi-name` property to name the JNDI reference for the data source, the JNDI name can alternatively be set using a datasource bean in the application code. In order to do this you would define the bean in the application. To do this, the `Application` class would need to create the DataSource object using `InitialContext.doLookup();` as shown.
+## Using a datasource bean
+Instead of using the `spring.datasource.jndi-name` property to name the JNDI reference for the data source, the JNDI name can alternatively be set using a datasource bean in the application code. In order to do this you would define the bean within the application. To do this, the `Application` class would need to provide a method annotated with the `@Bean` annotation that lookups up the data source using the JNDI method `InitialContext.doLookup()` and supplies this as a return value. 
 
 ```
 @SpringBootApplication
@@ -214,12 +210,14 @@ public class Application
 }
 ```
 
-Then in the `EmployeeService` class the bean must be Autowired as follows:
+Then in the `EmployeeService` class the bean must be auto-wired as follows:
 ```java
 @Autowired
 private DataSource myDatasource
 ```
+This method removes the ability to easily modify the JNDI reference using the property, so is not used in our supplied example.
 
+> **Note:** If your application needs to access multiple different data sources within the same application, then this
 
 ## Step 3. Add transaction support
 
@@ -231,11 +229,11 @@ There are three types of Db2 DataSource definition that can be used in CICS Libe
 Data sources are defined in server.xml, and JNDI is used by this application to autowire to the specified data source given by the URL in `application.properties`.   
 It is important to note that when the Db2 JDBC driver is operating in a CICS environment with type 2 connectivity, the autocommit property is <i>forced</i> to 'false' and by default the `commitOrRollbackOnCleanup` property is set to 'rollback'. Traditionally this has been because the driver defers to CICS UOW processing to demark transactions in a CICS application. Conversely, JDBC type 4 connectivity defaults to 'autocommit=true' as this is more standard in a distributed environment. Additionally the `commitOrRollbackOnCleanup` property does <b>not</b> apply if autocommit is on, AND autocommit does not apply if using a global txn.
 
-The differing values of these properties for different DataSource types, give rise to different transactional behaviour when used in CICS Liberty. For example, calling the `/addEmployee` endpoint in this sample with a Liberty type 4 DataSource will result in an automatic commit, the same call using a Liberty type 2 DataSource will result in rollback, because autocommit=false (forced by JCC driver) and the clean-up behaviour (if there is no explicit transaction) is to rollback.
+The differing values of these properties for different DataSource types, give rise to different transactional behaviour when used in CICS Liberty. For example, calling the `/addEmployee` endpoint in this sample with a Liberty type 4 DataSource will result in an automatic commit, the same call using a Liberty type 2 DataSource will result in rollback, because autocommit=false (is forced by JCC driver) and the clean-up behaviour (if there is no explicit transaction) is to rollback
 
 For the `cicsts_dataSource` which uses type 2 connectivity, the behaviour is similar to Liberty type 4 but this DataSource implementation does not involve the Liberty transaction manager by default and so the clean-up behaviour does not apply. Thus when the transaction finishes, CICS will implicitly commit the UOW, and the database updates are committed. 
 
-You can emulate the autocommit behaviour for a Liberty DataSource with type 2 connectivity by setting the `commitOrRollbackOnCleanUp` property to 'commit'. However, should the application then cause an exception or abend, the CICS UOW containing the Db2 update, has already been committed and only a second new (empty) UOW is rolled back.
+You can emulate the autocommit behaviour for a Liberty DataSource with type 2 connectivity by setting the `commitOrRollbackOnCleanUp` property to 'commit'. However, should the application then cause an exception or abend, the CICS UOW containing the Db2 update has already been committed and only a second new (empty) UOW is rolled back
 
 Thus, for each update operation in this sample we provide a second end-point version (post-fix 'Tx') which wraps the call in an XA (global) transaction and in all environments the behaviour remains fully transactional and consistent. You can observe the differences in behaviour by defining different DataSource types in your server.xml and driving the different local vs global transaction endpoints.
 
