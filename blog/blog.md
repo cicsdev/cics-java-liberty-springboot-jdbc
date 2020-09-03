@@ -169,7 +169,6 @@ Next in the `src/main/resources` folder create an `application.properties` file 
 ```
 spring.datasource.jndi-name=jdbc/jdbcDataSource
 ```
-> **Note:** If application security is enabled in the target Liberty server, you will also need to enable an authentication method, and authorisation roles. To do this you will need to create a Jave EE `web.xml file`, and place this in the src/main/webapp/WEB-INF/ folder. A sample `web.xml` file that supports basic authentication is provided in the associated Git repository. For further details on enabling security refer to the previous tutorial [Spring Boot Java applications for CICS, Part 2: Security](https://developer.ibm.com/technologies/spring/tutorials/spring-boot-java-applications-for-cics-part-2-security/)
 
 ## Step 3. Using a DataSource bean to locate the data source
 Instead of using the `spring.datasource.jndi-name` property to name the JNDI reference for the data source, the JNDI name can alternatively be set using a DataSource bean within the application. To do this, the `Application` class would need to provide a method annotated with the `@Bean` annotation that lookups up the data source using the JNDI method `InitialContext.doLookup()` and supplies this as a return value. 
@@ -240,6 +239,7 @@ To avoid this situation a global transactional scope can be used to control the 
 
 For further details on using Spring Transactions within CICS refer to the previous tutorial [Spring Boot Java applications for CICS, Part 3: Transactions](https://github.com/cicsdev/cics-java-liberty-springboot-transactions/blob/master/blog/Blog.md)
 
+> **Note:** In addition if application security is enabled in the target Liberty server, you will also need to enable an authentication method, and authorisation roles. To do this you will need to create a Jave EE `web.xml file`, and place this in the src/main/webapp/WEB-INF/ folder. A sample `web.xml` file that supports basic authentication is provided in the associated Git repository. For further details on enabling security refer to the previous tutorial [Spring Boot Java applications for CICS, Part 2: Security](https://developer.ibm.com/technologies/spring/tutorials/spring-boot-java-applications-for-cics-part-2-security/)
 
 ## Step 5 : Running the sample
 
