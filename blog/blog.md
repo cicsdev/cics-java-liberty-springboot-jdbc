@@ -63,6 +63,8 @@ For Maven, you'll need the following additonal dependencies in your `pom.xml`
 </dependency>
 ```
 
+> **Note:** If you also need to use the JCICS API within your application to invoke CICS commands, you will need to add further dependencies to your build as outlined in the IBM tutorial [Spring Boot Java applications for CICS, Part 1: JCICS, Gradle, and Maven](https://developer.ibm.com/tutorials/spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle/)
+
 ## Step 2. Access the relational data base.
 In this section we will describe how to access the data base using Spring's `JdbcTemplate`.
 
