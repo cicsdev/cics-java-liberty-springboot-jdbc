@@ -349,7 +349,6 @@ For more details about using the @Transactional annotation and XA transactions s
 ## Step 4: Trying out the sample
 
 
-#Trying out the sample
 
 1. Find the base URL for the application in the Liberty messages.log to view the Usage instructions:
     e.g. `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/`
