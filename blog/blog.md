@@ -175,31 +175,23 @@ Instead of using the `spring.datasource.jndi-name` property to name the JNDI ref
 
 ```java
 @SpringBootApplication
-public class Application 
-{	
-	private static final String DATA_SOURCE = "jdbc/jdbcDataSource";
+public class Application {
+    private static final String DATA_SOURCE = "jdbc/jdbcDataSource";
 
-	public static void main(String args[]) throws NamingException 
-        {
-		SpringApplication.run(Application.class, args);		
-	}
-	
-    
-	
-	@Bean
-	public static DataSource dataSource() 
-        {		
-	    try 
-            {	
-		DataSource ds = InitialContext.doLookup(DATA_SOURCE);
-		return ds;
-	    } 
-        catch (NamingException e) 
-        {
-		e.printStackTrace();
-		return null;
-	}
-	} 
+    public static void main(String args[]) throws NamingException {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Bean
+    public static DataSource dataSource() {
+        try {
+            DataSource ds = InitialContext.doLookup(DATA_SOURCE);
+            return ds;
+        } catch (NamingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
 ```
 
@@ -285,7 +277,7 @@ For example to list all employees copy the base URL along with the REST service 
 `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/allEmployees`
 
 ## Summary
-
+Using JDBC to access relataional database is made easy in Spring using the JdbcTemplate. After completing this tutorial, you should be able to start to build fully functional Java based business applications in CICS using Spring Boot. Watch out for further [samples](https://github.com/cicsdev?q=springboot&type=&language=java)  on other Spring Boot technology from the CICS Java development team. 
 
 
 ## References
