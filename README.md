@@ -12,34 +12,16 @@ This project demonstrates a Spring Boot JDBC application integrated with IBM CIC
 * An Eclipse development environment on the workstation (optional)
 * Either Gradle or Apache Maven on the workstation (optional if using Wrappers)
 
+## Reference
+
+More information about the development of this sample can be found in the blog [Spring Boot Java applications for CICS, Part 4: JDBC](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/blog/blog.md)
+
 ## Downloading
 * Clone the repository using your IDE's support, such as the Eclipse Git plugin
 * **or**, download the sample as a ZIP and unzip onto the workstation
 
 >*Tip: Eclipse Git provides an 'Import existing Projects' check-box when cloning a repository.*
 ### Check Dependencies
-
-Before building this sample, you should verify that the correct CICS TS bill of materials (BOM) is specified for your target release of CICS. The BOM specifies a consistent set of artifacts, and adds information about their scope. In the example below the version specified is compatible with CICS TS V5.5 with JCICS APAR PH25409, or newer. That is, the Java byte codes built by compiling against this version of JCICS will be compatible with later CICS TS versions and subsequent JCICS APARs. You can browse the published versions of the CICS BOM at Maven Central.
-
-Gradle (build.gradle):
-
-`compileOnly enforcedPlatform("com.ibm.cics:com.ibm.cics.ts.bom:5.5-20200519131930-PH25409")`
-
-Maven (POM.xml):
-
-``` xml
-<dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.ibm.cics</groupId>
-        <artifactId>com.ibm.cics.ts.bom</artifactId>
-        <version>5.5-20200519131930-PH25409</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-```
 
 ## Building
 
@@ -111,7 +93,7 @@ This creates a WAR file in the `target` directory.
 E.g. as follows for JDBC type 2 connectivity (substitute your values as necessary):
 
 ``` XML
-<dataSource id="t2" jndiName="jdbc/jdbcDataSource" transactional="false">
+<dataSource id="t2" jndiName="jdbc/jdbcDataSource" transactional="false" commitOrRollbackOnCleanup="commit">
         <jdbcDriver>   
             <library name="DB2LIB">
                 <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
@@ -147,61 +129,11 @@ E.g. as follows for JDBC type 2 connectivity (substitute your values as necessar
 
 - set spring.datasource.jndi-name in application.properties
 
-The file application.properties in /src/main/resources/ contains the setting 
+The file application.properties in `/src/main/resources/` contains the property
 ``` shell
 spring.datasource.jndi-name=jdbc/jdbcDataSource
 ```
-which will direct the application to the dataSource defintion in the server.xml which must have parameter jndiName set to the same value specified in the application properties file
-
-- alternatively use a datasource Bean
-
-The jndi-name can alternatively be set using a datasource bean in the application code. In order to do this you would define the bean in the application. To do this the application.java class would be as follows:
-
-``` 
-@SpringBootApplication
-public class Application 
-{
-	// name the dataSource jndi name
-	private static final String DATA_SOURCE = "jdbc/jdbcDataSource";
-
-
-	/**
-	 * @param args
-	 * @throws NamingException 
-	 */
-	public static void main(String args[]) throws NamingException 
-    {
-		SpringApplication.run(Application.class, args);		
-	}
-	
-    
-	/**
-	 * @return a data Source
-	 */
-	@Bean
-	public static DataSource dataSource() 
-    {		
-		try 
-        {
-			// Look up the connection factory from Liberty
-			DataSource ds = InitialContext.doLookup(DATA_SOURCE);
-			return ds;
-		} 
-        catch (NamingException e) 
-        {
-			e.printStackTrace();
-			return null;
-		}
-	} 
-}
-
-```
-and then in the EmployeeService class the bean must be Autowired as follows:
-
-```
-@Autowired
-private DataSource myDatasource;
-```
+This will direct the application to the dataSource defintion in the server.xml which must have parameter `jndiName` set to the same value as specified in the application properties file
 
 - Deployment option 1:
     - Copy and paste the built WAR from your *target* or *build/libs* directory into a Eclipse CICS bundle project and create a new WAR bundlepart that references the WAR file. Then deploy the CICS bundle project from CICS Explorer using the **Export Bundle Project to z/OS UNIX File System** wizard.
@@ -235,26 +167,6 @@ private DataSource myDatasource;
 3. For more information on how to use this sample, request the context root:
    - `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/`
      
-    
-## Additional notes on Transactional behaviour
-There are three types of Db2 DataSource definition that can be used in CICS Liberty, all use the Db2 JDBC driver (JCC). They are:
-- the original `cicsts_dataSource` using type 2 connectivity (DB2CONN) and supporting driver manager
-- a Liberty `dataSource` with type 2 connectivity (using CICS DB2CONN for connection management)
-- a Liberty `dataSource` with type 4 connectivity (using TCP/IP and Liberty for connection management)
-
-DataSources are defined in server.xml, and JNDI is used by this application to autowire to the specified DataSource given by the URL in `application.properties`.
-
-It is important to note that when the Db2 JDBC driver is operating in a CICS environment with type 2 connectivity, the autocommit property is <i>forced</i> to 'false' and by default the `commitOrRollbackOnCleanup` property is set to 'rollback'. Traditionally this has been because the driver defers to CICS UOW processing to demark transactions in a CICS application. Conversely, JDBC type 4 connectivity defaults to 'autocommit=true' as this is more standard in a distributed environment. Additionally the `commitOrRollbackOnCleanup` property does <b>not</b> apply if autocommit is on, AND autocommit does not apply if using a global txn.
-
-The differing values of these properties for different DataSource types, give rise to different transactional behaviour when used in CICS Liberty. For example, calling the `/addEmployee` endpoint in this sample with a Liberty type 4 DataSource will result in an automatic commit, the same call using a Liberty type 2 DataSource will result in rollback, because autocommit=false (forced by JCC driver) and the clean-up behaviour (if there is no explicit transaction) is to rollback.
-
-For the `cicsts_dataSource` which uses type 2 connectivity, the behaviour is similar to Liberty type 4 but this DataSource implementation does not involve the Liberty transaction manager by default and so the clean-up behaviour does not apply. Thus when the transaction finishes, CICS will implicitly commit the UOW, and the database updates are committed. 
-
-You can emulate the autocommit behaviour for a Liberty DataSource with type 2 connectivity by setting the `commitOrRollbackOnCleanUp` property to 'commit'. However, should the application then cause an exception or abend, the CICS UOW containing the Db2 update has already been committed and only a second new (empty) UOW is rolled back.
-
-Thus, for each update operation in this sample we provide a second end-point version (postfix 'Tx') which wraps the call in an XA (global) transaction and in all environments the behaviour remains fully transactional and consistent.
-You can observe the differences in behaviour by defining different DataSource types in your server.xml, and driving the different local vs global transaction endpoints.
-
 
 ### License:
 This project is licensed under [Eclipse Public License - v 2.0](LICENSE). 
