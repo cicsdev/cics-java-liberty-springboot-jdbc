@@ -210,25 +210,21 @@ A working example for this technique is provided in the CICSDev git repository[c
 
 Transactional support is a key part of using JDBC within CICS. Our sample can be used either within the default transactional scope of a CICS unit-of-work, or within the scope of global JTA transaction by using the REST endpoints prefixed with `Tx` such as `addEmployeeTx/{firstName}/{lastName}`
 
-There are three types of Db2 DataSource definition that can be used in CICS Liberty, all use the same Db2 JDBC driver (JCC). They are as follows:
+There are three types of Db2 DataSource definition that can be used in CICS Liberty, all use the same Db2 JDBC driver (JCC) but have slightly different transactional behaviours. They are as follows:
 - The original `cicsts_dataSource` using type 2 connectivity and a CICS DB2CONN resource.
 - A Liberty `dataSource` with type 2 connectivity and a CICS DB2CONN resource.
 - A Liberty `dataSource` with type 4 connectivity and using remote TCP/IP connection managed by Liberty. 
 
-When using the default transactional scope of the CICS unit-of-work with a T2 JDBC connection you may notice that methods in the sample that perform data base updates will rollback by default (and  update). This is because the JdbcTemplate closes connections after usage. Closing a connection will cause the Liberty connection factory to cleanup outstanding requests if they are not autocommited, and are not in a global transaction. Since the default Liberty dataSource setting for the `commitOrRollbackOnCleanup=commit`](https://www.ibm.com/support/knowledgecenter/en/SS7K4U_liberty/com.ibm.websphere.liberty.autogen.zos.doc/ae/rwlp_config_oauthProvider.html#databaseStore/dataSource) property is `rollback` and autocommit is not supported for T2 connections then requests will rollback by default unless the property is set to commit.
-
-that without setting the [ property on the Liberty dataSource, 
-
-. This can also apply to T4 JDBC connections, but since T4 JDBC connections default to using autocommit, this does not apply as each JDBC request will be auto committed after usage.
+When using the default transactional scope of the CICS unit-of-work with a T2 Liberty JDBC connection you may notice that methods in the sample that perform data base updates will rollback by default (and therefore also rollback the CICS UOW). This is because the JdbcTemplate **closes** connections after usage. Closing a connection will cause the Liberty connection factory to *cleanup* outstanding requests if they are not autocommited, and are not in a global transaction. Since the default Liberty dataSource setting for the `commitOrRollbackOnCleanup`](https://www.ibm.com/support/knowledgecenter/en/SS7K4U_liberty/com.ibm.websphere.liberty.autogen.zos.doc/ae/rwlp_config_dataSource.html) property is `rollback` and autocommit is not supported for T2 connections then requests to a T2 JDBC connection that use a Liberty dataSource will rollback by default unless the property is set to commit. This does not apply to the cicsts_dataSource as this does not use the Liberty data source connection manager, and by default does not apply to T4 JDBC connections, since T4 JDBC connections default to using JDBC autocommit, which means every individual JDBC request will be auto-committed after usage. The following table summarises the different commit behaviours for each typee of data source ous
 
 
-|data source      |type     |autocommit    |autocommit default  |commitOrRollbackOnCleanup default|
+|data source      |type     |autocommit    |autocommit default  |Default commit behaviour|
 |-----------------|---------|--------------|--------------------|---------------------------------|
-|cicsts_dataSource  |T2     |false         |false               |n/a     |
-|Liberty datasource |T2     |false         |false               |rollback|
-|Liberty dataSource |T4     |true or false |true                |commit  |
+|cicsts_dataSource  |T2     |false         |false               |commit CICS UOW   |
+|Liberty datasource |T2     |false         |false               |rollback CICS UOW   |
+|Liberty dataSource |T4     |true or false |true                |commit database udpate     |
 
-To avoid this situation a JTA transactiona scope can be used to control the transactional scope. If a transactional service endpoint such as `/addEmployeeTx` is used then the service method it maps to creates a global transaction using the Spring `@Transactional` annotation as shown. This ensures all the work called from this methods is part of a single global transaction coordinated by Libety. This includes the CICS UOW, and any requests to Liberty managed resources sucha as JDBC type 4 connections. 
+To avoid this situation a JTA transactional scope can be used to control the transactional scope. If a transactional service endpoint such as `/addEmployeeTx` is used then the service method it maps to creates a global transaction using the Spring `@Transactional` annotation as shown. This ensures all the work called from this methods is part of a single global transaction coordinated by Libety. This includes the CICS UOW, and any requests to Liberty managed resources such as JDBC type 4 connections. 
 
 ```java
     @GetMapping("/addEmployeeTx/{firstName}/{lastName}")
