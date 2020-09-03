@@ -247,7 +247,7 @@ To deploy the sample into a CICS Liberty JVM server, you need to first build the
 - Adding an <application> element to the Liberty server.xml that points directly to the WAR
 - Adding the WAR to a CICS bundle project, export this to CICS, and install using a CICS BUNDLE resource definition
 
-Further instructions on deploying the sample to CICS and creating the required `dataSource` definitions can be found in the Git repository [README](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/README)
+Further instructions on deploying the sample to CICS and creating the required `dataSource` definitions can be found in the Git repository [README](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/README.md)
 
 To invoke the application you can use the following example URL
    `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/`
