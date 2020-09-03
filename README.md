@@ -12,7 +12,7 @@ This project demonstrates a Spring Boot JDBC application integrated with IBM CIC
 * An Eclipse development environment on the workstation (optional)
 * Either Gradle or Apache Maven on the workstation (optional if using Wrappers)
 
-## erence
+## Reference
 
 More information about the development of this sample can be found in the blog [Spring Boot Java applications for CICS, Part 4: JDBC](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/blog/blog.md)
 
@@ -90,7 +90,7 @@ This creates a WAR file in the `target` directory.
 
 - add a datasource definition to 'server.xml'.
 
-E.g. as follows for JDBC type 2 connectivity (substitute values as necessary!):
+E.g. as follows for JDBC type 2 connectivity (substitute your values as necessary):
 
 ``` XML
 <dataSource id="t2" jndiName="jdbc/jdbcDataSource" transactional="false" commitOrRollbackOnCleanup="commit">
@@ -105,7 +105,7 @@ E.g. as follows for JDBC type 2 connectivity (substitute values as necessary!):
 </dataSource>
 ```        
 
-...or for JDBC type 4 connectivity (substitute values as necessary!):
+...or for JDBC type 4 connectivity (substitute your values as necessary):
 
 ``` XML
 <dataSource id="t4" jndiName="jdbc/jdbcDataSource" type="javax.sql.XADataSource">
@@ -116,8 +116,8 @@ E.g. as follows for JDBC type 2 connectivity (substitute values as necessary!):
         </library>
     </jdbcDriver>
     <properties.db2.jcc driverType="4" 
-        serverName="yourserver.corporation.com"   
-        portNumber="41100" 
+        serverName="YOUR.SERVER.CORPORATION.COM"   
+        portNumber="YOUR_PORT_NUMBER" 
         currentSchema="YOUR_SCHEMA"       
         databaseName="YOUR_DATABASE" 
         user="USER"
@@ -156,7 +156,7 @@ This will direct the application to the dataSource defintion in the server.xml w
 
 ## Trying out the sample
 1. Ensure the web application started successfully in Liberty by checking for msg `CWWKT0016I` in the Liberty messages.log:
-    - `A CWWKT0016I: Web application available (default_host): http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jcics-0.1.0`
+    - `A CWWKT0016I: Web application available (default_host): http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0`
     - `I SRVE0292I: Servlet Message - [com.ibm.cicsdev.springboot.jcics-0.1.0]:.Initializing Spring embedded WebApplicationContext`
 
 2. Copy the context root from message CWWKT0016I along with the REST service suffix into you web browser. For example display all the Employees from the EMP table:
@@ -167,7 +167,6 @@ This will direct the application to the dataSource defintion in the server.xml w
 3. For more information on how to use this sample, request the context root:
    - `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/`
      
-    
 
 ### License:
 This project is licensed under [Eclipse Public License - v 2.0](LICENSE). 
