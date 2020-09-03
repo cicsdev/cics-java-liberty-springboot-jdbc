@@ -215,7 +215,11 @@ There are three types of Db2 DataSource definition that can be used in CICS Libe
 - A Liberty `dataSource` with type 2 connectivity and a CICS DB2CONN resource.
 - A Liberty `dataSource` with type 4 connectivity and using remote TCP/IP connection managed by Liberty. 
 
-When using the default transactional scope of the CICS unit-of-work with a T2 JDBC connection you may notice that without setting the [`commitOrRollbackOnCleanup=commit`](https://www.ibm.com/support/knowledgecenter/en/SS7K4U_liberty/com.ibm.websphere.liberty.autogen.zos.doc/ae/rwlp_config_oauthProvider.html#databaseStore/dataSource) property on the Liberty dataSource, that methods that perform a data base updates will rollback (and not update). This is because the JdbcTemplate closes connections after usage. Closing a connection will cause the Liberty connection factory to cleanup outstanding requests if they are not autocommited, and are not in a global transaction. Since the default setting for `commitOrRollbackOnCleanup` is `rollback` and autocommit is not supported for T2 connections then requests will rollback by default. This can also apply to T4 JDBC connections, but since T4 JDBC connections default to using autocommit, this does not apply as each JDBC request will be auto committed after usage.
+When using the default transactional scope of the CICS unit-of-work with a T2 JDBC connection you may notice that methods in the sample that perform data base updates will rollback by default (and  update). This is because the JdbcTemplate closes connections after usage. Closing a connection will cause the Liberty connection factory to cleanup outstanding requests if they are not autocommited, and are not in a global transaction. Since the default Liberty dataSource setting for the `commitOrRollbackOnCleanup=commit`](https://www.ibm.com/support/knowledgecenter/en/SS7K4U_liberty/com.ibm.websphere.liberty.autogen.zos.doc/ae/rwlp_config_oauthProvider.html#databaseStore/dataSource) property is `rollback` and autocommit is not supported for T2 connections then requests will rollback by default unless the property is set to commit.
+
+that without setting the [ property on the Liberty dataSource, 
+
+. This can also apply to T4 JDBC connections, but since T4 JDBC connections default to using autocommit, this does not apply as each JDBC request will be auto committed after usage.
 
 
 |data source      |type     |autocommit    |autocommit default  |commitOrRollbackOnCleanup default|
