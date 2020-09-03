@@ -42,7 +42,7 @@ If you are following step-by-step, generate and download a Spring Boot web appli
 
 Once your newly generated project has been imported into your IDE, you should have the `Application.java` and `ServletInitializer.java` classes which provide the basic framework of a Spring Boot web application.  
 
-In the [first part](https://developer.ibm.com/technologies/spring/tutorials/spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle/) of this tutorial series we looked in-depth at how to use Gradle or Maven to build a Spring Boot web application for CICS. Using that knowledge you should now be in a position to enhance the `build.gradle`, or `pom.xml` to include the necessary dependencies to compile against the additinal Spring Boot libraries. In particular we require the libraries that provide the Spring JDBC and Spring Transaction support. 
+In the [first part](https://developer.ibm.com/technologies/spring/tutorials/spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle/) of this tutorial series we looked in-depth at how to use Gradle or Maven to build a Spring Boot web application for CICS. Using that knowledge you should now be in a position to enhance the `build.gradle`, or `pom.xml` to include the necessary dependencies to compile against the additinal Spring Boot libraries. In particular we require the libraries that provide the Spring JDBC and Spring Transaction support. If you also need to use the JCICS API within your application to invoke CICS commands, you will need to add further dependencies to your build as outlined in the previous tutorial.
 
 For Gradle, your build file should have the additional following dependencies:
 
@@ -63,7 +63,6 @@ For Maven, you'll need the following additonal dependencies in your `pom.xml`
 </dependency>
 ```
 
-> **Note:** If you also need to use the JCICS API within your application to invoke CICS commands, you will need to add further dependencies to your build as outlined in the IBM tutorial [Spring Boot Java applications for CICS, Part 1: JCICS, Gradle, and Maven](https://developer.ibm.com/tutorials/spring-boot-java-applications-for-cics-part-1-jcics-maven-gradle/)
 
 ## Step 2. Access the relational data base.
 In this section we will describe how to access the data base using Spring's `JdbcTemplate`.
