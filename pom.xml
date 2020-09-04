@@ -32,13 +32,7 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jdbc</artifactId>
-    </dependency>
-    
-    <!-- Spring Transaction support  -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-tx</artifactId>
-    </dependency>
+    </dependency> 
 
     <!-- Compile against, but don't include TomCat in the runtime build --> 
     <dependency>

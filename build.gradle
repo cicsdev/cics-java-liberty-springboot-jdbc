@@ -39,8 +39,6 @@ dependencies
     providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")     
 
     // Spring JDBC Support    
-    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
-    
-    // Spring Transaction support
-    implementation ("org.springframework:spring-tx") 
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")   
+
 }
