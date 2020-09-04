@@ -2,7 +2,7 @@
 
 
 ## Learning Objectives
-Accessing a relational database from your Spring Boot application is likely to be an essential requirement for many applications. This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is designed to be deployed into a Liberty server, running in CICS. 
+Accessing a relational database from your Spring Boot application is likely to be an essential requirement for CICS Java applications. This tutorial demonstrates how to create a Java application which accesses a relational database using Spring Boot's approach to JDBC. The application is designed to be deployed into a Liberty server, running in CICS. 
 
 Spring Boot's JDBC support provides database related beans, such as `JdbcTemplate` and `DataSource`. These beans can be auto-wired into an application to facilitate an automatic JDBC connection to your database. Follow the steps in this article to create a Spring Boot web application that reads and updates the Db2 employee table. The application is designed to be built using Gradle or Maven, and deployed in a CICS Liberty JVM server using IBM Db2® for z/OS as the relational database. 
 
@@ -198,7 +198,7 @@ public class Application
 ```
 You could also use Spring's `JndiDataSourceLookup` class, calling `JndiDataSourceLookup.getDataSource(String jndi)` to achieve the same result.
 
-> **Note:** If your application needs to access multiple data sources then the DataSource bean technique is very useful. A working example for this technique is provided in the CICSDev git repository[cics-java-liberty-springboot-jdbc-multi](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc-multi).
+> **Note:** If your application needs to access multiple data sources then the DataSource bean technique is very useful. A working example for this technique is provided in the CICSDev git repository [cics-java-liberty-springboot-jdbc-multi](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc-multi).
 
 ## Step 4. Add transaction support
 
@@ -209,11 +209,11 @@ There are three types of Db2 dataSource definition that can be used in CICS Libe
 - A Liberty `dataSource` with type 2 connectivity and a CICS DB2CONN resource.
 - A Liberty `dataSource` with type 4 connectivity and using a remote TCP/IP connection managed by Liberty. 
 
-When using the default transactional scope of the CICS unit-of-work with a T2 Liberty JDBC connection you may notice that methods in the sample that perform database updates will rollback by default (and therefore also rollback the CICS UOW). This is because the JdbcTemplate **closes** connections after use. Closing a connection will cause the Liberty connection factory to *cleanup* outstanding requests **if** they are not autocommited or not in a global transaction. Since the default Liberty dataSource setting for the `commitOrRollbackOnCleanup`](https://www.ibm.com/support/knowledgecenter/en/SS7K4U_liberty/com.ibm.websphere.liberty.autogen.zos.doc/ae/rwlp_config_dataSource.html) property is `rollback`, and autocommit is not supported for T2 connections then requests to a T2 JDBC connection that use a Liberty dataSource will rollback by default.
+When using the default transactional scope of the CICS unit-of-work with a T2 Liberty JDBC connection you may notice that methods in the sample that perform database updates will rollback by default (and therefore also rollback the CICS UOW). This is because the JdbcTemplate **closes** connections after use. Closing a connection will cause the Liberty connection factory to *cleanup* outstanding requests **if** they are not autocommited or not in a global transaction. Since the default Liberty dataSource setting for the [`commitOrRollbackOnCleanup`](https://www.ibm.com/support/knowledgecenter/en/SS7K4U_liberty/com.ibm.websphere.liberty.autogen.zos.doc/ae/rwlp_config_dataSource.html) property is `rollback`, and autocommit is not supported for T2 connections in CICS, then requests to a T2 JDBC connection that use a Liberty dataSource will rollback by default.
 
-However, the same is not true of the cicsts_dataSource. It does not use the Liberty DataSource connection manager, so there is no opportunity for the Liberty cleanup behaviour to take effect. Instead it is the CICS UOW behaviour that is respected, which means an implicit commit at Task end.
+However, the same is not true of the cicsts_dataSource. It does not use the Liberty data source connection manager, so there is no opportunity for the Liberty cleanup behaviour to take effect. Instead it is the CICS UOW behaviour that is respected, which means an implicit commit at end of task.
 
-By default, commit behaviour is also exhibited by T4 JDBC connections. T4 JDBC connections default to autocommit=true, and each JDBC request will be auto-committed after use. 
+By default, commit behaviour is also exhibited by T4 JDBC connections. T4 JDBC connections default to `autocommit=true`, and each JDBC request will be auto-committed after use. This will not syncpoint the CICS UOW as T4 JDBC connections are not part of the CICS UOW by default.
 
 The following table summarises the different behaviours for each type of dataSource.
 
@@ -224,7 +224,7 @@ The following table summarises the different behaviours for each type of dataSou
 |Liberty datasource |T2       |false         |false               |rollback CICS UOW                |
 |Liberty dataSource |T4       |true or false |true                |commit database update           |
 
-To avoid differences and provide consistent behaviour, a global transaction can be used to control the transactional scope of all updates. Our sample contains a set of transactional service endpoints, such as `/addEmployeeTx` that map to service methods that create a global transaction using the Spring `@Transactional` annotation, as shown below. This ensures all the work performed within the scope of that method is part of a single global transaction coordinated by Libety. That work includes the CICS UOW, and any resources it controls, such as JDBC type 2 connections - as well as any requests to Liberty managed resources such as JDBC with type 4 connectivity.
+To avoid differences and provide consistent behaviour, a global transaction can be used to control the transactional scope of all updates. Our sample contains a set of transactional service endpoints, such as `/addEmployeeTx` that map to service methods that create a global transaction using the Spring `@Transactional` annotation, as shown below. This ensures all the work performed within the scope of that method is part of a single global transaction coordinated by Liberty. That work includes the CICS UOW, and any resources it controls, such as JDBC type 2 connections - as well as any requests to Liberty managed resources such as JDBC with type 4 connectivity.
 
 ```java
     @GetMapping("/addEmployeeTx/{firstName}/{lastName}")
@@ -243,12 +243,12 @@ For further details on using Spring Transactions within CICS refer to the previo
 
 ## Step 5 : Deploying and running the sample
 
-To deploy the sample into a CICS Liberty JVM server, you need to build the application as a WAR. Gradle [build.gradle](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/build.gradle) and Maven [pom.xml](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/pom.xml) files are provided in the sample Git repository to simplify this task. Once built, there are a couple of ways of deploying the application, either:
+To deploy the sample into a CICS Liberty JVM server, you need to build the application as a WAR. Gradle [build.gradle](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/build.gradle) and Maven [pom.xml](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/pom.xml) files are provided in the sample Git repository to simplify this task. Once built, there are a couple of ways of deploying the application, either:
 
 - Add an <application> element to the Liberty server.xml that points directly to the WAR
 - Add the WAR to a CICS bundle project, exporting the project to zFS, and install it using a CICS BUNDLE resource definition
 
-Ensure that you have defined a `dataSource` definition in Liberty server.xml. For details on configuring a dataSource and further information on deploying the sample to CICS, see the [README](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/README.md) in the Git repository.
+You will also need to ensure that you have defined a `dataSource` definition in Liberty server.xml. For details on configuring a dataSource and further information on deploying the sample to CICS, see the [README](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/README.md) in the Git repository.
 
 To invoke the application you can use the following example URL
    `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/`
