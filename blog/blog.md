@@ -51,6 +51,7 @@ For Gradle, your build file should have the additional dependency:
  ```
 
 For Maven, you'll need the following additonal dependency in your `pom.xml`
+
 ```xml 
 <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -126,7 +127,7 @@ This enables the controller to call methods which service the incoming requests.
 
 `JdbcTemplate` is the central class in Spring's JDBC core package. It simplifies the use of JDBC and helps to avoid common errors. `JdbcTemplate` executes core JDBC workflow, leaving application code to provide the SQL and extract results. The class also executes SQL queries or updates, initiates iteration over ResultSets, catches JDBC exceptions and translates them to the generic, more informative exception hierarchy defined in the `org.springframework.dao package`. In addition when you don't have a Spring managed transaction then the `JdbcTemplate `will also call the `close()` method on the data source Connection to ensure connections are returned to the pool.
 
-Our example application uses the query and update methods of the `JdbcTemplate` class. In each case the `JdbcTemplate` object is passed a piece of SQL as a string and any result sets are processed and returned in the appropriate object. In the case of queries using the update method, `JdbcTemplate.update()` returns an integer indicating the number of rows which have been affected by the update. 
+Our example application uses the query and update methods of the `JdbcTemplate` class. In each case the `JdbcTemplate` object is passed a piece of SQL as a string and any result sets are processed and returned in the appropriate object. In the case of queries using the update method, `JdbcTemplate.update()` returns an integer indicating the number of rows which have been affected by the update.
  
 The service class for this application `EmployeeService.java` can be viewed [here](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/blob/master/src/main/java/com/ibm/cicsdev/springboot/jdbc/EmployeeService.java) in the sample application.
 
@@ -162,6 +163,7 @@ The following snippet of code shows the `JdbcTemplate` being used to query all r
 
 ### Configure application.properties
 Next, in the `src/main/resources` folder create an `application.properties` file to contain the property shown below. The value should match exactly the JNDI name specified in the dataSource definition (which we add to our Liberty `server.xml` later in the tutorial). This property is used by the JdbcTemplate to locate the required dataSource definition using JNDI, and to create an implicit DataSource object representing that dataSource.
+
 ```
 spring.datasource.jndi-name=jdbc/jdbcDataSource
 ```

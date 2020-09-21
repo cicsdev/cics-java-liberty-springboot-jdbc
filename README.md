@@ -88,7 +88,7 @@ This creates a WAR file in the `target` directory.
 
 >**Note:** `servlet-4.0` will only work for CICS TS V5.5 or later
 
-- add a datasource definition to 'server.xml'.
+- add a dataSource definition to 'server.xml'.
 
 E.g. as follows for JDBC type 2 connectivity (substitute your values as necessary):
 
@@ -133,7 +133,7 @@ The file application.properties in `/src/main/resources/` contains the property
 ``` shell
 spring.datasource.jndi-name=jdbc/jdbcDataSource
 ```
-This will direct the application to the dataSource defintion in the server.xml which must have parameter `jndiName` set to the same value as specified in the application properties file
+This will direct the application to the dataSource definition in the server.xml which must have parameter `jndiName` set to the same value as specified in the application properties file
 
 - Deployment option 1:
     - Copy and paste the built WAR from your *target* or *build/libs* directory into a Eclipse CICS bundle project and create a new WAR bundlepart that references the WAR file. Then deploy the CICS bundle project from CICS Explorer using the **Export Bundle Project to z/OS UNIX File System** wizard.
@@ -157,7 +157,7 @@ This will direct the application to the dataSource defintion in the server.xml w
 ## Trying out the sample
 1. Ensure the web application started successfully in Liberty by checking for msg `CWWKT0016I` in the Liberty messages.log:
     - `A CWWKT0016I: Web application available (default_host): http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0`
-    - `I SRVE0292I: Servlet Message - [com.ibm.cicsdev.springboot.jcics-0.1.0]:.Initializing Spring embedded WebApplicationContext`
+    - `I SRVE0292I: Servlet Message - [cics-java-liberty-springboot-jdbc-0.1.0]:.Initializing Spring embedded WebApplicationContext`
 
 2. Copy the context root from message CWWKT0016I along with the REST service suffix into you web browser. For example display all the Employees from the EMP table:
     - `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/allEmployees` 
