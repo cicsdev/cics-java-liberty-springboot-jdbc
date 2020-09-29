@@ -167,6 +167,5 @@ This will direct the application to the dataSource definition in the server.xml 
 3. For more information on how to use this sample, request the context root:
    - `http://myzos.mycompany.com:httpPort/cics-java-liberty-springboot-jdbc-0.1.0/`
      
-
-### License:
+## License
 This project is licensed under [Eclipse Public License - v 2.0](LICENSE). 
