@@ -21,7 +21,6 @@ More information about the development of this sample can be found in the blog [
 * **or**, download the sample as a ZIP and unzip onto the workstation
 
 >*Tip: Eclipse Git provides an 'Import existing Projects' check-box when cloning a repository.*
-### Check Dependencies
 
 ## Building
 
