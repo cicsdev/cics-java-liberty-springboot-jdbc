@@ -6,7 +6,6 @@ This project demonstrates a Spring Boot JDBC application integrated with IBM CIC
 
 * CICS TS V5.3 or later
 * A configured Liberty JVM server
-* Java SE 1.8 or later on the z/OS system
 * Java SE 1.8 or later on the workstation
 * IBM Db2 V11 or later on z/OS
 * An Eclipse development environment on the workstation (optional)
