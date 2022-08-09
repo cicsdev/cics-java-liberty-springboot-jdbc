@@ -13,7 +13,7 @@ This project demonstrates a Spring Boot JDBC application integrated with IBM CIC
 
 ## Reference
 
-More information about the development of this sample can be found in the IBM tutorial [Spring Boot Java applications for CICS, Part 4: JDBC](https://developer.ibm.com/components/ibmz/tutorials/spring-boot-java-applications-for-cics-part-4-jdbc/)
+More information about the development of this sample can be found in the IBM tutorial [Spring Boot Java applications for CICS, Part 4: JDBC](https://developer.ibm.com/tutorials/spring-boot-java-applications-for-cics-part-4-jdbc/)
 
 ## Downloading
 * Clone the repository using your IDE's support, such as the Eclipse Git plugin
