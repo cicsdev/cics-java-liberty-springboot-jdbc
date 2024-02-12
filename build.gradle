@@ -12,7 +12,6 @@ id 'war'
 group = 'com.ibm.cicsdev.springboot'
 archivesBaseName='cics-java-liberty-springboot-jdbc'
 version = '0.1.0'
-sourceCompatibility = '1.8'
 
 
 // If in Eclipse, add Javadoc to the local project classpath
@@ -28,6 +27,17 @@ eclipse
 repositories 
 {
     mavenCentral()
+}
+
+
+java
+{
+    toolchain
+    {
+        languageVersion = JavaLanguageVersion.of(java_version)
+        vendor = JvmVendorSpec.IBM
+        implementation = JvmImplementation.J9
+    }
 }
 
 
