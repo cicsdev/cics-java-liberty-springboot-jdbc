@@ -71,8 +71,8 @@ jobs:
     strategy:
       matrix:
         jdk: [17, 21]
-         experimental: [false]
-         include:
+        experimental: [false]
+        include:
           - jdk: 25
             experimental: true
     steps:
@@ -93,9 +93,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-         jdk: [17, 21]
-         experimental: [false]
-         include:
+        jdk: [17, 21]
+        experimental: [false]
+        include:
           - jdk: 25
             experimental: true
     steps:
