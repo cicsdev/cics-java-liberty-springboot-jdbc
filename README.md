@@ -7,7 +7,7 @@ This project demonstrates a Spring Boot JDBC application integrated with IBM CIC
 
 * CICS TS V5.3 or later
 * A configured Liberty JVM server
-* Java SE 1.8 or later on the workstation
+* Java SE 17 or later on the workstation (required for Spring Boot 3.x)
 * IBM Db2 V11 or later on z/OS
 * An Eclipse development environment on the workstation (optional)
 * Either Gradle or Apache Maven on the workstation (optional if using Wrappers)
@@ -101,9 +101,9 @@ If you are using jdbc-4.3 then type needs to be there - type="javax.sql.DataSour
     </library>
 
     <!-- Configure the DataSource -->
-    <dataSource id="db2Type2" jndiName="jdbc/jdbcDataSource"  transactional="false" type="javax.sql.DataSource">
+    <dataSource id="db2Type2" jndiName="jdbc/jdbcDataSource"  transactional="false" commitOrRollbackOnCleanup="commit" type="javax.sql.DataSource">
         <jdbcDriver libraryRef="db2Type2Driver"/>    
-        <properties.db2.jcc driverType="2"/>    
+        <properties.db2.jcc currentSchema="YOUR_SCHEMA" driverType="2"/>    
         <connectionManager agedTimeout="0"/>
     </dataSource>
 ```        
@@ -128,13 +128,6 @@ If you are using jdbc-4.3 then type needs to be there - type="javax.sql.DataSour
     />     
 </dataSource>        
 ```
-
-Before deploying make sure you have DB2CONN setup done in your cics region , also in you region jcl this sit param needs to be there-
-
-DB2CONN=YES also this two lines to be there- 
-//         DD DSN=SYS2.DB2.V12.SDSNLOAD,DISP=SHR
-//         DD DSN=SYS2.DB2.V12.SDSNLOD2,DISP=SHR
-
 
 - set spring.datasource.jndi-name in application.properties
 

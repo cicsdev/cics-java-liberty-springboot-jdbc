@@ -10,7 +10,7 @@
     <parent>
         <groupId>com.ibm.cicsdev.springboot</groupId>
         <artifactId>cics-java-liberty-springboot-jdbc</artifactId>
-        <version>0.1.0</version>
+        <version>1.0.0</version>
     </parent>
 
     <!-- ================================================================ -->
