@@ -34,7 +34,7 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots --file pom.xml -Djava.version=${{ matrix.jdk }} package
-      - run: mkdir staging && cp target/*.war staging
+      - run: mkdir staging && cp cics-java-liberty-springboot-jdbc-app/target/*.war staging
       - uses: actions/upload-artifact@v4
         with:
           name: cics-java-liberty-sprintboot-jdbc (Maven, Java ${{ matrix.jdk }})
@@ -91,6 +91,7 @@ jobs:
     name: Build Gradle wrapper
     
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
         jdk: [17, 21]
