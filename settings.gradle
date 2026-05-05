@@ -1,1 +1,11 @@
-rootProject.name = 'com.ibm.cicsdev.springboot.jdbc'
+// ============================================================================
+// Root Project Configuration
+// ============================================================================
+rootProject.name = 'cics-java-liberty-springboot-jdbc'
+
+// ============================================================================
+// Subprojects
+// ============================================================================
+include(':cics-java-liberty-springboot-jdbc-app')
+include(':cics-java-liberty-springboot-jdbc-cicsbundle')
+

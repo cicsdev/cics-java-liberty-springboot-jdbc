@@ -7,7 +7,7 @@ This project demonstrates a Spring Boot JDBC application integrated with IBM CIC
 
 * CICS TS V5.3 or later
 * A configured Liberty JVM server
-* Java SE 1.8 or later on the workstation
+* Java SE 17 or later on the workstation (required for Spring Boot 3.x)
 * IBM Db2 V11 or later on z/OS
 * An Eclipse development environment on the workstation (optional)
 * Either Gradle or Apache Maven on the workstation (optional if using Wrappers)
@@ -80,10 +80,10 @@ This creates a WAR file in the `target` directory.
 ## Deploying to a CICS Liberty JVM Server
 
 - Ensure you have the following features defined in your Liberty `server.xml`:           
-    - `<servlet-3.1>` or `<servlet-4.0>` depending on the version of Java EE in use.  
+    - `<servlet-6.0>` or `<servlet-4.0>` depending on the version of Java EE in use.  
     - `<cicsts:security-1.0>` if CICS security is enabled.
-    - `<jsp-2.3>`
-    - `<jdbc-4.0>` or `<jdbc-4.1>`
+    - `<pages-3.1>`
+    - `<jdbc-4.1>` or '<jdbc-4.3>'
 
 >**Note:** `servlet-4.0` will only work for CICS TS V5.5 or later
 
@@ -91,17 +91,21 @@ This creates a WAR file in the `target` directory.
 
 E.g. as follows for JDBC type 2 connectivity (substitute your values as necessary):
 
+If you are using jdbc-4.3 then type needs to be there - type="javax.sql.DataSource" else default will be taken for older previous.
+
 ``` XML
-<dataSource id="t2" jndiName="jdbc/jdbcDataSource" transactional="false" commitOrRollbackOnCleanup="commit">
-        <jdbcDriver>   
-            <library name="DB2LIB">
-                <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
-                <fileset dir="/usr/lpp/db2v11/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
-            </library>
-        </jdbcDriver>
-        <properties.db2.jcc currentSchema="YOUR_SCHEMA" driverType="2"/>
+<!-- Configure the IBM Data Server Driver for JDBC and SQLJ for Db2 driver library -->
+    <library id="db2Type2Driver">
+        <fileset dir="/usr/lpp/db2v12/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
+        <fileset dir="/usr/lpp/db2v12/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
+    </library>
+
+    <!-- Configure the DataSource -->
+    <dataSource id="db2Type2" jndiName="jdbc/jdbcDataSource"  transactional="false" commitOrRollbackOnCleanup="commit" type="javax.sql.DataSource">
+        <jdbcDriver libraryRef="db2Type2Driver"/>    
+        <properties.db2.jcc currentSchema="YOUR_SCHEMA" driverType="2"/>    
         <connectionManager agedTimeout="0"/>
-</dataSource>
+    </dataSource>
 ```        
 
 ...or for JDBC type 4 connectivity (substitute your values as necessary):
@@ -124,7 +128,6 @@ E.g. as follows for JDBC type 2 connectivity (substitute your values as necessar
     />     
 </dataSource>        
 ```
-
 
 - set spring.datasource.jndi-name in application.properties
 

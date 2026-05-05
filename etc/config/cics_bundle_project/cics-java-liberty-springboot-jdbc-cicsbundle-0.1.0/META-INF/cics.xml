@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<manifest xmlns="http://www.ibm.com/xmlns/prod/cics/bundle" bundleMajorVer="0" bundleMicroVer="0" bundleMinorVer="1" bundleRelease="0" bundleVersion="1" id="cics-java-liberty-springboot-jdbc-cicsbundle">
+  <meta_directives>
+    <timestamp>2026-04-30T06:27:31.459931Z</timestamp>
+  </meta_directives>
+  <define name="cics-java-liberty-springboot-jdbc" path="cics-java-liberty-springboot-jdbc.warbundle" type="http://www.ibm.com/xmlns/prod/cics/bundle/WARBUNDLE"/>
+</manifest>

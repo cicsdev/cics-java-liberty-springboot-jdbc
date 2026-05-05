@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- ================================================================ -->
+    <!-- Parent Project                                                   -->
+    <!-- ================================================================ -->
+    <parent>
+        <groupId>com.ibm.cicsdev.springboot</groupId>
+  		<artifactId>cics-java-liberty-springboot-jdbc</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <!-- ================================================================ -->
+    <!-- Project Coordinates                                              -->
+    <!-- ================================================================ -->
+    <artifactId>cics-java-liberty-springboot-jdbc-app</artifactId>
+    <packaging>war</packaging>
+    <name>CICS JDBC Springboot - Application</name>
+
+    <!-- ================================================================ -->
+	<!-- Dependencies                                                     -->
+	<!-- ================================================================ -->  
+	<dependencies>
+		<!-- Spring Boot web support -->   
+		<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+		<!-- Spring Integration JDBC support  -->
+		<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-data-jdbc</artifactId>
+		</dependency> 
+		
+		<!-- Compile against, but don't include TomCat in the runtime build --> 
+		<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-tomcat</artifactId>
+		<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+    <!-- ================================================================ -->
+    <!-- Build Configuration                                              -->
+    <!-- ================================================================ -->
+    <build>
+	<finalName>cics-java-liberty-springboot-jdbc</finalName>
+    <plugins>
+       <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+       </plugin>
+    </plugins>
+  </build>
+
+</project>
