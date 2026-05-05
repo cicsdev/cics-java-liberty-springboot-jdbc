@@ -9,34 +9,6 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  build-maven:
-    name: Build Maven
-
-    runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.experimental }}
-    strategy:
-      matrix:
-        jdk: [17, 21]
-        experimental: [false]
-        include:
-          - jdk: 25
-            experimental: true
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK ${{ matrix.jdk }}
-        uses: actions/setup-java@v3
-        with:
-          java-version: ${{ matrix.jdk }}
-          distribution: "semeru"
-          cache: maven
-      - name: Build with Maven
-        run: mvn --batch-mode --update-snapshots --file pom.xml -Djava.version=${{ matrix.jdk }} package
-      - run: mkdir staging && cp target/*.war staging
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cics-java-liberty-sprintboot-jdbc (Maven, Java ${{ matrix.jdk }})
-          path: staging
-
   build-mvnw:
     name: Build Maven Wrapper
 
@@ -60,18 +32,17 @@ jobs:
       - name: Build with Maven
         run: ./mvnw --batch-mode --update-snapshots --file pom.xml -Djava.version=${{ matrix.jdk }} package
 
-  build-gradle:
-    name: Build Gradle
+  build-gradlew:
+    name: Build Gradle wrapper
     
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.experimental }}
     strategy:
       matrix:
-        jdk: [17, 21]
-        experimental: [false]
-        include:
+         jdk: [17, 21]
+         experimental: [false]
+         include:
           - jdk: 25
-            experimental: true
+            experimental: true     
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK ${{ matrix.jdk }}
@@ -79,7 +50,7 @@ jobs:
       with:
         java-version: ${{ matrix.jdk }}
         distribution: 'semeru'
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
     - name: Build with Gradle
-      uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-      with:
-        arguments: bootWar -Pjava_version=${{ matrix.jdk }}
+      run: ./gradlew build bootWar -Pjava_version=${{ matrix.jdk }}
