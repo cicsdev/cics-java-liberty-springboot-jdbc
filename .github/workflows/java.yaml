@@ -82,10 +82,10 @@ jobs:
       with:
         java-version: ${{ matrix.jdk }}
         distribution: 'semeru'
-    - name: Build with Gradle
+    - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
-      with:
-        arguments: bootWar -Pjava_version=${{ matrix.jdk }}
+    - name: Build with Gradle
+      run: gradle bootWar -Pjava_version=${{ matrix.jdk }}
       
   build-gradlew:
     name: Build Gradle wrapper

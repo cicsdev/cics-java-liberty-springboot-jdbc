@@ -21,162 +21,38 @@ The sample is intended both as a runnable example and as an educational referenc
 ## Table of Contents
 
 1. [Design and Architecture](#design-and-architecture)
-2. [How It Works](#how-it-works)
-3. [Before You Start: Files to Modify](#before-you-start-files-to-modify)
-4. [Requirements](#requirements)
-5. [Project Structure](#project-structure)
-6. [Configuration Guide](#configuration-guide)
-7. [Building the Sample](#building-the-sample)
-8. [Deploying to CICS](#deploying-to-cics)
+2. [Before You Start: Files to Modify](#before-you-start-files-to-modify)
+3. [Requirements](#requirements)
+4. [Project Structure](#project-structure)
+5. [Building the Sample](#building-the-sample)
+6. [Deploying to CICS](#deploying-to-cics)
     - [Method 1: CICS Bundle Deployment (Gradle/Maven)](#method-1-cics-bundle-deployment-gradlemaven)
     - [Method 2: CICS Explorer Deployment](#method-2-cics-explorer-deployment)
     - [Method 3: Direct Liberty Application Deployment](#method-3-direct-liberty-application-deployment)
     - [Common Bundle Installation Steps](#common-bundle-installation-steps)
-9. [Running the Sample](#running-the-sample)
-10. [Troubleshooting](#troubleshooting)
-11. [License](#license)
-12. [Additional Resources](#additional-resources)
-13. [Contributing](#contributing)
+7. [Running the Sample](#running-the-sample)
+8. [Troubleshooting](#troubleshooting)
+9. [License](#license)
+10. [Additional Resources](#additional-resources)
+11. [Contributing](#contributing)
 
 ---
 
 ## Design and Architecture
 
-### High-Level Design Intent
-
-This sample addresses a fundamental challenge: **how to build Spring Boot applications that integrate with CICS and Db2 for z/OS while maintaining enterprise-grade transaction management and security**.
+This sample demonstrates how a Spring Boot application can run in a CICS Liberty JVM server and access Db2 for z/OS through a Liberty-managed datasource.
 
 Key components:
-
-1. **Spring Boot Framework** - Provides dependency injection, REST support, and JDBC abstraction
-2. **Spring Data JDBC** - Simplifies database access with JdbcTemplate
-3. **Liberty JNDI Datasource** - Connects to Db2 via JNDI lookup
-4. **CICS Transaction Context** - Ensures operations run within CICS transactions
-
-### Architecture Diagram
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         HTTP Client                             │
-│                    (Browser, curl, etc.)                        │
-└────────────────────────────┬────────────────────────────────────┘
-                             │
-                             │ REST Requests
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    CICS Liberty JVM Server                      │
-│  ┌───────────────────────────────────────────────────────────┐  │
-│  │           Spring Boot Application (WAR)                   │  │
-│  │                                                           │  │
-│  │  ┌──────────────────────────────────────────────────┐     │  │
-│  │  │      EmployeeRestController                      │     │  │
-│  │  │  • @GetMapping endpoints                         │     │  │
-│  │  │  • /allEmployees                                 │     │  │
-│  │  │  • /listEmployee/{empno}                         │     │  │
-│  │  │  • /addEmployee/{firstName}/{lastName}           │     │  │
-│  │  │  • /updateEmployee/{empNo}/{newSalary}           │     │  │
-│  │  │  • /deleteEmployee/{empNo}                       │     │  │
-│  │  │  • Transactional variants (*Tx endpoints)        │     │  │
-│  │  └────────────┬─────────────────────────────────────┘     │  │
-│  │               │                                           │  │
-│  │               ▼                                           │  │
-│  │  ┌──────────────────────────────────────────────────┐     │  │
-│  │  │      EmployeeService                             │     │  │
-│  │  │  • Business logic layer                          │     │  │
-│  │  │  • Uses Spring JdbcTemplate                      │     │  │
-│  │  │  • selectAll(), addEmployee()                    │     │  │
-│  │  │  • updateEmployee(), deleteEmployee()            │     │  │
-│  │  └────────────┬─────────────────────────────────────┘     │  │
-│  │               │                                           │  │
-│  │               ▼                                           │  │
-│  │  ┌──────────────────────────────────────────────────┐     │  │
-│  │  │      Spring JdbcTemplate                         │     │  │
-│  │  │  • Autowired from Spring context                 │     │  │
-│  │  │  • Configured via application.properties         │     │  │
-│  │  └────────────┬─────────────────────────────────────┘     │  │
-│  │               │                                           │  │
-│  │               ▼                                           │  │
-│  │  ┌──────────────────────────────────────────────────┐     │  │
-│  │  │   Liberty JNDI Datasource                        │     │  │
-│  │  │  • jndiName: jdbc/jdbcDataSource                 │     │  │
-│  │  │  • Configured in server.xml                      │     │  │
-│  │  └────────────┬─────────────────────────────────────┘     │  │
-│  │               │                                           │  │
-│  └───────────────┼───────────────────────────────────────────┘  │
-│                  │                                              │
-│                  ▼                                              │
-│  ┌──────────────────────────────────────────────────┐           │
-│  │   IBM Db2 JDBC Driver (Type 2 or Type 4)        │           │
-│  └────────────┬─────────────────────────────────────┘           │
-└───────────────┼──────────────────────────────────────────────────┘
-                │
-                ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    IBM Db2 for z/OS                             │
-│                    (EMP Sample Table)                           │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Component Responsibilities
-
-| Component | Purpose | Key Features |
-|-----------|---------|--------------|
-| **Application** | Spring Boot entry point | `@SpringBootApplication`, main method |
-| **EmployeeRestController** | REST API endpoints | `@RestController`, `@GetMapping`, routes requests |
-| **EmployeeService** | Business logic layer | `@Service`, `@Autowired JdbcTemplate`, CRUD operations |
-| **Employee** | Data model | POJO representing EMP table structure |
-| **ServletInitializer** | WAR deployment support | Extends `SpringBootServletInitializer` |
-| **application.properties** | Configuration | JNDI datasource name |
-| **server.xml** | Liberty configuration | Datasource, features, security |
+- Spring Boot provides the REST application framework
+- `EmployeeRestController` exposes the sample HTTP endpoints
+- `EmployeeService` uses `JdbcTemplate` for database access
+- Liberty provides the datasource through JNDI and hosts the deployed WAR
 
 ---
 
-## How It Works
+## Transaction Management
 
-### Request Flow (Step-by-Step)
-
-1. **User Sends HTTP Request**
-   - HTTP GET to `/allEmployees` or other endpoint
-   - Request authenticated by Liberty security
-
-2. **Spring Boot Routes Request**
-   - `EmployeeRestController` receives the request
-   - Appropriate method is invoked based on URL mapping
-   - For transactional endpoints (`*Tx`), `@Transactional` annotation is active
-
-3. **Service Layer Processes Request**
-   - `EmployeeService` method is called
-   - Business logic is executed (validation, data transformation)
-   - SQL query is constructed
-
-4. **Database Access via JdbcTemplate**
-   - Spring's `JdbcTemplate` executes the SQL
-   - JNDI lookup retrieves the datasource (`jdbc/jdbcDataSource`)
-   - Connection is obtained from the Liberty datasource pool
-
-5. **Db2 Executes Query**
-   - JDBC driver (Type 2 or Type 4) communicates with Db2
-   - Query is executed against the EMP table
-   - Results are returned to the application
-
-6. **Response Returned to Client**
-   - Data is serialized to JSON (for list operations)
-   - Or a success/failure message is returned (for updates)
-   - HTTP response is sent back to the client
-
-### Transaction Management
-
-**Non-Transactional Operations (Default):**
-- Each database operation auto-commits immediately
-- Suitable for simple read operations
-- Example: `/allEmployees`, `/listEmployee/{empno}`
-
-**Transactional Operations (XA):**
-- Annotated with `@Transactional`
-- Participates in global (XA) transactions
-- Rollback on exception, commit on success
-- Example: `/addEmployeeTx/{firstName}/{lastName}`
-- Requires `transactional="true"` or XA datasource in server.xml
+The sample includes both simple JDBC operations and transactional variants. Transactional endpoints require an XA or otherwise transactional datasource configuration in Liberty.
 
 ---
 
@@ -237,10 +113,11 @@ Before deploying, ensure your CICS region has:
 1. **DB2CONN Setup:**
    - DB2CONN resource defined and installed in CICS
 
-2. **CICS SIT Parameters:**
+2. **CICS SIT Parameters (Type 2 connections only):**
    ```
    DB2CONN=YES
    ```
+   **Note:** The `DB2CONN=YES` parameter is **only required for JDBC Type 2 connections**. .
 
 3. **JCL Configuration:**
    Add these lines to your CICS region JCL:
@@ -248,6 +125,7 @@ Before deploying, ensure your CICS region has:
    //         DD DSN=SYS2.DB2.V12.SDSNLOAD,DISP=SHR
    //         DD DSN=SYS2.DB2.V12.SDSNLOD2,DISP=SHR
    ```
+   These DD statements provide the necessary DB2 load libraries for the CICS region to access DB2.
 
 ---
 
@@ -305,20 +183,6 @@ Maven (`pom.xml`):
 ```xml
 <cics.jvmserver>YOUR_JVMSERVER_NAME</cics.jvmserver>  <!-- e.g., DFHWLP -->
 ```
-
----
-
-### Summary Checklist
-
-Before building:
-- [ ] Verified Db2 connection is available from CICS region
-- [ ] Updated `server.xml` with datasource configuration (Type 2 or Type 4)
-- [ ] Configured DB2CONN in CICS region
-- [ ] Added DB2CONN=YES to CICS SIT parameters
-- [ ] Updated CICS region JCL with Db2 load libraries
-- [ ] Verified Liberty features in `server.xml`
-- [ ] Confirmed JNDI name matches in `application.properties` and `server.xml`
-- [ ] Updated JVM server name in build files (if using CICS bundle deployment)
 
 ---
 
@@ -389,38 +253,6 @@ cics-java-liberty-springboot-jdbc/
 
 ---
 
-## Configuration Guide
-
-### Verify Spring Boot Version
-
-This sample uses **Spring Boot 3.X**, which requires **Java 17** or later.
-
-**Gradle** (`build.gradle`):
-```gradle
-plugins {
-    id 'org.springframework.boot' version '3.5.8'
-    id 'io.spring.dependency-management' version '1.1.7'
-}
-
-java {
-    sourceCompatibility = JavaVersion.toVersion(17)
-    targetCompatibility = JavaVersion.toVersion(17)
-}
-```
-
-**Maven** (`pom.xml`):
-```xml
-<parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.8</version>
-</parent>
-
-<properties>
-    <java.version>17</java.version>
-</properties>
-```
-
 ## Building the Sample
 
 You can build using Gradle, Maven, or Eclipse. The wrappers are pre-configured with compatible versions.
@@ -485,7 +317,7 @@ mvnw.cmd clean package
    - Right-click `cics-java-liberty-springboot-jdbc` → Run As → Gradle Build (or Maven Build)
    - Goals: `clean build` (Gradle) or `clean package` (Maven)
 
-**Tip:** If switching between Gradle and Maven in Eclipse, you may need to manually remove duplicate "Project Dependencies" entries from the build path.
+**Tip:** If switching between Gradle and Maven in Eclipse, you may need to remove duplicate "Project Dependencies" entries from the build path.
 
 ---
 
@@ -520,8 +352,7 @@ mvnw.cmd clean package
 This method uses IBM CICS Explorer (an Eclipse-based IDE) to create a CICS bundle and deploy it directly to z/OS. This approach is ideal for developers who prefer a GUI-based deployment workflow and want integrated tooling for CICS development.
 
 **Prerequisites:**
-- IBM CICS Explorer installed on your workstation
-- CICS Explorer configured with connection to your z/OS system
+- IBM CICS Explorer installed and connected to your z/OS system
 - SSH/SFTP access to z/OS UNIX System Services (USS)
 - CICS region configured and running
 
@@ -541,17 +372,6 @@ The bundle project is already provided in the repository (imported when you clon
     - Confirm the following:
         JVM server is correctly specified (e.g., DFHWLP)
         WAR file path points to the correct application artifact
-
-3. **Review Generated Files:**
-   
-   The bundle project now contains:
-   ```
-   cics-java-liberty-springboot-jdbc-cicsbundle-1.0.0/
-   ├── META-INF/
-   │   └── cics.xml          # Bundle manifest (defines bundle contents)
-   ├── .project              # Eclipse project file
-   └── cics-java-liberty-springboot-jdbc.warbundle  # WAR bundle part descriptor
-   ```
 
 #### Step 2: Export Bundle to z/OS UNIX File System (zFS)
 
@@ -709,24 +529,6 @@ curl -u userid:password "http://host:port/cics-java-liberty-springboot-jdbc/list
 ---
 
 **Note:** For XA transactions to work properly, ensure your datasource is configured with `type="javax.sql.XADataSource"` in server.xml.
-
----
-
-### Available Endpoints Summary
-
-| Endpoint | Method | Description | Transactional |
-|----------|--------|-------------|---------------|
-| `/` | GET | Usage information and endpoint list | No |
-| `/allEmployees` | GET | List all employees | No |
-| `/listEmployee/{empno}` | GET | Get employee by number | No |
-| `/addEmployee/{firstName}/{lastName}` | GET | Add new employee | No |
-| `/updateEmployee/{empNo}/{newSalary}` | GET | Update employee salary | No |
-| `/deleteEmployee/{empNo}` | GET | Delete employee | No |
-| `/addEmployeeTx/{firstName}/{lastName}` | GET | Add employee (XA transaction) | Yes |
-| `/updateEmployeeTx/{empNo}/{newSalary}` | GET | Update salary (XA transaction) | Yes |
-| `/deleteEmployeeTx/{empNo}` | GET | Delete employee (XA transaction) | Yes |
-
-**Note:** Update operations should use POST/PUT/DELETE methods. This sample uses GET for simplicity.
 
 ---
 
