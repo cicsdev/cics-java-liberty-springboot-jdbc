@@ -21,9 +21,9 @@ The sample is intended both as a runnable example and as an educational referenc
 ## Table of Contents
 
 1. [Design and Architecture](#design-and-architecture)
-2. [Before You Start: Files to Modify](#before-you-start-files-to-modify)
-3. [Requirements](#requirements)
-4. [Project Structure](#project-structure)
+2. [Transaction Management](#transaction-management)
+3. [Before You Start: Files to Modify](#before-you-start-files-to-modify)
+4. [Requirements](#requirements)
 5. [Building the Sample](#building-the-sample)
 6. [Deploying to CICS](#deploying-to-cics)
     - [Method 1: CICS Bundle Deployment (Gradle/Maven)](#method-1-cics-bundle-deployment-gradlemaven)
@@ -43,10 +43,87 @@ The sample is intended both as a runnable example and as an educational referenc
 This sample demonstrates how a Spring Boot application can run in a CICS Liberty JVM server and access Db2 for z/OS through a Liberty-managed datasource.
 
 Key components:
-- Spring Boot provides the REST application framework
-- `EmployeeRestController` exposes the sample HTTP endpoints
-- `EmployeeService` uses `JdbcTemplate` for database access
-- Liberty provides the datasource through JNDI and hosts the deployed WAR
+
+1. **Spring Boot Framework** - Provides dependency injection, REST support, and JDBC abstraction
+2. **Spring Data JDBC** - Simplifies database access with JdbcTemplate
+3. **Liberty JNDI Datasource** - Connects to Db2 via JNDI lookup
+4. **CICS Transaction Context** - Ensures operations run within CICS transactions
+
+### Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         HTTP Client                             │
+│                    (Browser, curl, etc.)                        │
+└────────────────────────────┬────────────────────────────────────┘
+                             │
+                             │ REST Requests
+                             ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    CICS Liberty JVM Server                      │
+│  ┌───────────────────────────────────────────────────────────┐  │
+│  │           Spring Boot Application (WAR)                   │  │
+│  │                                                           │  │
+│  │  ┌──────────────────────────────────────────────────┐     │  │
+│  │  │      EmployeeRestController                      │     │  │
+│  │  │  • @GetMapping endpoints                         │     │  │
+│  │  │  • /allEmployees                                 │     │  │
+│  │  │  • /listEmployee/{empno}                         │     │  │
+│  │  │  • /addEmployee/{firstName}/{lastName}           │     │  │
+│  │  │  • /updateEmployee/{empNo}/{newSalary}           │     │  │
+│  │  │  • /deleteEmployee/{empNo}                       │     │  │
+│  │  │  • Transactional variants (*Tx endpoints)        │     │  │
+│  │  └────────────┬─────────────────────────────────────┘     │  │
+│  │               │                                           │  │
+│  │               ▼                                           │  │
+│  │  ┌──────────────────────────────────────────────────┐     │  │
+│  │  │      EmployeeService                             │     │  │
+│  │  │  • Business logic layer                          │     │  │
+│  │  │  • Uses Spring JdbcTemplate                      │     │  │
+│  │  │  • selectAll(), addEmployee()                    │     │  │
+│  │  │  • updateEmployee(), deleteEmployee()            │     │  │
+│  │  └────────────┬─────────────────────────────────────┘     │  │
+│  │               │                                           │  │
+│  │               ▼                                           │  │
+│  │  ┌──────────────────────────────────────────────────┐     │  │
+│  │  │      Spring JdbcTemplate                         │     │  │
+│  │  │  • Autowired from Spring context                 │     │  │
+│  │  │  • Configured via application.properties         │     │  │
+│  │  └────────────┬─────────────────────────────────────┘     │  │
+│  │               │                                           │  │
+│  │               ▼                                           │  │
+│  │  ┌──────────────────────────────────────────────────┐     │  │
+│  │  │   Liberty JNDI Datasource                        │     │  │
+│  │  │  • jndiName: jdbc/jdbcDataSource                 │     │  │
+│  │  │  • Configured in server.xml                      │     │  │
+│  │  └────────────┬─────────────────────────────────────┘     │  │
+│  │               │                                           │  │
+│  └───────────────┼───────────────────────────────────────────┘  │
+│                  │                                              │
+│                  ▼                                              │
+│  ┌──────────────────────────────────────────────────┐           │
+│  │   IBM Db2 JDBC Driver (Type 2 or Type 4)        │           │
+│  └────────────┬─────────────────────────────────────┘           │
+└───────────────┼──────────────────────────────────────────────────┘
+                │
+                ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    IBM Db2 for z/OS                             │
+│                    (EMP Sample Table)                           │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Component Responsibilities
+
+| Component | Purpose | Key Features |
+|-----------|---------|--------------|
+| **Application** | Spring Boot entry point | `@SpringBootApplication`, main method |
+| **EmployeeRestController** | REST API endpoints | `@RestController`, `@GetMapping`, routes requests |
+| **EmployeeService** | Business logic layer | `@Service`, `@Autowired JdbcTemplate`, CRUD operations |
+| **Employee** | Data model | POJO representing EMP table structure |
+| **ServletInitializer** | WAR deployment support | Extends `SpringBootServletInitializer` |
+| **application.properties** | Configuration | JNDI datasource name |
+| **server.xml** | Liberty configuration | Datasource, features, security |
 
 ---
 
@@ -208,48 +285,6 @@ Maven (`pom.xml`):
 * Access to Db2 for z/OS with the EMP sample table
 * The EMP table is typically provided in the Db2 sample database
 * Appropriate permissions to SELECT, INSERT, UPDATE, DELETE on the EMP table
-
----
-
-## Project Structure
-
-```
-cics-java-liberty-springboot-jdbc/
-├── README.md                                    # This file
-├── LICENSE                                      # EPL 2.0 license
-├── MAINTAINERS.md                               # Project maintainers
-├── settings.gradle                              # Gradle multi-project settings
-├── pom.xml                                      # Root Maven POM (multi-module)
-├── gradle.properties                            # Java version configuration
-├── gradlew / gradlew.bat                        # Gradle wrapper scripts
-├── mvnw / mvnw.cmd                              # Maven wrapper scripts
-│
-├── cics-java-liberty-springboot-jdbc-app/       # Main Spring Boot application
-│   ├── build.gradle                             # App-level Gradle build
-│   ├── pom.xml                                  # App-level Maven POM
-│   └── src/main/
-│       ├── java/com/ibm/cicsdev/springboot/jdbc/
-│       │   ├── Application.java                 # Spring Boot entry point
-│       │   ├── EmployeeRestController.java      # REST API endpoints
-│       │   ├── EmployeeService.java             # Business logic layer
-│       │   ├── Employee.java                    # Data model (EMP table)
-│       │   └── ServletInitializer.java          # WAR deployment support
-│       ├── resources/
-│       │   └── application.properties           # Spring configuration (JNDI name)
-│       └── webapp/WEB-INF/
-│           └── web.xml                          # Web application descriptor
-│
-├── cics-java-liberty-springboot-jdbc-cicsbundle/    # CICS bundle (Gradle/Maven)
-│   ├── build.gradle                             # Bundle Gradle build
-│   └── pom.xml                                  # Bundle Maven POM
-│
-├── etc/config/cics_bundle_project/              # CICS Explorer bundle project
-│   └── cics-java-liberty-springboot-jdbc-cicsbundle-1.0.0/
-│       ├── cics-java-liberty-springboot-jdbc.warbundle
-│       └── META-INF/cics.xml
-│
-└── gradle/ & .mvn/                              # Wrapper support files
-```
 
 ---
 
