@@ -34,11 +34,6 @@ jobs:
           cache: maven
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots --file pom.xml -Djava.version=${{ matrix.jdk }} package
-      - run: mkdir staging && cp cics-java-liberty-springboot-jdbc-app/target/*.war staging
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cics-java-liberty-sprintboot-jdbc (Maven, Java ${{ matrix.jdk }})
-          path: staging
 
   build-mvnw:
     name: Build Maven Wrapper
