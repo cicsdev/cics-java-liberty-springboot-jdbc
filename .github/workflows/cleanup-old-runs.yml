@@ -1,5 +1,9 @@
 name: Cleanup Old Workflow Runs
 
+permissions:
+  actions: write
+  contents: read
+
 on:
   schedule:
     - cron: '0 0 * * 0'  # Run weekly on Sunday
