@@ -1,12 +1,11 @@
-plugins 
+plugins
 {
     id 'org.springframework.boot' version '3.5.8'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'java'
     id 'eclipse'
     id 'war'
-    id 'idea'    
-    id 'maven-publish'
+    id 'idea'
 }
 
 group = 'com.ibm.cicsdev.springboot'
@@ -15,9 +14,12 @@ version = '1.0.0'
 // ============================================================================
 // Java Configuration
 // ============================================================================
-java {
-    sourceCompatibility = JavaVersion.toVersion(java_version)
-    targetCompatibility = JavaVersion.toVersion(java_version)
+java
+{
+    toolchain
+    {
+        languageVersion = JavaLanguageVersion.of(java_version)
+    }
 }
 
 // ============================================================================
