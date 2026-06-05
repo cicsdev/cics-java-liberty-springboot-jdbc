@@ -15,8 +15,9 @@ version = '1.0.0'
 // Java Configuration
 // ============================================================================
 java {
-    sourceCompatibility = JavaVersion.toVersion(java_version)
-    targetCompatibility = JavaVersion.toVersion(java_version)
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(java_version)
+    }
 }
 
 // ============================================================================
