@@ -213,15 +213,15 @@ Before deploying, ensure your CICS region has:
 **Required Features:**
 ```xml
 <featureManager>
-    <feature>servlet-6.0</feature>        <!-- or servlet-4.0 for CICS TS V5.5+ -->
+    <feature>servlet-6.0</feature>        <!-- Required for Spring Boot 3.x (Jakarta EE 10) -->
     <feature>pages-3.1</feature>
-    <feature>jdbc-4.3</feature>           <!-- or jdbc-4.1 -->
+    <feature>jdbc-4.3</feature>
     <feature>cicsts:security-1.0</feature> <!-- if CICS security is enabled -->
 </featureManager>
 ```
 
 **Notes:**
-- `servlet-6.0` requires CICS TS V6.1 or later
+- `servlet-6.0` (Jakarta EE 10) requires CICS TS V6.1 or later for Spring Boot 3.x
 - `cicsts:security-1.0` is automatically added if SEC=YES in SIT
 - For `jdbc-4.3`, add `type="javax.sql.DataSource"` to datasource definition
 
@@ -276,7 +276,7 @@ Maven (`pom.xml`):
   - Command line (no IDE required if using wrappers)
 
 ### z/OS Requirements
-* **CICS TS:** V5.3 or later
+* **CICS TS:** V6.1 or later (required for Spring Boot 3.x with Jakarta EE 10)
 * **WebSphere Liberty:** Included with CICS
 * **IBM Db2:** V11 or later on z/OS
 * **Java:** IBM Semeru Runtime 17 or later on z/OS
@@ -579,7 +579,7 @@ CWWKZ0002E: An exception occurred while starting the application cics-java-liber
 **Possible Causes & Solutions:**
 
 1. **Missing Liberty features:**
-   - Verify `servlet-6.0` (or `servlet-4.0`), `pages-3.1`, and `jdbc-4.3` are in server.xml
+   - Verify `servlet-6.0`, `pages-3.1`, and `jdbc-4.3` are in server.xml
    - Check Liberty messages.log for feature-related errors
 
 2. **Java version mismatch:**
