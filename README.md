@@ -9,32 +9,37 @@ This sample demonstrates how to integrate **Spring Boot** with **IBM CICS** usin
 
 The sample is intended both as a runnable example and as an educational reference for developers building enterprise-grade Spring Boot applications with JDBC on CICS Liberty.
 
-**What This Sample Does:**
-- Provides REST endpoints for employee data management (add, update, delete, display)
-- Demonstrates Spring Boot JDBC integration with Db2 for z/OS
-- Shows both transactional and non-transactional database operations
-- Supports both JDBC Type 2 (local) and Type 4 (remote) connectivity
-- Integrates with CICS security for authentication and authorization
+## Key Features
+
+- **+CICS API Integration++:** Direct use of CICS Java APIs for database operations
+- **+RESTful Services++:** Spring Boot REST endpoints for employee data management
+- **+Multi-Module Project++:** Separate application and CICS bundle modules
+- **+JDBC Integration++:** Demonstrates Spring Boot JDBC with Db2 for z/OS
+- **+Transaction Management++:** Shows both transactional and non-transactional operations
+- **+JDBC Type 2 & Type 4 Support++:** Supports both JDBC Type 2 and Type 4 connectivity
+- **+CICS Security Integration++:** Integrates with CICS security for authentication and authorization
 
 ---
 
 ## Table of Contents
 
-1. [Design and Architecture](#design-and-architecture)
-2. [Transaction Management](#transaction-management)
-3. [Before You Start: Files to Modify](#before-you-start-files-to-modify)
-4. [Requirements](#requirements)
-5. [Building the Sample](#building-the-sample)
-6. [Deploying to CICS](#deploying-to-cics)
-    - [Method 1: CICS Bundle Deployment (Gradle/Maven)](#method-1-cics-bundle-deployment-gradlemaven)
-    - [Method 2: CICS Explorer Deployment](#method-2-cics-explorer-deployment)
+1. [Overview](#overview)
+2. [Key Features](#key-features)
+3. [Design and Architecture](#design-and-architecture)
+4. [Transaction Management](#transaction-management)
+5. [Before You Start: Files to Modify](#before-you-start-files-to-modify)
+6. [Requirements](#requirements)
+7. [Building the Sample](#building-the-sample)
+8. [Deploying to a CICS Liberty JVM server](#deploying-to-a-cics-liberty-jvm-server)
+    - [Method 1: CICS Bundle Plugin Deployment (Gradle/Maven)](#method-1-cics-bundle-plugin-deployment-gradlemaven)
+    - [Method 2: CICS Explorer SDK Deployment](#method-2-cics-explorer-sdk-deployment)
     - [Method 3: Direct Liberty Application Deployment](#method-3-direct-liberty-application-deployment)
     - [Common Bundle Installation Steps](#common-bundle-installation-steps)
-7. [Running the Sample](#running-the-sample)
-8. [Troubleshooting](#troubleshooting)
-9. [License](#license)
-10. [Additional Resources](#additional-resources)
-11. [Contributing](#contributing)
+9. [Running the Sample](#running-the-sample)
+10. [Troubleshooting](#troubleshooting)
+11. [License](#license)
+12. [Additional Resources](#additional-resources)
+13. [Contributing](#contributing)
 
 ---
 
@@ -321,12 +326,12 @@ gradlew.bat clean build
 
 Linux/Mac:
 ```bash
-./mvnw clean package
+./mvnw clean verify
 ```
 
 Windows:
 ```cmd
-mvnw.cmd clean package
+mvnw.cmd clean verify
 ```
 
 **Output:**
@@ -350,15 +355,15 @@ mvnw.cmd clean package
 
 3. **Build:**
    - Right-click `cics-java-liberty-springboot-jdbc` → Run As → Gradle Build (or Maven Build)
-   - Goals: `clean build` (Gradle) or `clean package` (Maven)
+   - Goals: `clean build` (Gradle) or `clean verify` (Maven)
 
 **Tip:** If switching between Gradle and Maven in Eclipse, you may need to remove duplicate "Project Dependencies" entries from the build path.
 
 ---
 
-## Deploying to CICS
+## Deploying to a CICS Liberty JVM server
 
-### Method 1: CICS Bundle Deployment (Gradle/Maven)
+### Method 1: CICS Bundle Plugin Deployment (Gradle/Maven)
 
 1. **Build the bundle** (see [Building the Sample](#building-the-sample))
 
@@ -382,7 +387,7 @@ mvnw.cmd clean package
 
 ---
 
-### Method 2: CICS Explorer Deployment
+### Method 2: CICS Explorer SDK Deployment
 
 This method uses IBM CICS Explorer (an Eclipse-based IDE) to create a CICS bundle and deploy it directly to z/OS. This approach is ideal for developers who prefer a GUI-based deployment workflow and want integrated tooling for CICS development.
 
@@ -397,7 +402,7 @@ A CICS bundle is a deployment package that can contain multiple resources (WARs,
 The bundle project is already provided in the repository (imported when you cloned the repo).
 
 1. **Locate the Bundle Project:**
-    In Project Explorer, locate the imported bundle project
+    In Project Explorer, locate the imported Bundle Project
     (e.g., cics-java-liberty-springboot-jdbc-cicsbundle).
 
     Look into the project to verify its structure and contents.
@@ -413,7 +418,7 @@ The bundle project is already provided in the repository (imported when you clon
 This step deploys your bundle to z/OS and makes it available to CICS.
 
 1. **Initiate Export:**
-   - In **Project Explorer**, right-click on your bundle project
+   - In **Project Explorer**, right-click on your Bundle Project
    - Select **Export Bundle Project to z/OS UNIX File System**
    - Click **Next**
 
