@@ -20,6 +20,10 @@
     <packaging>war</packaging>
     <name>CICS JDBC Springboot - Application</name>
 
+    <properties>
+        <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+    </properties>
+
     <!-- ================================================================ -->
 	<!-- Dependencies                                                     -->
 	<!-- ================================================================ -->  
