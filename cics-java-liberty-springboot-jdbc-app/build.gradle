@@ -41,17 +41,6 @@ eclipse
     {
         downloadJavadoc = true
     }
-    wtp
-    {
-        facet
-        {
-            facet name: 'jst.web', version: '6.0'
-        }
-        component
-        {
-            contextPath = 'cics-java-liberty-springboot-jdbc'
-        }
-    }
 }
 
 repositories
@@ -59,18 +48,16 @@ repositories
 	mavenCentral()                
 }
 
-dependencies
+dependencies 
 {
-    // CICS TS Maven BOM (version from gradle.properties)
-    compileOnly enforcedPlatform("com.ibm.cics:com.ibm.cics.ts.bom:${project.property('cics.bom.version')}")
 
 	// Spring Boot web starter dependency
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     // Don't include TomCat in the runtime build, but do put it in WEB-INF so it can be run standalone a well as embedded
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")     
 
-    // Spring JDBC Support
-    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    // Spring JDBC Support    
+    implementation("org.springframework.boot:spring-boot-starter-data-jdbc") 
 }
 

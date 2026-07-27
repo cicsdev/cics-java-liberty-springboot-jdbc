@@ -23,21 +23,7 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <cics.jvmserver>DFHWLP</cics.jvmserver>
-    <cics.bom.version>6.1-20250812133513-PH63856</cics.bom.version>
   </properties>
-
-  <!-- Dependency Management -->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.ibm.cics</groupId>
-        <artifactId>com.ibm.cics.ts.bom</artifactId>
-        <version>${cics.bom.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
    
    <!-- ================================================================ -->
     <!-- Modules                                                          -->
