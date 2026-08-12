@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="CICS Liberty JVM server for cics-java-liberty-springboot-jdbc">
+
+    <!-- ================================================================ -->
+    <!-- Features                                                         -->
+    <!-- servlet-6.0 drives Jakarta EE 10 (required for Spring Boot 3.x) -->
+    <!-- jdbc-4.3 provides JDBC connectivity                              -->
+    <!-- cicsts:core-1.0 is auto-injected by CICS in integrated mode      -->
+    <!-- ================================================================ -->
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>jdbc-4.3</feature>
+    </featureManager>
+
+    <!-- ================================================================ -->
+    <!-- JDBC Type 2 datasource (local Db2 connectivity)                  -->
+    <!-- Update dir paths and currentSchema to match your environment     -->
+    <!-- ================================================================ -->
+    <!--
+    <library id="db2Type2Driver">
+        <fileset dir="/usr/lpp/db2v13/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
+        <fileset dir="/usr/lpp/db2v13/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
+    </library>
+
+    <dataSource id="db2Type2" jndiName="jdbc/jdbcDataSource" transactional="false"
+                commitOrRollbackOnCleanup="commit" type="javax.sql.DataSource">
+        <jdbcDriver libraryRef="db2Type2Driver"/>
+        <properties.db2.jcc currentSchema="YOUR_SCHEMA" driverType="2"/>
+        <connectionManager agedTimeout="0"/>
+    </dataSource>
+    -->
+
+    <!-- ================================================================ -->
+    <!-- JDBC Type 4 datasource (remote Db2 connectivity)                 -->
+    <!-- Update serverName, portNumber, currentSchema, databaseName,      -->
+    <!-- user, and password to match your environment                     -->
+    <!-- ================================================================ -->
+    <!--
+    <dataSource id="t4" jndiName="jdbc/jdbcDataSource" type="javax.sql.XADataSource">
+        <jdbcDriver>
+            <library name="DB2LIB">
+                <fileset dir="/usr/lpp/db2v13/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
+                <fileset dir="/usr/lpp/db2v13/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
+            </library>
+        </jdbcDriver>
+        <properties.db2.jcc driverType="4"
+            serverName="YOUR.SERVER.CORPORATION.COM"
+            portNumber="YOUR_PORT_NUMBER"
+            currentSchema="YOUR_SCHEMA"
+            databaseName="YOUR_DATABASE"
+            user="USER"
+            password="PASSWORD"
+        />
+    </dataSource>
+    -->
+
+</server>
