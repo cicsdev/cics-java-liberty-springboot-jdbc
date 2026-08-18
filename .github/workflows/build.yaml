@@ -13,6 +13,10 @@ jobs:
   check-copyright:
     runs-on: ubuntu-latest
     name: Check Copyright
+    if: ${{ !startsWith(github.head_ref, 'create-pull-request/') }}
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:

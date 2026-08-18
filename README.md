@@ -11,13 +11,13 @@ The sample is intended both as a runnable example and as an educational referenc
 
 ## Key Features
 
-- **+CICS API Integration++:** Direct use of CICS Java APIs for database operations
-- **+RESTful Services++:** Spring Boot REST endpoints for employee data management
-- **+Multi-Module Project++:** Separate application and CICS bundle modules
-- **+JDBC Integration++:** Demonstrates Spring Boot JDBC with Db2 for z/OS
-- **+Transaction Management++:** Shows both transactional and non-transactional operations
-- **+JDBC Type 2 & Type 4 Support++:** Supports both JDBC Type 2 and Type 4 connectivity
-- **+CICS Security Integration++:** Integrates with CICS security for authentication and authorization
+- **CICS API Integration:** Direct use of CICS Java APIs for database operations
+- **RESTful Services:** Spring Boot REST endpoints for employee data management
+- **Multi-Module Project:** Separate application and CICS bundle modules
+- **JDBC Integration:** Demonstrates Spring Boot JDBC with Db2 for z/OS
+- **Transaction Management:** Shows both transactional and non-transactional operations
+- **JDBC Type 2 & Type 4 Support:** Supports both JDBC Type 2 and Type 4 connectivity
+- **CICS Security Integration:** Integrates with CICS security for authentication and authorization
 
 ---
 
@@ -25,21 +25,50 @@ The sample is intended both as a runnable example and as an educational referenc
 
 1. [Overview](#overview)
 2. [Key Features](#key-features)
-3. [Design and Architecture](#design-and-architecture)
-4. [Transaction Management](#transaction-management)
-5. [Before You Start: Files to Modify](#before-you-start-files-to-modify)
-6. [Requirements](#requirements)
-7. [Building the Sample](#building-the-sample)
-8. [Deploying to a CICS Liberty JVM server](#deploying-to-a-cics-liberty-jvm-server)
-    - [Method 1: CICS Bundle Plugin Deployment (Gradle/Maven)](#method-1-cics-bundle-plugin-deployment-gradlemaven)
-    - [Method 2: CICS Explorer SDK Deployment](#method-2-cics-explorer-sdk-deployment)
-    - [Method 3: Direct Liberty Application Deployment](#method-3-direct-liberty-application-deployment)
+3. [Prerequisites](#prerequisites)
+4. [Downloading](#downloading)
+5. [Design and Architecture](#design-and-architecture)
+6. [Transaction Management](#transaction-management)
+7. [Before You Start: Files to Modify](#before-you-start-files-to-modify)
+8. [Building the Sample](#building-the-sample)
+9. [Deploying to a CICS Liberty JVM server](#deploying-to-a-cics-liberty-jvm-server)
+    - [CICS Bundle Plugin Deployment (Gradle/Maven)](#cics-bundle-plugin-deployment-gradlemaven)
+    - [CICS Explorer SDK Deployment](#cics-explorer-sdk-deployment)
+    - [Direct Liberty Application Deployment](#direct-liberty-application-deployment)
     - [Common Bundle Installation Steps](#common-bundle-installation-steps)
-9. [Running the Sample](#running-the-sample)
-10. [Troubleshooting](#troubleshooting)
-11. [License](#license)
-12. [Additional Resources](#additional-resources)
-13. [Contributing](#contributing)
+10. [Running the Sample](#running-the-sample)
+11. [Troubleshooting](#troubleshooting)
+12. [License](#license)
+13. [Additional Resources](#additional-resources)
+14. [Contributing](#contributing)
+
+---
+
+## Prerequisites
+
+- **Java:** Java SE 17 or later (required for Spring Boot 3.x)
+- **Build tool:** Gradle (via `./gradlew`) or Maven (via `./mvnw`) — no separate installation required
+- **IDE (optional):** Eclipse with IBM CICS Explorer SDK for Java EE, Jakarta EE and Liberty
+- **CICS TS:** V6.1 or later (required for Spring Boot 3.x with Jakarta EE 10)
+- **IBM Db2:** V13 or later on z/OS with the EMP sample table
+
+### Check dependencies
+
+```bash
+./gradlew --version   # should report Gradle 8.14.4
+./mvnw --version      # should report Maven 3.9.12
+```
+
+---
+
+## Downloading
+
+Clone the repository:
+
+```bash
+git clone https://github.com/cicsdev/cics-java-liberty-springboot-jdbc
+cd cics-java-liberty-springboot-jdbc
+```
 
 ---
 
@@ -152,8 +181,8 @@ For **JDBC Type 2** (local connectivity):
 ```xml
 <!-- Configure the IBM Data Server Driver for JDBC and SQLJ for Db2 driver library -->
 <library id="db2Type2Driver">
-    <fileset dir="/usr/lpp/db2v12/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
-    <fileset dir="/usr/lpp/db2v12/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
+    <fileset dir="/usr/lpp/db2v13/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
+    <fileset dir="/usr/lpp/db2v13/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
 </library>
 
 <!-- Configure the DataSource -->
@@ -169,8 +198,8 @@ For **JDBC Type 4** (substitute your values as necessary):
 <dataSource id="t4" jndiName="jdbc/jdbcDataSource" type="javax.sql.XADataSource">
     <jdbcDriver>   
         <library name="DB2LIB">
-            <fileset dir="/usr/lpp/db2v11/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
-            <fileset dir="/usr/lpp/db2v11/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
+            <fileset dir="/usr/lpp/db2v13/jdbc/classes" includes="db2jcc4.jar db2jcc_license_cisuz.jar"/>
+            <fileset dir="/usr/lpp/db2v13/jdbc/lib" includes="libdb2jcct2zos4_64.so"/>
         </library>
     </jdbcDriver>
     <properties.db2.jcc driverType="4" 
@@ -204,8 +233,8 @@ Before deploying, ensure your CICS region has:
 3. **JCL Configuration:**
    Add these lines to your CICS region JCL:
    ```
-   //         DD DSN=SYS2.DB2.V12.SDSNLOAD,DISP=SHR
-   //         DD DSN=SYS2.DB2.V12.SDSNLOD2,DISP=SHR
+   //         DD DSN=SYS2.DB2.V13.SDSNLOAD,DISP=SHR
+   //         DD DSN=SYS2.DB2.V13.SDSNLOD2,DISP=SHR
    ```
    These DD statements provide the necessary DB2 load libraries for the CICS region to access DB2.
 
@@ -268,30 +297,6 @@ Maven (`pom.xml`):
 
 ---
 
-## Requirements
-
-### Workstation Requirements
-* **Java:** Java SE 17 or later (required for Spring Boot 3.x)
-* **Build Tools:**
-  - **Gradle:** Version 7.3+ (Java 17 support) - Recommended: 8.0+ - included via wrapper
-  - **Maven:** Version 3.8.1+ (Java 17 support) - Recommended: 3.9.0+ - included via wrapper
-* **IDE (Optional):**
-  - Eclipse with IBM CICS SDK for Java EE, Jakarta EE and Liberty
-  - IntelliJ IDEA, VS Code, or any IDE with Gradle/Maven support
-  - Command line (no IDE required if using wrappers)
-
-### z/OS Requirements
-* **CICS TS:** V6.1 or later (required for Spring Boot 3.x with Jakarta EE 10)
-* **WebSphere Liberty:** Included with CICS
-* **IBM Db2:** V11 or later on z/OS
-* **Java:** IBM Semeru Runtime 17 or later on z/OS
-
-### Database Requirements
-* Access to Db2 for z/OS with the EMP sample table
-* The EMP table is typically provided in the Db2 sample database
-* Appropriate permissions to SELECT, INSERT, UPDATE, DELETE on the EMP table
-
----
 
 ## Building the Sample
 
@@ -363,7 +368,7 @@ mvnw.cmd clean verify
 
 ## Deploying to a CICS Liberty JVM server
 
-### Method 1: CICS Bundle Plugin Deployment (Gradle/Maven)
+### CICS Bundle Plugin Deployment (Gradle/Maven)
 
 1. **Build the bundle** (see [Building the Sample](#building-the-sample))
 
@@ -387,7 +392,7 @@ mvnw.cmd clean verify
 
 ---
 
-### Method 2: CICS Explorer SDK Deployment
+### CICS Explorer SDK Deployment
 
 This method uses IBM CICS Explorer (an Eclipse-based IDE) to create a CICS bundle and deploy it directly to z/OS. This approach is ideal for developers who prefer a GUI-based deployment workflow and want integrated tooling for CICS development.
 
@@ -453,7 +458,7 @@ This step deploys your bundle to z/OS and makes it available to CICS.
 
 ---
 
-### Method 3: Direct Liberty Application Deployment
+### Direct Liberty Application Deployment
 
 1. **Upload the WAR file to zFS:**
 
@@ -491,7 +496,7 @@ These steps apply to both Method 1 and Method 2 after the bundle is on z/OS.
    ```
    CEDA DEFINE BUNDLE(JDBCBNDL)
     GROUP(MYGROUP)
-    BUNDLEDIR(/u/cicsts/bundles/cics-java-liberty-springboot-jdbc-cicsbundle-1.0.0)
+    BUNDLEDIR(/u/cicsts/bundles/cics-java-liberty-springboot-jdbc-bundle_1.0.0)
     STATUS(ENABLED)
    ```
 
@@ -513,7 +518,7 @@ These steps apply to both Method 1 and Method 2 after the bundle is on z/OS.
 4. Fill in:
    - Name: `JDBCBNDL`
    - Group: `MYGROUP`
-   - Bundle Directory: `/u/cicsts/bundles/cics-java-liberty-springboot-jdbc-cicsbundle-1.0.0`
+   - Bundle Directory: `/u/cicsts/bundles/cics-java-liberty-springboot-jdbc-bundle_1.0.0`
    - Status: `Enabled`
 5. Save and right-click → **Install**
 
@@ -584,7 +589,7 @@ CWWKZ0002E: An exception occurred while starting the application cics-java-liber
 **Possible Causes & Solutions:**
 
 1. **Missing Liberty features:**
-   - Verify `servlet-6.0`, `pages-3.1`, and `jdbc-4.3` are in server.xml
+   - Verify `servlet-6.0` and `jdbc-4.3` are in server.xml
    - Check Liberty messages.log for feature-related errors
 
 2. **Java version mismatch:**
@@ -709,8 +714,6 @@ By downloading, installing, and/or using this sample, you acknowledge that separ
 
 ## Contributing
 
-This is a sample project maintained by IBM CICS development. For issues or questions:
-- Open an issue on GitHub
-- Contact IBM Support for CICS-related questions
+This sample is maintained by IBM CICS development. We welcome bug reports and feature requests via GitHub Issues. Contributions are welcome and reviewed on a case-by-case basis — please read the [contributing guidelines](https://github.com/cicsdev/.github/blob/main/CONTRIBUTING.md) before opening a pull request. For CICS product questions, contact IBM Support.
 
 ---
