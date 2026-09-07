@@ -1,6 +1,6 @@
 # cics-java-liberty-springboot-jdbc
 
-[![Build](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml/badge.svg)](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml)
+[![Build](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml)
 [![License](https://img.shields.io/badge/License-EPL%202.0-green.svg)](https://opensource.org/licenses/EPL-2.0)
 
 ## Overview
@@ -9,8 +9,7 @@ This sample demonstrates how to integrate **Spring Boot** with **IBM CICS** usin
 
 The sample is intended both as a runnable example and as an educational reference for developers building enterprise-grade Spring Boot applications with JDBC on CICS Liberty.
 
-## Key Features
-
+**Key Features:**
 - **CICS API Integration:** Direct use of CICS Java APIs for database operations
 - **RESTful Services:** Spring Boot REST endpoints for employee data management
 - **Multi-Module Project:** Separate application and CICS bundle modules
@@ -24,23 +23,22 @@ The sample is intended both as a runnable example and as an educational referenc
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Key Features](#key-features)
-3. [Prerequisites](#prerequisites)
-4. [Downloading](#downloading)
-5. [Design and Architecture](#design-and-architecture)
-6. [Transaction Management](#transaction-management)
-7. [Before You Start: Files to Modify](#before-you-start-files-to-modify)
-8. [Building the Sample](#building-the-sample)
-9. [Deploying to a CICS Liberty JVM server](#deploying-to-a-cics-liberty-jvm-server)
+2. [Prerequisites](#prerequisites)
+3. [Downloading](#downloading)
+4. [Design and Architecture](#design-and-architecture)
+5. [Transaction Management](#transaction-management)
+6. [Before You Start: Files to Modify](#before-you-start-files-to-modify)
+7. [Building the Sample](#building-the-sample)
+8. [Deploying to a CICS Liberty JVM server](#deploying-to-a-cics-liberty-jvm-server)
     - [CICS Bundle Plugin Deployment (Gradle/Maven)](#cics-bundle-plugin-deployment-gradlemaven)
     - [CICS Explorer SDK Deployment](#cics-explorer-sdk-deployment)
     - [Direct Liberty Application Deployment](#direct-liberty-application-deployment)
     - [Common Bundle Installation Steps](#common-bundle-installation-steps)
-10. [Running the Sample](#running-the-sample)
-11. [Troubleshooting](#troubleshooting)
-12. [License](#license)
-13. [Additional Resources](#additional-resources)
-14. [Contributing](#contributing)
+9. [Running the Sample](#running-the-sample)
+10. [Troubleshooting](#troubleshooting)
+11. [License](#license)
+12. [Additional Resources](#additional-resources)
+13. [Contributing](#contributing)
 
 ---
 
@@ -248,15 +246,13 @@ Before deploying, ensure your CICS region has:
 ```xml
 <featureManager>
     <feature>servlet-6.0</feature>        <!-- Required for Spring Boot 3.x (Jakarta EE 10) -->
-    <feature>pages-3.1</feature>
     <feature>jdbc-4.3</feature>
-    <feature>cicsts:security-1.0</feature> <!-- if CICS security is enabled -->
 </featureManager>
 ```
 
 **Notes:**
 - `servlet-6.0` (Jakarta EE 10) requires CICS TS V6.1 or later for Spring Boot 3.x
-- `cicsts:security-1.0` is automatically added if SEC=YES in SIT
+- `cicsts:core-1.0` is auto-injected by CICS in integrated mode; you do not need to add it manually
 - For `jdbc-4.3`, add `type="javax.sql.DataSource"` to datasource definition
 
 ---
@@ -643,7 +639,7 @@ HTTP 401 Unauthorized
 
 1. **CICS security not configured:**
    - Verify SEC=YES in CICS SIT
-   - Check that `cicsts:security-1.0` feature is in server.xml
+   - `cicsts:security-1.0` is auto-injected by CICS when SEC=YES; you do not need to add it manually
    - Ensure user is defined in RACF/security manager
 
 2. **Liberty security configuration:**
