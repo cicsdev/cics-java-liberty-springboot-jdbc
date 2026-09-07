@@ -252,7 +252,7 @@ Before deploying, ensure your CICS region has:
 
 **Notes:**
 - `servlet-6.0` (Jakarta EE 10) requires CICS TS V6.1 or later for Spring Boot 3.x
-- `cicsts:core-1.0` is auto-injected by CICS in integrated mode — do not add it manually
+- `cicsts:core-1.0` is auto-injected by CICS in integrated mode; you do not need to add it manually
 - For `jdbc-4.3`, add `type="javax.sql.DataSource"` to datasource definition
 
 ---
@@ -639,7 +639,7 @@ HTTP 401 Unauthorized
 
 1. **CICS security not configured:**
    - Verify SEC=YES in CICS SIT
-   - `cicsts:security-1.0` is auto-injected by CICS when SEC=YES — do not add it manually
+   - `cicsts:security-1.0` is auto-injected by CICS when SEC=YES; you do not need to add it manually
    - Ensure user is defined in RACF/security manager
 
 2. **Liberty security configuration:**
