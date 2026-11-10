@@ -3,12 +3,12 @@
 
     <!-- ================================================================ -->
     <!-- Features                                                         -->
-    <!-- servlet-6.0 drives Jakarta EE 10 (required for Spring Boot 3.x) -->
+    <!-- servlet-6.1 drives Jakarta EE 11 (required for Spring Boot 4.x) -->
     <!-- jdbc-4.3 provides JDBC connectivity                              -->
     <!-- cicsts:core-1.0 is auto-injected by CICS in integrated mode      -->
     <!-- ================================================================ -->
     <featureManager>
-        <feature>servlet-6.0</feature>
+        <feature>servlet-6.1</feature>
         <feature>jdbc-4.3</feature>
     </featureManager>
 

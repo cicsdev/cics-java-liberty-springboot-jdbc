@@ -1,6 +1,6 @@
 plugins
 {
-    id 'org.springframework.boot' version '3.5.16'
+    id 'org.springframework.boot' version '4.1.2'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'java'
     id 'eclipse'
@@ -46,7 +46,7 @@ eclipse
     {
         facet
         {
-            facet name: 'jst.web', version: '6.0'
+            facet name: 'jst.web', version: '6.1'
         }
         component
         {
@@ -68,8 +68,11 @@ dependencies
     // Spring Boot web starter dependency
     implementation("org.springframework.boot:spring-boot-starter-web")
 
-    // Don't include TomCat in the runtime build, but do put it in WEB-INF so it can be run standalone as well as embedded
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+    // Exclude only the Tomcat embedded container jars from the WAR - Liberty provides the servlet container.
+    // In Spring Boot 4.x, spring-boot-starter-tomcat pulls in spring-boot-starter (and thus all core
+    // Spring libraries) as a compile dependency, so using providedRuntime on the full starter would
+    // incorrectly exclude spring-core, spring-context etc. from WEB-INF/lib.
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat-runtime")
 
     // Spring JDBC Support
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
