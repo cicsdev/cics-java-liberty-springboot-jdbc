@@ -1,6 +1,6 @@
 # cics-java-liberty-springboot-jdbc
 
-[![Build](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml)
+[![Build](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml/badge.svg?branch=springboot%2Fv3)](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml)
 [![License](https://img.shields.io/badge/License-EPL%202.0-green.svg)](https://opensource.org/licenses/EPL-2.0)
 
 ## Overview
