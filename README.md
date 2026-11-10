@@ -171,7 +171,26 @@ The sample includes both simple JDBC operations and transactional variants. Tran
 
 Before building and deploying this sample, you **must** customize the following files with your environment-specific values:
 
-### 1. Db2 Connection Configuration
+### 1. Liberty Server Configuration
+
+**File:** Liberty `server.xml`
+
+**Required Features:**
+```xml
+<featureManager>
+    <feature>servlet-6.1</feature>        <!-- Required for Spring Boot 4.x (Jakarta EE 11) -->
+    <feature>jdbc-4.3</feature>
+</featureManager>
+```
+
+**Notes:**
+- `servlet-6.1` (Jakarta EE 11) is required for Spring Boot 4.x
+- `cicsts:core-1.0` is auto-injected by CICS in integrated mode; you do not need to add it manually
+- For `jdbc-4.3`, add `type="javax.sql.DataSource"` to datasource definition
+
+---
+
+### 2. Db2 Connection Configuration
 
 **File:** Liberty `server.xml`
 
@@ -215,7 +234,7 @@ For **JDBC Type 4** (substitute your values as necessary):
 
 ---
 
-### 2. CICS Region Configuration
+### 3. CICS Region Configuration
 
 > **Important:** The DB2CONN, SIT and JCL changes in this section are **only required for JDBC Type 2 connections**. If you are using JDBC Type 4, skip this section.
 >
@@ -241,25 +260,6 @@ Before deploying, ensure your CICS region has:
    //         DD DSN=SYS2.DB2.V13.SDSNLOD2,DISP=SHR
    ```
    These datasets must be added to the `STEPLIB` so that the CICS region can load the Db2 libraries used by the CICS Db2 attachment facility and the JDBC Type 2 driver.
-
----
-
-### 3. Liberty Server Configuration
-
-**File:** Liberty `server.xml`
-
-**Required Features:**
-```xml
-<featureManager>
-    <feature>servlet-6.1</feature>        <!-- Required for Spring Boot 4.x (Jakarta EE 11) -->
-    <feature>jdbc-4.3</feature>
-</featureManager>
-```
-
-**Notes:**
-- `servlet-6.1` (Jakarta EE 11) is required for Spring Boot 4.x
-- `cicsts:core-1.0` is auto-injected by CICS in integrated mode; you do not need to add it manually
-- For `jdbc-4.3`, add `type="javax.sql.DataSource"` to datasource definition
 
 ---
 
