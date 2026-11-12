@@ -94,7 +94,7 @@ public class EmployeeRestController
 	public String addEmp(@PathVariable("firstName") String firstName , @PathVariable("lastName") String lastName)
 	{
 		String result = employeeService.addEmployee(firstName,lastName);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -112,7 +112,7 @@ public class EmployeeRestController
 	public String addEmpTx(@PathVariable("firstName") String firstName , @PathVariable("lastName") String lastName)
 	{
 		String result = employeeService.addEmployee(firstName,lastName);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -127,7 +127,7 @@ public class EmployeeRestController
 	public String delEmployee(@PathVariable("empNo") String empNo)
 	{
 		String result = employeeService.deleteEmployee(empNo);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -144,7 +144,7 @@ public class EmployeeRestController
 	public String delEmployeeTx(@PathVariable("empNo") String empNo)
 	{
 		String result = employeeService.deleteEmployee(empNo);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -161,7 +161,7 @@ public class EmployeeRestController
 	public String updateEmp(@PathVariable("empNo") String empNo, @PathVariable("newSalary") int newSalary) 
 	{
 		String result = employeeService.updateEmployee(newSalary, empNo);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -179,7 +179,7 @@ public class EmployeeRestController
 	public String updateEmpTx(@PathVariable("empNo") String empNo, @PathVariable("newSalary") int newSalary)
 	{
 		String result = employeeService.updateEmployee(newSalary, empNo);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 }
