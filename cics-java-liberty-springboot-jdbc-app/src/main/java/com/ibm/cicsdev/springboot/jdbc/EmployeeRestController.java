@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.HtmlUtils;
 
 
 /**
@@ -103,7 +104,7 @@ public class EmployeeRestController
 	public String addEmp(@PathVariable String firstName , @PathVariable String lastName) 
 	{
 		String result = employeeService.addEmployee(firstName,lastName);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -121,7 +122,7 @@ public class EmployeeRestController
 	public String addEmpTx(@PathVariable String firstName , @PathVariable String lastName) 
 	{
 		String result = employeeService.addEmployee(firstName,lastName);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -136,7 +137,7 @@ public class EmployeeRestController
 	public String delEmployee(@PathVariable String empNo) 
 	{
 		String result = employeeService.deleteEmployee(empNo);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -153,7 +154,7 @@ public class EmployeeRestController
 	public String delEmployeeTx(@PathVariable String empNo) 
 	{
 		String result = employeeService.deleteEmployee(empNo);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -170,7 +171,7 @@ public class EmployeeRestController
 	public String updateEmp(@PathVariable String empNo, @PathVariable int newSalary) 
 	{
 		String result = employeeService.updateEmployee(newSalary, empNo);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -188,7 +189,7 @@ public class EmployeeRestController
 	public String updateEmpTx(@PathVariable String empNo, @PathVariable int newSalary) 
 	{
 		String result = employeeService.updateEmployee(newSalary, empNo);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 }
