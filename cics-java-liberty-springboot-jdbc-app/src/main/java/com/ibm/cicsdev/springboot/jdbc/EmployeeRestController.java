@@ -10,16 +10,20 @@
 
 package com.ibm.cicsdev.springboot.jdbc;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringBootVersion;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.HtmlUtils;
 
 
 /**
@@ -39,30 +43,17 @@ public class EmployeeRestController
 
 	
 	/**
-	 * Root endpoint - returns date/time + usage information
-	 * 
-	 * @return the Usage information 
+	 * Root endpoint - returns the static usage information page, with the Spring Boot version filled in
+	 *
+	 * @return the static index.html page
+	 * @throws IOException if the page cannot be read
 	 */
-	@GetMapping("/")
+	@GetMapping(value = "/", produces = MediaType.TEXT_HTML_VALUE)
 	@ResponseBody
-	public String Index()
-	{    
-		Date myDate = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd:HH-mm-ss.SSSSSS");
-		String myDateString = sdf.format(myDate);
-		
-		return "<h1>Spring Boot JDBC Employee REST sample. Date/Time: " + myDateString + "</h1>"
-		+ "<h3>Usage:</h3>"
-		+ "<b>/allEmployees</b> - return a list of employees using a classic SELECT statement <br>"
-		+ "<b>/listEmployee/{empno}</b> - a list of employee records for the employee number provided <br>"
-		+ "<br> --- Update operations --- <br>"
-		+ "<b>/addEmployee/{firstName}/{lastName}</b> - add an employee <br>"				
-		+ "<b>/deleteEmployee/{empNo}</b> - delete an employee <br>"
-		+ "<b>/updateEmployee/{empNo}/{newSalary}</b> - update employee salary <br>"
-		+ "<br> --- Update operations within a Global (XA) Transaction --- <br>"
-		+ "<b>/addEmployeeTx/{firstName}/{lastName}</b> - add an employee using an XA transaction <br>"				
-		+ "<b>/deleteEmployeeTx/{empNo}</b> - delete an employee using an XA transaction <br>"
-		+ "<b>/updateEmployeeTx/{empNo}/{newSalary}</b> - update employee salary using an XA transaction";
+	public String Index() throws IOException
+	{
+		String page = new String(new ClassPathResource("static/index.html").getContentAsByteArray(), StandardCharsets.UTF_8);
+		return page.replace("${springBootVersion}", SpringBootVersion.getVersion());
 	}
 
 	
@@ -85,7 +76,7 @@ public class EmployeeRestController
 	 * @return a list of employee records for the passed parameter number
 	 */
 	@GetMapping("/listEmployee/{empno}")
-	public List<Employee> listEmployee(@PathVariable String empno) 
+	public List<Employee> listEmployee(@PathVariable("empno") String empno)
 	{
 		return employeeService.selectWhereEmpno(empno);
 	}
@@ -100,10 +91,10 @@ public class EmployeeRestController
 	 */
 	@GetMapping("/addEmployee/{firstName}/{lastName}")
 	@ResponseBody
-	public String addEmp(@PathVariable String firstName , @PathVariable String lastName) 
+	public String addEmp(@PathVariable("firstName") String firstName , @PathVariable("lastName") String lastName)
 	{
 		String result = employeeService.addEmployee(firstName,lastName);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -118,10 +109,10 @@ public class EmployeeRestController
 	@GetMapping("/addEmployeeTx/{firstName}/{lastName}")
 	@ResponseBody
 	@Transactional
-	public String addEmpTx(@PathVariable String firstName , @PathVariable String lastName) 
+	public String addEmpTx(@PathVariable("firstName") String firstName , @PathVariable("lastName") String lastName)
 	{
 		String result = employeeService.addEmployee(firstName,lastName);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -133,10 +124,10 @@ public class EmployeeRestController
 	 */
 	@GetMapping("/deleteEmployee/{empNo}")
 	@ResponseBody
-	public String delEmployee(@PathVariable String empNo) 
+	public String delEmployee(@PathVariable("empNo") String empNo)
 	{
 		String result = employeeService.deleteEmployee(empNo);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -150,10 +141,10 @@ public class EmployeeRestController
 	@GetMapping("/deleteEmployeeTx/{empNo}")
 	@ResponseBody
 	@Transactional
-	public String delEmployeeTx(@PathVariable String empNo) 
+	public String delEmployeeTx(@PathVariable("empNo") String empNo)
 	{
 		String result = employeeService.deleteEmployee(empNo);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -167,10 +158,10 @@ public class EmployeeRestController
 	 */
 	@GetMapping("/updateEmployee/{empNo}/{newSalary}")
 	@ResponseBody
-	public String updateEmp(@PathVariable String empNo, @PathVariable int newSalary) 
+	public String updateEmp(@PathVariable("empNo") String empNo, @PathVariable("newSalary") int newSalary) 
 	{
 		String result = employeeService.updateEmployee(newSalary, empNo);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 	
@@ -185,10 +176,10 @@ public class EmployeeRestController
 	@GetMapping("/updateEmployeeTx/{empNo}/{newSalary}")
 	@ResponseBody
 	@Transactional
-	public String updateEmpTx(@PathVariable String empNo, @PathVariable int newSalary) 
+	public String updateEmpTx(@PathVariable("empNo") String empNo, @PathVariable("newSalary") int newSalary)
 	{
 		String result = employeeService.updateEmployee(newSalary, empNo);
-		return result;
+		return HtmlUtils.htmlEscape(result);
 	}
 	
 }
