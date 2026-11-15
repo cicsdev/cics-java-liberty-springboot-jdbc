@@ -178,13 +178,13 @@ Before building and deploying this sample, you **must** customize the following 
 **Required Features:**
 ```xml
 <featureManager>
-    <feature>servlet-6.1</feature>        <!-- Required for Spring Boot 4.x (Jakarta EE 11) -->
+    <feature>servlet-6.0</feature>        <!-- Required for Spring Boot 3.x (Jakarta EE 10) -->
     <feature>jdbc-4.3</feature>
 </featureManager>
 ```
 
 **Notes:**
-- `servlet-6.1` (Jakarta EE 11) is required for Spring Boot 4.x
+- `servlet-6.0` (Jakarta EE 10) requires CICS TS V6.1 or later for Spring Boot 3.x
 - `cicsts:core-1.0` is auto-injected by CICS in integrated mode; you do not need to add it manually
 - For `jdbc-4.3`, add `type="javax.sql.DataSource"` to datasource definition
 
