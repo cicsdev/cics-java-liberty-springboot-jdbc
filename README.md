@@ -1,7 +1,9 @@
 # cics-java-liberty-springboot-jdbc
 
-[![Build](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml/badge.svg?branch=main)](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml)
+[![Build](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml/badge.svg?branch=springboot%2Fv4)](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml)
 [![License](https://img.shields.io/badge/License-EPL%202.0-green.svg)](https://opensource.org/licenses/EPL-2.0)
+
+> ⚠️ **This `springboot/v4` branch is a work-in-progress preview.** It targets Spring Boot 4.x and Jakarta EE 11, which requires Liberty `servlet-6.1` support — not yet available in CICS TS. It is not yet recommended for use. For the supported version use [`springboot/v3`](../../tree/springboot/v3).
 
 ## Overview
 
@@ -44,10 +46,10 @@ The sample is intended both as a runnable example and as an educational referenc
 
 ## Prerequisites
 
-- **Java:** Java SE 17 or later (required for Spring Boot 3.x)
+- **Java:** Java SE 21 or later (baseline for Spring Boot 4.x samples)
 - **Build tool:** Gradle (via `./gradlew`) or Maven (via `./mvnw`) — no separate installation required
 - **IDE (optional):** Eclipse with IBM CICS Explorer SDK for Java EE, Jakarta EE and Liberty
-- **CICS TS:** V6.1 or later (required for Spring Boot 3.x with Jakarta EE 10)
+- **CICS TS:** V6.1 or later (Spring Boot 4.x with Jakarta EE 11 requires Liberty `servlet-6.1` support)
 - **IBM Db2:** V13 or later on z/OS with the EMP sample table
 
 ### Check dependencies
@@ -169,7 +171,26 @@ The sample includes both simple JDBC operations and transactional variants. Tran
 
 Before building and deploying this sample, you **must** customize the following files with your environment-specific values:
 
-### 1. Db2 Connection Configuration
+### 1. Liberty Server Configuration
+
+**File:** Liberty `server.xml`
+
+**Required Features:**
+```xml
+<featureManager>
+    <feature>servlet-6.1</feature>        <!-- Required for Spring Boot 4.x (Jakarta EE 11) -->
+    <feature>jdbc-4.3</feature>
+</featureManager>
+```
+
+**Notes:**
+- `servlet-6.1` (Jakarta EE 11) is required for Spring Boot 4.x
+- `cicsts:core-1.0` is auto-injected by CICS in integrated mode; you do not need to add it manually
+- For `jdbc-4.3`, add `type="javax.sql.DataSource"` to datasource definition
+
+---
+
+### 2. Db2 Connection Configuration
 
 **File:** Liberty `server.xml`
 
@@ -213,47 +234,32 @@ For **JDBC Type 4** (substitute your values as necessary):
 
 ---
 
-### 2. CICS Region Configuration
+### 3. CICS Region Configuration
 
-**Prerequisites:**
+> **Important:** The DB2CONN, SIT and JCL changes in this section are **only required for JDBC Type 2 connections**. If you are using JDBC Type 4, skip this section.
+>
+> The JDBC Type 4 driver is a pure Java driver and does not use the CICS Db2 attachment facility (DB2CONN). Instead, the Liberty JVM server uses the JDBC driver JARs (`db2jcc4.jar` and the licence JARs) from the zFS file system, as specified in the `server.xml` library definition.
+
+**Prerequisites for JDBC Type 2 connections:**
 
 Before deploying, ensure your CICS region has:
 
-1. **DB2CONN Setup:**
+1. **DB2CONN Setup (Type 2 only):**
    - DB2CONN resource defined and installed in CICS
 
-2. **CICS SIT Parameters (Type 2 connections only):**
+2. **CICS SIT Parameters (Type 2 only):**
    ```
    DB2CONN=YES
    ```
-   **Note:** The `DB2CONN=YES` parameter is **only required for JDBC Type 2 connections**. .
 
-3. **JCL Configuration:**
-   Add these lines to your CICS region JCL:
+3. **JCL Configuration (Type 2 only):**
+   Add the Db2 load library datasets to the `STEPLIB` concatenation in your CICS region JCL:
    ```
+   //STEPLIB  DD DSN=...                          (existing CICS libraries)
    //         DD DSN=SYS2.DB2.V13.SDSNLOAD,DISP=SHR
    //         DD DSN=SYS2.DB2.V13.SDSNLOD2,DISP=SHR
    ```
-   These DD statements provide the necessary DB2 load libraries for the CICS region to access DB2.
-
----
-
-### 3. Liberty Server Configuration
-
-**File:** Liberty `server.xml`
-
-**Required Features:**
-```xml
-<featureManager>
-    <feature>servlet-6.0</feature>        <!-- Required for Spring Boot 3.x (Jakarta EE 10) -->
-    <feature>jdbc-4.3</feature>
-</featureManager>
-```
-
-**Notes:**
-- `servlet-6.0` (Jakarta EE 10) requires CICS TS V6.1 or later for Spring Boot 3.x
-- `cicsts:core-1.0` is auto-injected by CICS in integrated mode; you do not need to add it manually
-- For `jdbc-4.3`, add `type="javax.sql.DataSource"` to datasource definition
+   These datasets must be added to the `STEPLIB` so that the CICS region can load the Db2 libraries used by the CICS Db2 attachment facility and the JDBC Type 2 driver.
 
 ---
 
@@ -585,11 +591,11 @@ CWWKZ0002E: An exception occurred while starting the application cics-java-liber
 **Possible Causes & Solutions:**
 
 1. **Missing Liberty features:**
-   - Verify `servlet-6.0` and `jdbc-4.3` are in server.xml
+   - Verify `servlet-6.1` and `jdbc-4.3` are in server.xml
    - Check Liberty messages.log for feature-related errors
 
 2. **Java version mismatch:**
-   - Spring Boot 3.x requires Java 17 or later
+   - Spring Boot 4.x samples require Java 21 or later
    - Update JAVA_HOME if necessary
 
 3. **Datasource not found:**
@@ -611,13 +617,15 @@ DB2 SQL Error: SQLCODE=-204, SQLSTATE=42704
 
 **Solutions:**
 
-1. **For Type 2 connectivity:**
+1. **For Type 2 connectivity (DB2CONN and JCL changes apply to Type 2 only):**
    - Verify DB2CONN is installed in CICS: `CEMT INQ DB2CONN`
    - Check DB2CONN=YES in CICS SIT
-   - Verify Db2 load libraries in CICS region JCL
+   - Verify the Db2 load library datasets are in the `STEPLIB` concatenation in the CICS region JCL
    - Ensure CICS region has RACF authority to access Db2
 
 2. **For Type 4 connectivity:**
+   - DB2CONN and JCL `STEPLIB` changes are not required; the driver JARs are loaded from zFS
+   - Verify the `db2jcc4.jar` and licence JAR paths in the `server.xml` library definition
    - Verify network connectivity to Db2 server
    - Verify user credentials
 
