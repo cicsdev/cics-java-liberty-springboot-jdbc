@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spring Boot JDBC Employee REST sample</title>
+</head>
+<body>
+<h1>Spring Boot JDBC Employee REST sample</h1>
+<p>Spring Boot version: ${springBootVersion}</p>
+<h3>Usage:</h3>
+<a href="allEmployees"><b>/allEmployees</b></a> - return a list of employees using a classic SELECT statement <br>
+<form data-path="listEmployee">
+<b>/listEmployee/{empno}</b> - a list of employee records for the employee number provided <br>
+<label>Employee number <input name="empno" required></label>
+<button type="submit">Run</button>
+</form>
+<br> --- Update operations --- <br>
+<form data-path="addEmployee">
+<b>/addEmployee/{firstName}/{lastName}</b> - add an employee <br>
+<label>First name <input name="firstName" required></label>
+<label>Last name <input name="lastName" required></label>
+<button type="submit">Run</button>
+</form>
+<br>
+<form data-path="deleteEmployee">
+<b>/deleteEmployee/{empNo}</b> - delete an employee <br>
+<label>Employee number <input name="empNo" required></label>
+<button type="submit">Run</button>
+</form>
+<br>
+<form data-path="updateEmployee">
+<b>/updateEmployee/{empNo}/{newSalary}</b> - update employee salary <br>
+<label>Employee number <input name="empNo" required></label>
+<label>New salary <input name="newSalary" type="number" required></label>
+<button type="submit">Run</button>
+</form>
+<br> --- Update operations within a Global (XA) Transaction --- <br>
+<form data-path="addEmployeeTx">
+<b>/addEmployeeTx/{firstName}/{lastName}</b> - add an employee using an XA transaction <br>
+<label>First name <input name="firstName" required></label>
+<label>Last name <input name="lastName" required></label>
+<button type="submit">Run</button>
+</form>
+<form data-path="deleteEmployeeTx">
+<b>/deleteEmployeeTx/{empNo}</b> - delete an employee using an XA transaction <br>
+<label>Employee number <input name="empNo" required></label>
+<button type="submit">Run</button>
+</form>
+<form data-path="updateEmployeeTx">
+<b>/updateEmployeeTx/{empNo}/{newSalary}</b> - update employee salary using an XA transaction <br>
+<label>Employee number <input name="empNo" required></label>
+<label>New salary <input name="newSalary" type="number" required></label>
+<button type="submit">Run</button>
+</form>
+<script>
+document.querySelectorAll('form[data-path]').forEach(function (form) {
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var segments = [form.dataset.path];
+        form.querySelectorAll('input').forEach(function (input) {
+            segments.push(encodeURIComponent(input.value.trim()));
+        });
+        window.location.href = segments.join('/');
+    });
+});
+</script>
+</body>
+</html>

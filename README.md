@@ -1,7 +1,9 @@
 # cics-java-liberty-springboot-jdbc
 
-[![Build](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml/badge.svg?branch=springboot%2Fv3)](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml)
+[![Build](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml/badge.svg?branch=springboot%2Fv4)](https://github.com/cicsdev/cics-java-liberty-springboot-jdbc/actions/workflows/build.yaml)
 [![License](https://img.shields.io/badge/License-EPL%202.0-green.svg)](https://opensource.org/licenses/EPL-2.0)
+
+> ⚠️ **This `springboot/v4` branch is a work-in-progress preview.** It targets Spring Boot 4.x and Jakarta EE 11, which requires Liberty `servlet-6.1` support — not yet available in CICS TS. It is not yet recommended for use. For the supported version use [`springboot/v3`](../../tree/springboot/v3).
 
 ## Overview
 
@@ -44,10 +46,10 @@ The sample is intended both as a runnable example and as an educational referenc
 
 ## Prerequisites
 
-- **Java:** Java SE 17 or later (required for Spring Boot 3.x)
+- **Java:** Java SE 21 or later (baseline for Spring Boot 4.x samples)
 - **Build tool:** Gradle (via `./gradlew`) or Maven (via `./mvnw`) — no separate installation required
 - **IDE (optional):** Eclipse with IBM CICS Explorer SDK for Java EE, Jakarta EE and Liberty
-- **CICS TS:** V6.1 or later (required for Spring Boot 3.x with Jakarta EE 10)
+- **CICS TS:** V6.1 or later (Spring Boot 4.x with Jakarta EE 11 requires Liberty `servlet-6.1` support)
 - **IBM Db2:** V13 or later on z/OS with the EMP sample table
 
 ### Check dependencies
@@ -589,11 +591,11 @@ CWWKZ0002E: An exception occurred while starting the application cics-java-liber
 **Possible Causes & Solutions:**
 
 1. **Missing Liberty features:**
-   - Verify `servlet-6.0` and `jdbc-4.3` are in server.xml
+   - Verify `servlet-6.1` and `jdbc-4.3` are in server.xml
    - Check Liberty messages.log for feature-related errors
 
 2. **Java version mismatch:**
-   - Spring Boot 3.x requires Java 17 or later
+   - Spring Boot 4.x samples require Java 21 or later
    - Update JAVA_HOME if necessary
 
 3. **Datasource not found:**
