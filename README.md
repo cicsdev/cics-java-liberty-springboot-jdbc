@@ -27,20 +27,21 @@ The sample is intended both as a runnable example and as an educational referenc
 1. [Overview](#overview)
 2. [Prerequisites](#prerequisites)
 3. [Downloading](#downloading)
-4. [Design and Architecture](#design-and-architecture)
-5. [Transaction Management](#transaction-management)
-6. [Before You Start: Files to Modify](#before-you-start-files-to-modify)
-7. [Building the Sample](#building-the-sample)
-8. [Deploying to a CICS Liberty JVM server](#deploying-to-a-cics-liberty-jvm-server)
+4. [Check dependencies](#check-dependencies)
+5. [Design and Architecture](#design-and-architecture)
+6. [Transaction Management](#transaction-management)
+7. [Before You Start: Files to Modify](#before-you-start-files-to-modify)
+8. [Building the Sample](#building-the-sample)
+9. [Deploying to a CICS Liberty JVM server](#deploying-to-a-cics-liberty-jvm-server)
     - [CICS Bundle Plugin Deployment (Gradle/Maven)](#cics-bundle-plugin-deployment-gradlemaven)
     - [CICS Explorer SDK Deployment](#cics-explorer-sdk-deployment)
     - [Direct Liberty Application Deployment](#direct-liberty-application-deployment)
     - [Common Bundle Installation Steps](#common-bundle-installation-steps)
-9. [Running the Sample](#running-the-sample)
-10. [Troubleshooting](#troubleshooting)
-11. [License](#license)
-12. [Additional Resources](#additional-resources)
-13. [Contributing](#contributing)
+10. [Running the Sample](#running-the-sample)
+11. [Troubleshooting](#troubleshooting)
+12. [License](#license)
+13. [Additional Resources](#additional-resources)
+14. [Contributing](#contributing)
 
 ---
 
@@ -52,13 +53,6 @@ The sample is intended both as a runnable example and as an educational referenc
 - **CICS TS:** V6.1 or later (Spring Boot 4.x with Jakarta EE 11 requires Liberty `servlet-6.1` support)
 - **IBM Db2:** V13 or later on z/OS with the EMP sample table
 
-### Check dependencies
-
-```bash
-./gradlew --version   # should report Gradle 8.14.4
-./mvnw --version      # should report Maven 3.9.12
-```
-
 ---
 
 ## Downloading
@@ -68,6 +62,28 @@ Clone the repository:
 ```bash
 git clone https://github.com/cicsdev/cics-java-liberty-springboot-jdbc
 cd cics-java-liberty-springboot-jdbc
+```
+
+### Check dependencies
+
+Before building this sample, verify that the correct CICS TS bill of materials (BOM) is specified for your target release of CICS. The BOM specifies a consistent set of artifacts and their scopes. The default version in this sample is compatible with CICS TS V6.1 with JCICS APAR PH63856 or newer — update it to match your CICS TS release.
+
+You can browse the published versions of the CICS BOM at [Maven Central](https://mvnrepository.com/artifact/com.ibm.cics/com.ibm.cics.ts.bom).
+
+The BOM version is defined once, as the `cics.bom.version` property, in `gradle.properties` (Gradle) and in the root `pom.xml` (Maven):
+
+Gradle (`gradle.properties`):
+
+```properties
+cics.bom.version=6.1-20250812133513-PH63856
+```
+
+Maven (`pom.xml`):
+
+```xml
+<properties>
+  <cics.bom.version>6.1-20250812133513-PH63856</cics.bom.version>
+</properties>
 ```
 
 ---
@@ -534,10 +550,9 @@ These steps apply to both Method 1 and Method 2 after the bundle is on z/OS.
 
 ### Step 1: Verify Deployment
 
-Check that the application started successfully in Liberty:
+Check that the application started successfully in Liberty by watching `messages.log`:
 
 ```bash
-# Check Liberty messages.log
 tail -f /path/to/liberty/logs/messages.log
 ```
 
@@ -684,13 +699,13 @@ XA transaction error
 ```
 
 **Check logs:**
-```bash
-# Liberty messages.log
-tail -f /path/to/liberty/logs/messages.log
 
-# CICS MSGUSR
-# Check for CICS-related messages
+Watch the Liberty `messages.log`, and check the CICS `MSGUSR` log for CICS-related messages:
+
+```bash
+tail -f /path/to/liberty/logs/messages.log
 ```
+
 ---
 
 ## License

@@ -1,4 +1,4 @@
-# Maven ignores
+# Maven
 target/
 pom.xml.tag
 pom.xml.releaseBackup
@@ -8,55 +8,17 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-# https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 
-# Eclipse m2e generated files
-# Eclipse Core
-#.project
-# JDT-specific (Eclipse Java Development Tools)
-#.classpath
-
-
-# Gradle ignores
-.gradle
+# Gradle
 **/build/
-!src/**/build/
-
-# Ignore Gradle GUI config
+.gradle
 gradle-app.setting
-
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
-
-# Avoid ignore Gradle wrapper properties
-!gradle-wrapper.properties
-!gradle/wrapper/gradle-wrapper.properties
-
-# Cache of project
 .gradletasknamecache
 
-# Eclipse Gradle plugin generated files
-# Eclipse Core
-#.project
-# JDT-specific (Eclipse Java Development Tools)
-#.classpath
-
-
-# Java ignores
-# Compiled class file
+# Java
 *.class
-
-# Log file
 *.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
 *.jar
 *.war
 *.nar
@@ -64,24 +26,76 @@ gradle-app.setting
 *.zip
 *.tar.gz
 *.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
 
+# Gradle wrapper — these exceptions MUST come after *.jar above.
+# Git applies the LAST matching rule, so an exception placed before *.jar is silently overridden.
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
 
-# VSCode ignores
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
+# Eclipse
+# CRITICAL: For multi-module projects, DO NOT ignore .project, .classpath, or .settings/
+# These files MUST be committed for clean customer import experience
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.recommenders
+.externalToolBuilders/
+*.launch
+.buildpath
+.target
+.tern-project
+.texlipse
+.springBeans
+.recommenders/
+.apt_generated/
+.apt_generated_test/
+.factorypath
+.c9/
+*.pydevproject
+.cproject
+.autotools
+.externalToolBuilders/
+.launches/
 
-# Local History for Visual Studio Code
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.idea_modules/
+
+# VS Code
+.vscode/
+*.code-workspace
 .history/
 
-# Built Visual Studio Code Extensions
-*.vsix
-*.vscode
-/bin/
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
