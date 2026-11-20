@@ -81,7 +81,6 @@ public class EmployeeService
 
 		return jdbcTemplate.query(
 				sql,
-				new Object [] {empNo},
 				(rs, rowNum) ->
 				new Employee(
 						rs.getString("EMPNO"),
@@ -97,7 +96,8 @@ public class EmployeeService
 						rs.getString("BIRTHDATE"),
 						rs.getLong("SALARY"),
 						rs.getLong("BONUS"),
-						rs.getLong("COMM")));
+						rs.getLong("COMM")),
+				empNo);
 	}
 
 
